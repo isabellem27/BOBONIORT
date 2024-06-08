@@ -52,37 +52,37 @@
            LINE 16 COL 60 .
            05 FILLER PIC X VALUE ":" 
            LINE 16 COL 92 .
-           05 FILLER PIC X(1) TO  CCS-SECU-1 
+           05 FILLER PIC X(1) TO  LK-CCS-SECU-1 
             LINE 16 COL 115 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.
          
-           05 FILLER PIC X(2) TO  CCS-SECU-2 
+           05 FILLER PIC X(2) TO  LK-CCS-SECU-2 
             LINE 16 COL 117 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.
           
-           05 FILLER PIC X(2) TO  CCS-SECU-3 
+           05 FILLER PIC X(2) TO  LK-CCS-SECU-3 
             LINE 16 COL 119 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 
            
-           05 FILLER PIC X(2) TO  CCS-SECU-4 
+           05 FILLER PIC X(2) TO  LK-CCS-SECU-4 
             LINE 16 COL 122 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.
         
-           05 FILLER PIC X(3) TO  CCS-SECU-5 
+           05 FILLER PIC X(3) TO  LK-CCS-SECU-5 
             LINE 16 COL 125 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 
         
-           05 FILLER PIC X(3) TO  CCS-SECU-6 
+           05 FILLER PIC X(3) TO  LK-CCS-SECU-6 
             LINE 16 COL 129 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 
         
-           05 FILLER PIC X(2) TO  CCS-SECU-7 
+           05 FILLER PIC X(2) TO  LK-CCS-SECU-7 
            LINE 16 COL 133 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.
@@ -94,7 +94,7 @@
            LINE 18 COL 60 . 
            05 FILLER PIC X VALUE ":" 
            LINE 18 COL 92 .
-           05 FILLER PIC X(20) TO  CUD-FIRSTNAME
+           05 FILLER PIC X(20) TO  LK-CUS-FIRSTNAME
            LINE 18 COL 115 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.  
@@ -121,7 +121,7 @@
            LINE 20 COL 60 . 
            05 FILLER PIC X VALUE ":" 
            LINE 20 COL 92 .
-           05 FILLER PIC X(20) TO  CUD-LASTNAME
+           05 FILLER PIC X(20) TO  LK-CUS-LASTNAME
            LINE 20 COL 115 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.
@@ -129,36 +129,36 @@
            LINE 22 COL 60 . 
            05 FILLER PIC X VALUE ":" 
            LINE 22 COL 92 .
-           05 FILLER PIC X(2) TO  CUB-DAYS
+           05 FILLER PIC X(2) TO  LK-CUB-DAYS
            LINE 22 COL 133 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 
            05 FILLER PIC X(1) VALUE "-"
            LINE 22 COL 132 AUTO 
            FOREGROUND-COLOR IS 2.
-           05 FILLER PIC X(2) TO  CUB-MONTH
+           05 FILLER PIC X(2) TO  LK-CUB-MONTH
            LINE 22 COL 130 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.
            05 FILLER PIC X(1) VALUE "-"
            LINE 22 COL 129 AUTO 
            FOREGROUND-COLOR IS 2.
-           05 FILLER PIC X(4) TO  CUB-YEAR
+           05 FILLER PIC X(4) TO  LK-CUB-YEAR
            LINE 22 COL 125 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.
-           05 FILLER PIC X(10) VALUE "RECHERCHER" 
+           05 FILLER PIC X(10) VALUE "Rechercher" 
            LINE 27 COL 60 
            FOREGROUND-COLOR IS 2. 
-           05 FILLER PIC X(1) TO  WS-SEARCH-VALIDATION
+           05 FILLER PIC X(1) TO  LK-SEARCH-VALIDATION
            LINE 27 COL 71
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 
            
           
-           05 FILLER PIC X(70) FROM  WS-ERROR-MESSAGE
+           05 FILLER PIC X(70) FROM  LK-ERROR-MESSAGE
            LINE 29 COL 60 AUTO 
-           FOREGROUND-COLOR IS 2.
+           FOREGROUND-COLOR IS 8.
            05 FILLER PIC X(2) VALUE  "  " LINE 18 COL 10 
            BACKGROUND-COLOR IS 2.       
            05 FILLER PIC X(2) VALUE  "  " COL  190
@@ -293,11 +293,11 @@
            BACKGROUND-COLOR IS 2.      
            05 FILLER PIC X(2) VALUE  "  " COL  190
            BACKGROUND-COLOR IS 2. 
-           05 FILLER PIC X(1) TO  WS-MENU-RETURN  
+           05 FILLER PIC X(1) TO  LK-MENU-RETURN  
            COL 170 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 
-           05 FILLER PIC X(14) VALUE  "RETOUR AU MENU" 
+           05 FILLER PIC X(14) VALUE  "Retour au menu" 
            COL 172 
            FOREGROUND-COLOR IS 2.
 
