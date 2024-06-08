@@ -1,4 +1,6 @@
       ******************************************************************
+      *    [RD] Le programme appel le FRONT et le BACK qui permettent  *
+      *    d'effectuer une recherche d'un adhérent.                    *
       ******************************************************************
        IDENTIFICATION DIVISION.
        PROGRAM-ID. searcust.
@@ -45,26 +47,34 @@
 
        PROCEDURE DIVISION.
        0000-START-MAIN.
+      *    [RD] Appel du FRONT.
            CALL 
                'scfront'
                USING CUSTOMER-ACCEPT, WS-MENU-RETURN, 
                WS-SEARCH-VALIDATION, WS-ERROR-MESSAGE, WS-ERROR-CODE
            END-CALL.
 
+      *    [RD] Si l'utilisateur a saisi "O" sur "Retour au menu" 
+      *    redirigie vers le début de ce programme. 
+      *    A CHANGER POUR REDIRIGER VERS LA GESTION D'ADHERENT.
            IF WS-MENU-RETURN EQUAL 'O'
                GO TO 0000-START-MAIN
            END-IF.
-
+      
+      *    [RD] Appel du BACK.
            CALL 
                'scback' 
                USING CUSTOMER-ACCEPT, WS-ERROR-CODE, CUSTOMER-RETURN
            END-CALL.
 
+      *    [RD] Si le résultat de la requête SQL est NULL redirige vers 
+      *    le début de ce programme avec le message d'erreur adéquat.
            IF CUSTOMER-RETURN EQUAL SPACES
                MOVE "AUCUN ADHERENT TROUVE..." TO WS-ERROR-MESSAGE
                GO TO 0000-START-MAIN
            END-IF.
-           
+
+      *    [RD] A CHANGER POUR APPELER LE MENU D'ADHERENT.
            DISPLAY SCREEN-TEST.
        END-0000-MAIN.
            GOBACK.

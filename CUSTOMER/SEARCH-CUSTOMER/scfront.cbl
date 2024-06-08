@@ -1,10 +1,13 @@
-      *    MENU DE LA RECHERCHE D'ADHERENT
-     
+      ******************************************************************
+      *    [MF-RD] Le programme affiche la SCREEN SECTION pour la      *
+      *    recherche d'un adhérent et s'occupe des éventuels erreurs   *
+      *    de saisi en affichant de nouveau la SCREEN SECTION avec le  *
+      *    message d'erreur adéquat.                                   *
       ****************************************************************** 
        
        IDENTIFICATION DIVISION.
        PROGRAM-ID. scfront.
-       AUTHOR. Martial.
+       AUTHOR.     Martial.
 
       ******************************************************************
 
@@ -31,7 +34,7 @@
        01  LK-MENU-RETURN       PIC X(01).
        01  LK-SEARCH-VALIDATION PIC X(01).
        01  LK-ERROR-MESSAGE     PIC X(70). 
-       01  LK-ERROR-CODE        PIC 9(01).
+       01  LK-CODE-REQUEST-SQL        PIC 9(01).
 
        SCREEN SECTION.
        COPY 'screen-frame.cpy'.
@@ -39,19 +42,25 @@
       ******************************************************************
 
        PROCEDURE DIVISION USING LK-CUSTOMER, LK-MENU-RETURN, 
-       LK-SEARCH-VALIDATION, LK-ERROR-MESSAGE, LK-ERROR-CODE.
+       LK-SEARCH-VALIDATION, LK-ERROR-MESSAGE, LK-CODE-REQUEST-SQL.
            
        0000-START-MAIN.
            ACCEPT SCREEN-FRAME.
            
-           PERFORM 1000-START-MENU-RETURN THRU END-1000-MENU-RETURN.
+           PERFORM 1000-START-MENU-RETURN 
+              THRU END-1000-MENU-RETURN.
            PERFORM 2000-START-SEARCH-VALIDATION
               THRU END-2000-SEARCH-VALIDATION.
-           PERFORM 3000-START-ERROR-FIELDS THRU END-3000-ERROR-FIELDS.
+           PERFORM 3000-START-ERROR-FIELDS 
+              THRU END-3000-ERROR-FIELDS.
        END-0000-MAIN. 
            GOBACK.
 
       ******************************************************************
+      *    [RD] Si l'utilisateur a saisi "O" sur "Retour au menu"      *
+      *    redirige vers la fin de ce programme.                       *
+      *    Si l'utilisateur a effectué une saisie incorrecte redirige  *
+      *    vers le début de ce programme avec un message d'erreur.     *
       ******************************************************************
        1000-START-MENU-RETURN.
            IF LK-MENU-RETURN EQUAL 'O'
@@ -70,11 +79,11 @@
            EXIT.
 
       ******************************************************************
+      *    [RD] Si l'utilisateur n'a pas saisi "O" sur "Rechercher"    *
+      *    redirige vers le début de ce programme.                     *
       ******************************************************************
        2000-START-SEARCH-VALIDATION.
-           IF LK-SEARCH-VALIDATION EQUAL 'O'
-               GO TO END-2000-SEARCH-VALIDATION
-           ELSE
+           IF LK-SEARCH-VALIDATION NOT EQUAL 'O'
                MOVE 'ERREUR DE SAISIE, "O" POUR EFFECTUER LA RECHERCHE' 
                TO LK-ERROR-MESSAGE
 
@@ -84,6 +93,11 @@
            EXIT.
 
       ******************************************************************
+      *    [RD] En fonction des champs remplis, attribu un chiffre à   *
+      *    LK-CODE-REQUEST-SQL qui va servir à déterminer quelle       *
+      *    requête SQL effectuer.                                      *
+      *    Si aucune des conditions n'est remplies redirige vers le    *
+      *    début de ce programme avec le message d'erreur adéquat.     *
       ******************************************************************
        3000-START-ERROR-FIELDS.
            IF LK-CUS-CODE-SECU NOT EQUAL SPACES
@@ -93,7 +107,7 @@
               AND LK-CUB-MONTH EQUAL SPACES
               AND LK-CUB-YEAR EQUAL SPACES
       
-               SET LK-ERROR-CODE TO 1
+               SET LK-CODE-REQUEST-SQL TO 1
                GO TO END-3000-ERROR-FIELDS
            END-IF.
 
@@ -104,7 +118,7 @@
               AND LK-CUB-MONTH NOT EQUAL SPACES
               AND LK-CUB-YEAR NOT EQUAL SPACES
 
-               SET LK-ERROR-CODE TO 2
+               SET LK-CODE-REQUEST-SQL TO 2
                GO TO END-3000-ERROR-FIELDS
            END-IF.
 
@@ -115,7 +129,7 @@
               AND LK-CUB-MONTH NOT EQUAL SPACES
               AND LK-CUB-YEAR NOT EQUAL SPACES
 
-               SET LK-ERROR-CODE TO 3
+               SET LK-CODE-REQUEST-SQL TO 3
                GO TO END-3000-ERROR-FIELDS
            END-IF.
 

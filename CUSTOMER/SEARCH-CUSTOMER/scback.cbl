@@ -57,24 +57,34 @@
                CONNECT :USERNAME IDENTIFIED BY :PASSWD USING :DBNAME 
            END-EXEC.
 
-           MOVE LK-CUSTOMER-ACCEPT TO WS-CUSTOMER-ACCEPT.
+           PERFORM 1000-START-HANDLE-CUSTOMER-ACCEPT
+              THRU END-1000-HANDLE-CUSTOMER-ACCEPT.
            
-           PERFORM 1000-START-SQL-REQUEST 
-              THRU END-1000-SQL-REQUEST.
+           PERFORM 2000-START-SQL-REQUEST 
+              THRU END-2000-SQL-REQUEST.
 
-           PERFORM 2000-START-FETCH-CURSOR 
-              THRU END-2000-FETCH-CURSOR.
+           PERFORM 3000-START-FETCH-CURSOR 
+              THRU END-3000-FETCH-CURSOR.
        END-0000-MAIN.
            EXEC SQL COMMIT WORK END-EXEC.
            EXEC SQL DISCONNECT ALL END-EXEC. 
            GOBACK.
 
       ******************************************************************
+      *    [RD] Transfert les données de LK-CUSTOMER-ACCEPT vers       *
+      *    WS-CUSTOMER-ACCEPT.                                         *
+      ******************************************************************
+       1000-START-HANDLE-CUSTOMER-ACCEPT.
+           MOVE LK-CUSTOMER-ACCEPT TO WS-CUSTOMER-ACCEPT.
+       END-1000-HANDLE-CUSTOMER-ACCEPT.
+           EXIT.
+
+      ******************************************************************
       *    [RD] Requêtes SQL qui retourne un ou plusieurs adhérents    * 
       *    qui ne sont pas archiver en fonction de la recherche        *
       *    effectuée par l'utilisateur.                                *
       ******************************************************************
-       1000-START-SQL-REQUEST.
+       2000-START-SQL-REQUEST.
       *    Recherche en fonction du code_secu
            EXEC SQL
                DECLARE CRSCODESECU CURSOR FOR
@@ -110,34 +120,34 @@
                AND customer_birth_date = :WS-CUS-BIRTHDATE
                AND customer_active != 'A'
            END-EXEC.
-       END-1000-SQL-REQUEST.
+       END-2000-SQL-REQUEST.
            EXIT.
 
       ******************************************************************
       *    [RD] Appel le paragraphe qui s'occupe de FETCH en fonction  *
       *    du numéro de LK-REQUEST-CODE.                               *
       ******************************************************************
-       2000-START-FETCH-CURSOR.
+       3000-START-FETCH-CURSOR.
            EVALUATE LK-REQUEST-CODE
                WHEN 1
-                   PERFORM 2100-START-FETCH-CRSCODESECU
-                      THRU END-2100-FETCH-CRSCODESECU
+                   PERFORM 3100-START-FETCH-CRSCODESECU
+                      THRU END-3100-FETCH-CRSCODESECU
                WHEN 2
-                   PERFORM 2200-START-FETCH-CRSNAMEDATE
-                      THRU END-2200-FETCH-CRSNAMEDATE
+                   PERFORM 3200-START-FETCH-CRSNAMEDATE
+                      THRU END-3200-FETCH-CRSNAMEDATE
                WHEN 3
-                   PERFORM 2300-START-FETCH-CRSALL
-                      THRU END-2300-FETCH-CRSALL
+                   PERFORM 3300-START-FETCH-CRSALL
+                      THRU END-3300-FETCH-CRSALL
                WHEN OTHER
                   CONTINUE
            END-EVALUATE.
-       END-2000-FETCH-CURSOR.
+       END-3000-FETCH-CURSOR.
            EXIT.
 
       ******************************************************************
       *    [RD] Effectue le FECTH pour le CURSOR de code_secu.         *
       ******************************************************************
-       2100-START-FETCH-CRSCODESECU.
+       3100-START-FETCH-CRSCODESECU.
            EXEC SQL  
                OPEN CRSCODESECU    
            END-EXEC.
@@ -151,7 +161,7 @@
 
                EVALUATE SQLCODE
                    WHEN ZERO
-                       PERFORM 3000-START-HANDLE THRU END-3000-HANDLE
+                       PERFORM 4000-START-HANDLE THRU END-4000-HANDLE
                    WHEN 100
                        DISPLAY 'NO MORE ROWS IN CURSOR RESULT SET'
                    WHEN OTHER
@@ -163,14 +173,14 @@
            EXEC SQL  
                CLOSE CRSCODESECU    
            END-EXEC.
-       END-2100-FETCH-CRSCODESECU.
+       END-3100-FETCH-CRSCODESECU.
            EXIT.
 
       ******************************************************************
       *    [RD] Effectue le FECTH pour le CURSOR de lastname,          *
       *    firstname et birth_date.                                    *
       ******************************************************************
-       2200-START-FETCH-CRSNAMEDATE.
+       3200-START-FETCH-CRSNAMEDATE.
            EXEC SQL  
                OPEN CRSNAMEDATE    
            END-EXEC.
@@ -183,7 +193,7 @@
 
                EVALUATE SQLCODE
                    WHEN ZERO
-                       PERFORM 3000-START-HANDLE THRU END-3000-HANDLE
+                       PERFORM 4000-START-HANDLE THRU END-4000-HANDLE
                    WHEN 100
                        DISPLAY 'NO MORE ROWS IN CURSOR RESULT SET'
                    WHEN OTHER
@@ -195,14 +205,14 @@
            EXEC SQL  
                CLOSE CRSNAMEDATE    
            END-EXEC.
-       END-2200-FETCH-CRSNAMEDATE.
+       END-3200-FETCH-CRSNAMEDATE.
            EXIT.
 
       ******************************************************************
       *    [RD] Effectue le FECTH pour le CURSOR de code_secu,         *
       *    lastname, firstname et birth_date.                          *
       ******************************************************************
-       2300-START-FETCH-CRSALL.
+       3300-START-FETCH-CRSALL.
            EXEC SQL  
                OPEN CRSALL    
            END-EXEC.
@@ -215,7 +225,7 @@
                
                EVALUATE SQLCODE
                    WHEN ZERO
-                       PERFORM 3000-START-HANDLE THRU END-3000-HANDLE
+                       PERFORM 4000-START-HANDLE THRU END-4000-HANDLE
                    WHEN 100
                        DISPLAY 'NO MORE ROWS IN CURSOR RESULT SET'
                    WHEN OTHER
@@ -227,16 +237,16 @@
            EXEC SQL  
                CLOSE CRSALL    
            END-EXEC.
-       END-2300-FETCH-CRSALL.
+       END-3300-FETCH-CRSALL.
            EXIT.
 
       ******************************************************************
       *    [RD] Stock le ou les résultats de la requête SQL dans la    * 
       *    TABLE customer.                                             *
       ******************************************************************
-       3000-START-HANDLE.
+       4000-START-HANDLE.
            MOVE SQL-CUS-UUID      TO LK-CUR-UUID.
            MOVE SQL-CUS-LASTNAME  TO LK-CUR-LASTNAME.
            MOVE SQL-CUS-FIRSTNAME TO LK-CUR-FIRSTNAME.
-       END-3000-HANDLE.
+       END-4000-HANDLE.
            EXIT.
