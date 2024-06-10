@@ -77,7 +77,8 @@
            EXEC SQL
                CONNECT :USERNAME IDENTIFIED BY :PASSWD USING :DBNAME 
            END-EXEC.
-
+           
+           
       *    [MF] Déplacement des données du linkage vers la
       *    working-storage
 
