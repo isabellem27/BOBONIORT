@@ -75,6 +75,6 @@
            END-IF.
 
       *    [RD] A CHANGER POUR APPELER LE MENU D'ADHERENT.
-           DISPLAY SCREEN-TEST.
+           CALL 'menucust' USING CUSTOMER-RETURN.
        END-0000-MAIN.
            GOBACK.
