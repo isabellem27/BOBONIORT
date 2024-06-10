@@ -5,8 +5,7 @@
       
        IDENTIFICATION DIVISION.
        PROGRAM-ID. menucust.
-
-       AUTHOR. Yves. Alexandre.
+       AUTHOR. Yves&Alexandre.
 
       ******************************************************************       
        
@@ -15,16 +14,7 @@
       ******************************************************************
 
        DATA DIVISION.
-
-       LINKAGE SECTION.
-       
-       01 LK-CUSTOMER-NAME.
-           05 LK-FIRSTNAME            PIC X(14).
-           05 FILLER                  PIC X(01) VALUE SPACE.
-           05 LK-LASTNAME             PIC X(14). 
-
        WORKING-STORAGE SECTION. 
-
        01  WS-OPTIONS-MENU-CUST.
            05 WS-CUSTOMER-MODIF       PIC X(01).
            05 WS-CONTRACT-LIST        PIC X(01).
@@ -33,27 +23,36 @@
            05 WS-ERROR-MESSAGE        PIC X(62).                     
        
        01 WS-MESSAGE.
-           05 WS-MESSAGE1       PIC X(31)
+           05 WS-MESSAGE1             PIC X(31)
                VALUE 'ERREUR DE SAISIE, VEUILLEZ SELE'.
-           05 WS-MESSAGE2       PIC X(31)
+           05 WS-MESSAGE2             PIC X(31)
                VALUE 'CTIONNER VOTRE CHOIX AVEC "O".'.
        
        01 WS-SELECT-OPTION            PIC X(05) VALUE 'FALSE'.  
  
        01 WS-CUSTOMER-NAME.
-           05 LK-FIRSTNAME            PIC X(14).
+           05 WS-CUS-FIRSTNAME        PIC X(14).
            05 FILLER                  PIC X(01) VALUE SPACE.
-           05 LK-LASTNAME             PIC X(14). 
+           05 WS-CUS-LASTNAME         PIC X(14). 
+
+       LINKAGE SECTION.
+       
+       01 LK-CUSTOMER-NAME.
+           03 LK-CUR-UUID             PIC X(36).
+           03 LK-CUR-LASTNAME         PIC X(20).
+           03 LK-CUR-FIRSTNAME        PIC X(20).
 
        SCREEN SECTION.
-           COPY 'screen-section-menu-customer.cpy'.   
+           COPY 'screen-menu-customer.cpy'.   
 
       ******************************************************************
 
-       PROCEDURE DIVISION .
-      * USING 
+       PROCEDURE DIVISION USING LK-CUSTOMER-NAME.
        
        0000-START-MAIN.
+           MOVE LK-CUR-FIRSTNAME TO WS-CUS-FIRSTNAME.
+           MOVE LK-CUR-LASTNAME  TO WS-CUS-LASTNAME.
+
 
            PERFORM 1000-START-CONTROL-IMPUT 
            THRU 1000-END-CONTROL-IMPUT.
@@ -65,10 +64,10 @@
       ******************************************************************      
        1000-START-CONTROL-IMPUT.
       *    AL - Boucle d'affichage de la gestion du menu
-      
+           
            PERFORM UNTIL WS-SELECT-OPTION = 'TRUE'
                
-              ACCEPT SCREEN-SECTION-MENU-USER 
+              ACCEPT SCREEN-MENU-CUSTOMER 
               PERFORM 1100-START-CHECK-CHOICE 
               THRU 1100-END-CHECK-CHOICE
               END-PERFORM.
@@ -83,19 +82,19 @@
 
            IF FUNCTION UPPER-CASE(WS-CUSTOMER-MODIF) 
            EQUAL 'O' THEN
-              CALL 'updacust'  USING S-CUSTOMER-NAME
+              CALL 'updacust'  USING LK-CUSTOMER-NAME
 
            ELSE IF FUNCTION UPPER-CASE(WS-CONTRACT-LIST)
            EQUAL 'O' THEN
-              CALL 'detacust'  USING S-CUSTOMER-NAME
+              CALL 'detacust'  USING LK-CUSTOMER-NAME
 
            ELSE IF FUNCTION UPPER-CASE(WS-CUST-ARCHIVE)
            EQUAL 'O' THEN           
-              CALL 'archust'   USING S-CUSTOMER-NAME
+              CALL 'archust'   USING LK-CUSTOMER-NAME
 
            ELSE IF FUNCTION UPPER-CASE(WS-CALL-MENU)
            EQUAL 'O' THEN
-               CALL 'menuuser' USING S-CUSTOMER-NAME
+               CALL 'menuuser' USING LK-CUSTOMER-NAME
  
            ELSE  
               PERFORM 1200-START-ERROR-MESSAGE 

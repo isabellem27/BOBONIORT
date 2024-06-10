@@ -37,7 +37,7 @@
        01  LK-CODE-REQUEST-SQL        PIC 9(01).
 
        SCREEN SECTION.
-       COPY 'screen-frame.cpy'.
+       COPY 'screen-search-customer.cpy'.
 
       ******************************************************************
 
@@ -45,7 +45,7 @@
        LK-SEARCH-VALIDATION, LK-ERROR-MESSAGE, LK-CODE-REQUEST-SQL.
            
        0000-START-MAIN.
-           ACCEPT SCREEN-FRAME.
+           ACCEPT SCREEN-SEARCH-CUSTOMER.
            
            PERFORM 1000-START-MENU-RETURN 
               THRU END-1000-MENU-RETURN.
