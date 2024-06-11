@@ -2,13 +2,13 @@
       ******************************************************************
 
        IDENTIFICATION DIVISION.
-       PROGRAM-ID. main.
+       PROGRAM-ID. mainprog.
        AUTHOR.     Rémi.
 
       ******************************************************************
 
        PROCEDURE DIVISION.
        0000-START-MAIN.
-               CALL "signin".
+           CALL 'menulook'.
        END-0000-MAIN.
            STOP RUN.
