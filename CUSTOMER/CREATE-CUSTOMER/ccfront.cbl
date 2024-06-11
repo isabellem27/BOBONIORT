@@ -50,7 +50,6 @@
        01  LK-MENU-RETURN       PIC X(01).
        01  LK-ADD-VALIDATION PIC X(01).
        01  LK-ERROR-MESSAGE     PIC X(70). 
-       01  LK-CODE-REQUEST-SQL        PIC 9(01).
        01  LK-VALIDATION-STATUS PIC X VALUE "Y".
 
 
@@ -60,11 +59,11 @@
       ******************************************************************
 
        PROCEDURE DIVISION USING LK-ADHERENT-INPUT, LK-MENU-RETURN, 
-       LK-VALIDATION-STATUS, LK-ERROR-MESSAGE.
+       LK-VALIDATION-STATUS, LK-ERROR-MESSAGE, LK-ADD-VALIDATION.
           
      
        0000-START-MAIN.
-           ACCEPT SCREEN-FRAME.
+           ACCEPT SCREEN-ADD-CUSTOMER.
            
            PERFORM 1000-START-MENU-RETURN 
               THRU END-1000-MENU-RETURN.
@@ -119,16 +118,14 @@
       ******************************************************************
 
        3000-START-ERROR-FIELDS.
-            INSPECT LK-MAIL TALLYING WS-MAIL-AROBASE
-                           FOR ALL "@".
-
+            
            IF LK-GENDER = SPACES
                MOVE 'Le genre est obligatoire.' TO LK-ERROR-MESSAGE
                MOVE 'N' TO LK-VALIDATION-STATUS
                GO TO 0000-START-MAIN
            END-IF
            IF LENGTH OF LK-GENDER > 10
-               MOVE 'Le genre dépasse les 10 caractères.'
+               MOVE 'Le genre depasse les 10 caractères.'
                    TO LK-ERROR-MESSAGE
                MOVE 'N' TO LK-VALIDATION-STATUS
                GO TO 0000-START-MAIN
@@ -139,18 +136,18 @@
                GO TO 0000-START-MAIN
            END-IF
            IF LK-FIRSTNAME = SPACES
-               MOVE 'Le prénom est obligatoire.' TO LK-ERROR-MESSAGE
+               MOVE 'Le prenom est obligatoire.' TO LK-ERROR-MESSAGE
                MOVE 'N' TO LK-VALIDATION-STATUS
                GO TO 0000-START-MAIN
            END-IF
            IF LENGTH OF LK-LASTNAME > 20
-               MOVE 'Le nom dépasse les 20 caractères.'
+               MOVE 'Le nom depasse les 20 caractères.'
                    TO LK-ERROR-MESSAGE
                MOVE 'N' TO LK-VALIDATION-STATUS
                GO TO 0000-START-MAIN
            END-IF
            IF LENGTH OF LK-FIRSTNAME > 20
-               MOVE 'Le prénom dépasse les 20 caractères.'
+               MOVE 'Le prenom depasse les 20 caractères.'
                    TO LK-ERROR-MESSAGE
                MOVE 'N' TO LK-VALIDATION-STATUS
                GO TO 0000-START-MAIN
@@ -161,13 +158,13 @@
                GO TO 0000-START-MAIN
            END-IF
            IF LENGTH OF LK-ADRESS1 > 50
-               MOVE 'L''adresse dépasse les 50 caractères.'
+               MOVE 'L''adresse depasse les 50 caractères.'
                    TO LK-ERROR-MESSAGE
                MOVE 'N' TO LK-VALIDATION-STATUS
                GO TO 0000-START-MAIN
            END-IF
            IF LENGTH OF LK-ADRESS2 > 50
-               MOVE 'La deuxième ligne d''adresse est trop longue'
+               MOVE 'La deuxieme ligne d''adresse est trop longue'
                    TO LK-ERROR-MESSAGE
                MOVE 'N' TO LK-VALIDATION-STATUS
                GO TO 0000-START-MAIN
@@ -179,7 +176,7 @@
                GO TO 0000-START-MAIN
            END-IF
            IF LENGTH OF LK-ZIPCODE > 15
-               MOVE 'Le code postal dépasse les 15 caractères.'
+               MOVE 'Le code postal depasse les 15 caractères.'
                    TO LK-ERROR-MESSAGE
                MOVE 'N' TO LK-VALIDATION-STATUS
                GO TO 0000-START-MAIN
@@ -190,7 +187,7 @@
                GO TO 0000-START-MAIN
            END-IF
            IF LENGTH OF LK-TOWN > 50
-               MOVE 'La ville dépasse les 50 caractères.'
+               MOVE 'La ville depasse les 50 caractères.'
                    TO LK-ERROR-MESSAGE
                MOVE 'N' TO LK-VALIDATION-STATUS
                GO TO 0000-START-MAIN
@@ -201,37 +198,32 @@
                GO TO 0000-START-MAIN
            END-IF
            IF LENGTH OF LK-COUNTRY > 20
-               MOVE 'Le pays dépasse les 20 caractères.'
+               MOVE 'Le pays depasse les 20 caractères.'
                    TO LK-ERROR-MESSAGE
                MOVE 'N' TO LK-VALIDATION-STATUS
                GO TO 0000-START-MAIN
            END-IF
            IF LK-PHONE = SPACES
-               MOVE 'Le numéro de téléphone est obligatoire.'
+               MOVE 'Le numero de telephone est obligatoire.'
                    TO LK-ERROR-MESSAGE
                MOVE 'N' TO LK-VALIDATION-STATUS
                GO TO 0000-START-MAIN
            END-IF
            IF NOT FUNCTION NUMVAL(LK-PHONE) > 0
-               MOVE 'Le numéro de téléphone doit être numérique.'
+               MOVE 'Le numero de telephone doit être numerique.'
                    TO LK-ERROR-MESSAGE
                MOVE 'N' TO LK-VALIDATION-STATUS
                GO TO 0000-START-MAIN
            END-IF
            
-           IF WS-MAIL-AROBASE < 1 OR WS-MAIL-AROBASE > 1
-               MOVE 'Un unique arobase est demandé.' 
-               TO LK-ERROR-MESSAGE
-               MOVE 'N' TO LK-VALIDATION-STATUS
-               GO TO 0000-START-MAIN
-           END-IF
+          
            IF LK-MAIL = SPACES
                MOVE 'L''email est obligatoire.' TO LK-ERROR-MESSAGE
                MOVE 'N' TO LK-VALIDATION-STATUS
                GO TO 0000-START-MAIN
            END-IF
            IF LENGTH OF LK-MAIL > 50
-               MOVE 'L''email dépasse les 50 caractères.'
+               MOVE 'L''email depasse les 50 caractères.'
                 TO LK-ERROR-MESSAGE
                MOVE 'N' TO LK-VALIDATION-STATUS
                GO TO 0000-START-MAIN
@@ -243,19 +235,19 @@
                GO TO 0000-START-MAIN
            END-IF
            IF LENGTH OF LK-BIRTHDATE > 10
-               MOVE 'La date de naissance dépasse les 10 caractères.'
+               MOVE 'La date de naissance depasse les 10 caractères.'
                    TO LK-ERROR-MESSAGE
                MOVE 'N' TO LK-VALIDATION-STATUS
                GO TO 0000-START-MAIN
            END-IF
            IF LK-CUSTOMER-CODE-SECU = SPACES
-               MOVE 'Le code de sécurité sociale est obligatoire.'
+               MOVE 'Le code de securite sociale est obligatoire.'
                    TO LK-ERROR-MESSAGE
                MOVE 'N' TO LK-VALIDATION-STATUS
                GO TO 0000-START-MAIN
            END-IF
            IF LENGTH OF LK-CUSTOMER-CODE-SECU > 15
-               MOVE 'Le code de sécurité sociale est trop long.'
+               MOVE 'Le code de securite sociale est trop long.'
                    TO LK-ERROR-MESSAGE
                MOVE 'N' TO LK-VALIDATION-STATUS
                GO TO 0000-START-MAIN
@@ -266,13 +258,13 @@
                GO TO 0000-START-MAIN
            END-IF
            IF LENGTH OF LK-CODE-IBAN > 34
-               MOVE 'Le code IBAN dépasse les 34 caractères.' 
+               MOVE 'Le code IBAN depasse les 34 caractères.' 
                TO LK-ERROR-MESSAGE
                MOVE 'N' TO LK-VALIDATION-STATUS
                GO TO 0000-START-MAIN
            END-IF.
              IF LK-NBCHILDREN > 99
-               MOVE 'Le nombre d''enfants dépasse la limite.'
+               MOVE 'Le nombre d''enfants depasse la limite.'
                 TO LK-ERROR-MESSAGE
                MOVE 'N' TO LK-VALIDATION-STATUS
                GO TO 0000-START-MAIN
@@ -286,7 +278,7 @@
            
            MOVE 'Y' TO LK-VALIDATION-STATUS.
            IF LK-VALIDATION-STATUS = "Y"
-           MOVE "Enregistrement réussi" TO LK-ERROR-MESSAGE
+           MOVE "Enregistrement reussi" TO LK-ERROR-MESSAGE
            MOVE FUNCTION CURRENT-DATE TO LK-CREATE-DATE 
            END-IF.
        END-3000-ERROR-FIELDS.
