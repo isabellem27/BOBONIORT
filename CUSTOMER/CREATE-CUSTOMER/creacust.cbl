@@ -39,6 +39,7 @@
            05  WS-CLOSE-DATE           PIC X(10).
            05  LK-ACTIVE               PIC X(01) VALUE "0".
        01  WS-ERROR-MESSAGE            PIC X(100).
+       01  WS-ADD-VALIDATION           PIC X(01).
        
        PROCEDURE DIVISION.
        0000-START-MAIN.
@@ -46,7 +47,8 @@
            CALL
                'ccfront'
                USING WS-ADHERENT-INPUT, WS-MENU-RETURN,
-                  WS-VALIDATION-STATUS, WS-ERROR-MESSAGE  
+                  WS-VALIDATION-STATUS, WS-ERROR-MESSAGE, 
+                  WS-ADD-VALIDATION 
            END-CALL.
           
            IF WS-MENU-RETURN EQUAL 'O'
