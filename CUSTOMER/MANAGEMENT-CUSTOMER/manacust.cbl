@@ -7,7 +7,7 @@
       * Date de création : le 06/06/2024                               *
       ****************************************************************** 
        IDENTIFICATION DIVISION.
-       PROGRAM-ID. menulook.
+       PROGRAM-ID. manacust.
        AUTHOR. Isabelle.
       ******************************************************************
        DATA DIVISION.
@@ -26,7 +26,7 @@
 
       ******************************************************************
        SCREEN SECTION.
-           COPY MENU-LOOK-SCREEN.CPY
+           COPY 'screen-management-customer.cpy'.
 
       ******************************************************************
        PROCEDURE DIVISION.
@@ -38,8 +38,7 @@
        0000-START-MAIN.          
            PERFORM 1000-SCREEN-LOOP-START THRU END-1000-SCREEN-LOOP.
        END-0000-MAIN.
-      *    EXIT PROGRAM.
-           STOP RUN.    
+           GOBACK. 
 
       ******************************************************************    
       *    [IM] - le 05-06-2024                                        *
@@ -48,7 +47,7 @@
       ****************************************************************** 
        1000-SCREEN-LOOP-START.   
            PERFORM UNTIL WS-SELECT-OPTION = 'TRUE'            
-              ACCEPT MENU-LOOK-SCREEN  
+              ACCEPT SCREEN-MANAGEMENT-CUSTOMER 
               PERFORM 3000-WITCH-CHOICE-START
                     THRU END-3000-WITCH-CHOICE
            END-PERFORM.          
@@ -62,14 +61,17 @@
        3000-WITCH-CHOICE-START.
            IF FUNCTION UPPER-CASE(WS-CREATE-CHOICE) 
            EQUAL 'O' THEN
+              MOVE 'TRUE' TO WS-SELECT-OPTION  
               CALL 'creacust'  
 
            ELSE IF FUNCTION UPPER-CASE(WS-SEARCH-CHOICE)
            EQUAL 'O' THEN
+              MOVE 'TRUE' TO WS-SELECT-OPTION 
               CALL 'searcust'  
 
            ELSE IF FUNCTION UPPER-CASE(WS-RETURN-CHOICE)
            EQUAL 'O' THEN
+               MOVE 'TRUE' TO WS-SELECT-OPTION 
                CALL 'menuuser' 
  
            ELSE  

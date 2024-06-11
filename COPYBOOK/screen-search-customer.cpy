@@ -1,4 +1,5 @@
-       01 SCREEN-SECTION-MENU-USER FOREGROUND-COLOR IS 2.
+       01  SCREEN-SEARCH-CUSTOMER FOREGROUND-COLOR IS 2.
+           05 BLANK SCREEN.
            05 FILLER PIC X(182) VALUE all " " LINE 4 COL 10 
            BACKGROUND-COLOR IS 2.
 
@@ -11,8 +12,8 @@
            BACKGROUND-COLOR IS 2.        
            05 FILLER PIC X(2) VALUE  "  " COL  190
            BACKGROUND-COLOR IS 2.
-           05 FILLER PIC X(13) VALUE  "MENU ADHERENT" 
-           COL 87 
+           05 FILLER PIC X(18) VALUE  "RECHERCHE ADHERENT" 
+           COL 91 
            FOREGROUND-COLOR IS 2.            
 
            05 FILLER PIC X(2) VALUE  "  " LINE 7 COL 10 
@@ -37,10 +38,6 @@
            BACKGROUND-COLOR IS 2.                       
            05 FILLER PIC X(2) VALUE  "  " COL  190
            BACKGROUND-COLOR IS 2. 
-           05 FILLER PIC X(29) FROM LK-CUSTOMER-NAME  
-           COL 17
-           BACKGROUND-COLOR IS 0
-           FOREGROUND-COLOR IS 7. 
 
            05 FILLER PIC X(2) VALUE  "  " LINE 12 COL 10 
            BACKGROUND-COLOR IS 2.        
@@ -51,9 +48,58 @@
            BACKGROUND-COLOR IS 2.                           
            05 FILLER PIC X(2) VALUE  "  " COL  190
            BACKGROUND-COLOR IS 2. 
-
+           05 FILLER PIC X(27) VALUE "Numero de securite sociale " 
+           LINE 16 COL 60 .
+           05 FILLER PIC X VALUE ":" 
+           LINE 16 COL 92 .
+           05 FILLER PIC X(1) TO  LK-CCS-SECU-1 
+            LINE 16 COL 115 AUTO 
+           BACKGROUND-COLOR IS 2
+           FOREGROUND-COLOR IS 0.
+         
+           05 FILLER PIC X(2) TO  LK-CCS-SECU-2 
+            LINE 16 COL 117 AUTO 
+           BACKGROUND-COLOR IS 2
+           FOREGROUND-COLOR IS 0.
+          
+           05 FILLER PIC X(2) TO  LK-CCS-SECU-3 
+            LINE 16 COL 119 AUTO 
+           BACKGROUND-COLOR IS 2
+           FOREGROUND-COLOR IS 0. 
+           
+           05 FILLER PIC X(2) TO  LK-CCS-SECU-4 
+            LINE 16 COL 122 AUTO 
+           BACKGROUND-COLOR IS 2
+           FOREGROUND-COLOR IS 0.
+        
+           05 FILLER PIC X(3) TO  LK-CCS-SECU-5 
+            LINE 16 COL 125 AUTO 
+           BACKGROUND-COLOR IS 2
+           FOREGROUND-COLOR IS 0. 
+        
+           05 FILLER PIC X(3) TO  LK-CCS-SECU-6 
+            LINE 16 COL 129 AUTO 
+           BACKGROUND-COLOR IS 2
+           FOREGROUND-COLOR IS 0. 
+        
+           05 FILLER PIC X(2) TO  LK-CCS-SECU-7 
+           LINE 16 COL 133 AUTO 
+           BACKGROUND-COLOR IS 2
+           FOREGROUND-COLOR IS 0.
+           
            05 FILLER PIC X(2) VALUE  "  " LINE 14 COL 10 
-           BACKGROUND-COLOR IS 2.                    
+           BACKGROUND-COLOR IS 2. 
+           
+           05 FILLER PIC X(7) VALUE "Prenom " 
+           LINE 18 COL 60 . 
+           05 FILLER PIC X VALUE ":" 
+           LINE 18 COL 92 .
+           05 FILLER PIC X(20) TO  LK-CUS-FIRSTNAME
+           LINE 18 COL 115 AUTO 
+           BACKGROUND-COLOR IS 2
+           FOREGROUND-COLOR IS 0.  
+           05 FILLER PIC X(2) VALUE  "  " LINE 14 COL 190 
+           BACKGROUND-COLOR IS 2.             
            05 FILLER PIC X(2) VALUE  "  " COL  190
            BACKGROUND-COLOR IS 2.  
 
@@ -71,19 +117,52 @@
            BACKGROUND-COLOR IS 2.      
            05 FILLER PIC X(2) VALUE  "  " COL  190
            BACKGROUND-COLOR IS 2.
-
+           05 FILLER PIC X(4) VALUE "Nom " 
+           LINE 20 COL 60 . 
+           05 FILLER PIC X VALUE ":" 
+           LINE 20 COL 92 .
+           05 FILLER PIC X(20) TO  LK-CUS-LASTNAME
+           LINE 20 COL 115 AUTO 
+           BACKGROUND-COLOR IS 2
+           FOREGROUND-COLOR IS 0.
+           05 FILLER PIC X(31) VALUE "Date de naissance (AAAA-MM-JJ) " 
+           LINE 22 COL 60 . 
+           05 FILLER PIC X VALUE ":" 
+           LINE 22 COL 92 .
+           05 FILLER PIC X(2) TO  LK-CUB-DAYS
+           LINE 22 COL 133 AUTO 
+           BACKGROUND-COLOR IS 2
+           FOREGROUND-COLOR IS 0. 
+           05 FILLER PIC X(1) VALUE "-"
+           LINE 22 COL 132 AUTO 
+           FOREGROUND-COLOR IS 2.
+           05 FILLER PIC X(2) TO  LK-CUB-MONTH
+           LINE 22 COL 130 AUTO 
+           BACKGROUND-COLOR IS 2
+           FOREGROUND-COLOR IS 0.
+           05 FILLER PIC X(1) VALUE "-"
+           LINE 22 COL 129 AUTO 
+           FOREGROUND-COLOR IS 2.
+           05 FILLER PIC X(4) TO  LK-CUB-YEAR
+           LINE 22 COL 125 AUTO 
+           BACKGROUND-COLOR IS 2
+           FOREGROUND-COLOR IS 0.
+           05 FILLER PIC X(10) VALUE "Rechercher" 
+           LINE 27 COL 60 
+           FOREGROUND-COLOR IS 2. 
+           05 FILLER PIC X(1) TO  LK-SEARCH-VALIDATION
+           LINE 27 COL 71
+           BACKGROUND-COLOR IS 2
+           FOREGROUND-COLOR IS 0. 
+           
+          
+           05 FILLER PIC X(70) FROM  LK-ERROR-MESSAGE
+           LINE 29 COL 60 AUTO 
+           FOREGROUND-COLOR IS 8.
            05 FILLER PIC X(2) VALUE  "  " LINE 18 COL 10 
            BACKGROUND-COLOR IS 2.       
            05 FILLER PIC X(2) VALUE  "  " COL  190
            BACKGROUND-COLOR IS 2.
-           05 FILLER PIC X(35) 
-           VALUE  "Modification de l'adherent        :" 
-           COL 60 
-           FOREGROUND-COLOR IS 2.  
-           05 PIC X(1) USING  WS-CUSTOMER-MODIF  
-           COL 132 
-           BACKGROUND-COLOR IS 2
-           FOREGROUND-COLOR IS 0. 
 
            05 FILLER PIC X(2) VALUE  "  " LINE  19 COL 10 
            BACKGROUND-COLOR IS 2.         
@@ -94,14 +173,6 @@
            BACKGROUND-COLOR IS 2.        
            05 FILLER PIC X(2) VALUE  "  " COL  190
            BACKGROUND-COLOR IS 2.            
-           05 FILLER PIC X(35) 
-           VALUE  "Contrat(s) de l'adherent          :" 
-           COL 60 
-           FOREGROUND-COLOR IS 2. 
-           05 PIC X(1) USING  WS-CONTRACT-LIST  
-           COL 132 
-           BACKGROUND-COLOR IS 2
-           FOREGROUND-COLOR IS 0. 
 
            05 FILLER PIC X(2) VALUE  "  " LINE 21 COL 10 
            BACKGROUND-COLOR IS 2.       
@@ -112,14 +183,6 @@
            BACKGROUND-COLOR IS 2.        
            05 FILLER PIC X(2) VALUE  "  " COL  190
            BACKGROUND-COLOR IS 2. 
-           05 FILLER PIC X(35) 
-           VALUE  "Archivage de l'adherent           :" 
-           COL 60 
-           FOREGROUND-COLOR IS 2.  
-           05 PIC X(1) USING  WS-CUST-ARCHIVE  
-           COL 132 
-           BACKGROUND-COLOR IS 2
-           FOREGROUND-COLOR IS 0. 
 
            05 FILLER PIC X(2) VALUE  "  " LINE 23 COL 10 
            BACKGROUND-COLOR IS 2.         
@@ -220,7 +283,7 @@
            BACKGROUND-COLOR IS 2.       
            05 FILLER PIC X(2) VALUE  "  " COL  190
            BACKGROUND-COLOR IS 2. 
-
+           
            05 FILLER PIC X(2) VALUE  "  " LINE 33 COL 10 
            BACKGROUND-COLOR IS 2.      
            05 FILLER PIC X(2) VALUE  "  " COL  190
@@ -230,11 +293,11 @@
            BACKGROUND-COLOR IS 2.      
            05 FILLER PIC X(2) VALUE  "  " COL  190
            BACKGROUND-COLOR IS 2. 
-           05 PIC X(1) USING  WS-CALL-MENU  
+           05 FILLER PIC X(1) TO  LK-MENU-RETURN  
            COL 170 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 
-           05 FILLER PIC X(14) VALUE  "Retour au Menu" 
+           05 FILLER PIC X(14) VALUE  "Retour au menu" 
            COL 172 
            FOREGROUND-COLOR IS 2.
 
@@ -250,4 +313,3 @@
 
            05 FILLER PIC X(182) VALUE all  "  " LINE 37 COL 10 
            BACKGROUND-COLOR IS 2.
-

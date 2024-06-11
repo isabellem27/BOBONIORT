@@ -28,8 +28,26 @@
 
        01  SQL-CUSTOMER.
            03 SQL-CUS-UUID        PIC X(36).
+           03 SQL-CUS-GENDER      PIC X(10).
            03 SQL-CUS-LASTNAME    PIC X(20).
            03 SQL-CUS-FIRSTNAME   PIC X(20).
+           03 SQL-CUS-ADRESS1	  PIC X(50).
+           03 SQL-CUS-ADRESS2	  PIC X(50).
+           03 SQL-CUS-ZIPCODE	  PIC X(15).
+           03 SQL-CUS-TOWN	      PIC X(50).
+           03 SQL-CUS-COUNTRY	  PIC X(20).
+           03 SQL-CUS-PHONE	      PIC X(10).
+           03 SQL-CUS-MAIL	      PIC X(50).
+           03 SQL-CUS-BIRTH-DATE  PIC X(10).
+           03 SQL-CUS-DOCTOR	  PIC X(50).
+           03 SQL-CUS-CODE-SECU   PIC 9(15).
+           03 SQL-CUS-CODE-IBAN   PIC X(34).
+           03 SQL-CUS-NBCHILDREN  PIC 9(03).
+           03 SQL-CUS-COUPLE      PIC X(05).
+           03 SQL-CUS-CREATE-DATE PIC X(10).
+           03 SQL-CUS-UPDATE-DATE PIC X(10).
+           03 SQL-CUS-CLOSE-DATE  PIC X(10).
+           03 SQL-CUS-ACTIVE	  PIC X(01).
        EXEC SQL END DECLARE SECTION END-EXEC.
        EXEC SQL INCLUDE SQLCA END-EXEC.  
 
@@ -41,11 +59,29 @@
            05 LK-CUS-CODE-SECU     PIC 9(15).
 
        01  LK-CUSTOMER-RETURN.
-           03 LK-CUR-UUID          PIC X(36).
-           03 LK-CUR-LASTNAME      PIC X(20).
-           03 LK-CUR-FIRSTNAME     PIC X(20).
+           03 LK-CUR-UUID        PIC X(36).
+           03 LK-CUR-GENDER      PIC X(10).
+           03 LK-CUR-LASTNAME    PIC X(20).
+           03 LK-CUR-FIRSTNAME   PIC X(20).
+           03 LK-CUR-ADRESS1	 PIC X(50).
+           03 LK-CUR-ADRESS2	 PIC X(50).
+           03 LK-CUR-ZIPCODE	 PIC X(15).
+           03 LK-CUR-TOWN	     PIC X(50).
+           03 LK-CUR-COUNTRY	 PIC X(20).
+           03 LK-CUR-PHONE	     PIC X(10).
+           03 LK-CUR-MAIL	     PIC X(50).
+           03 LK-CUR-BIRTH-DATE  PIC X(10).
+           03 LK-CUR-DOCTOR	     PIC X(50).
+           03 LK-CUR-CODE-SECU   PIC 9(15).
+           03 LK-CUR-CODE-IBAN   PIC X(34).
+           03 LK-CUR-NBCHILDREN  PIC 9(03).
+           03 LK-CUR-COUPLE      PIC X(05).
+           03 LK-CUR-CREATE-DATE PIC X(10).
+           03 LK-CUR-UPDATE-DATE PIC X(10).
+           03 LK-CUR-CLOSE-DATE  PIC X(10).
+           03 LK-CUR-ACTIVE	     PIC X(01).
 
-       01  LK-REQUEST-CODE         PIC 9(01).
+       01  LK-REQUEST-CODE       PIC 9(01).
 
       ******************************************************************
 
@@ -88,8 +124,14 @@
       *    Recherche en fonction du code_secu
            EXEC SQL
                DECLARE CRSCODESECU CURSOR FOR
-               SELECT uuid_customer,
-               customer_lastname, customer_firstname
+               SELECT uuid_customer, customer_gender, 
+               customer_lastname, customer_firstname, customer_adress1,
+               customer_adress2, customer_zipcode, customer_town,
+               customer_country, customer_phone, customer_mail,
+               customer_birth_date, customer_doctor, customer_code_secu,
+               customer_code_iban, customer_nbchildren, customer_couple,
+               customer_create_date, customer_update_date,
+               customer_close_date, customer_active
                FROM customer
                WHERE customer_code_secu = :WS-CUS-CODE-SECU
                AND customer_active != 'A'
@@ -98,8 +140,14 @@
       *    Recherche en fonction du lastname, firstname et birth_date
            EXEC SQL
                DECLARE CRSNAMEDATE CURSOR FOR
-               SELECT uuid_customer, 
-               customer_lastname, customer_firstname
+               SELECT uuid_customer, customer_gender, 
+               customer_lastname, customer_firstname, customer_adress1,
+               customer_adress2, customer_zipcode, customer_town,
+               customer_country, customer_phone, customer_mail,
+               customer_birth_date, customer_doctor, customer_code_secu,
+               customer_code_iban, customer_nbchildren, customer_couple,
+               customer_create_date, customer_update_date,
+               customer_close_date, customer_active
                FROM customer
                WHERE customer_lastname = TRIM(:WS-CUS-LASTNAME)
                AND customer_firstname = TRIM(:WS-CUS-FIRSTNAME)
@@ -111,8 +159,14 @@
       *    et birth_date
            EXEC SQL
                DECLARE CRSALL CURSOR FOR
-               SELECT uuid_customer, 
-               customer_lastname, customer_firstname
+               SELECT uuid_customer, customer_gender, 
+               customer_lastname, customer_firstname, customer_adress1,
+               customer_adress2, customer_zipcode, customer_town,
+               customer_country, customer_phone, customer_mail,
+               customer_birth_date, customer_doctor, customer_code_secu,
+               customer_code_iban, customer_nbchildren, customer_couple,
+               customer_create_date, customer_update_date,
+               customer_close_date, customer_active
                FROM customer
                WHERE customer_code_secu = :WS-CUS-CODE-SECU
                AND customer_lastname = TRIM(:WS-CUS-LASTNAME)
@@ -155,8 +209,17 @@
            PERFORM UNTIL SQLCODE = 100
                EXEC SQL
                    FETCH CRSCODESECU
-                   INTO :SQL-CUS-UUID, :SQL-CUS-LASTNAME, 
-                        :SQL-CUS-FIRSTNAME
+                   INTO :SQL-CUS-UUID, :SQL-CUS-GENDER,
+                        :SQL-CUS-LASTNAME, :SQL-CUS-FIRSTNAME,
+                        :SQL-CUS-ADRESS1, :SQL-CUS-ADRESS2, 
+                        :SQL-CUS-ZIPCODE, :SQL-CUS-TOWN,
+                        :SQL-CUS-COUNTRY, :SQL-CUS-PHONE,
+                        :SQL-CUS-MAIL, :SQL-CUS-BIRTH-DATE, 
+                        :SQL-CUS-DOCTOR, :SQL-CUS-CODE-SECU, 
+                        :SQL-CUS-CODE-IBAN, :SQL-CUS-NBCHILDREN, 
+                        :SQL-CUS-COUPLE, :SQL-CUS-CREATE-DATE, 
+                        :SQL-CUS-UPDATE-DATE, :SQL-CUS-CLOSE-DATE, 
+                        :SQL-CUS-ACTIVE
                END-EXEC
 
                EVALUATE SQLCODE
@@ -187,8 +250,17 @@
            PERFORM UNTIL SQLCODE = 100
                EXEC SQL
                    FETCH CRSNAMEDATE
-                   INTO :SQL-CUS-UUID, :SQL-CUS-LASTNAME, 
-                        :SQL-CUS-FIRSTNAME
+                   INTO :SQL-CUS-UUID, :SQL-CUS-GENDER,
+                        :SQL-CUS-LASTNAME, :SQL-CUS-FIRSTNAME,
+                        :SQL-CUS-ADRESS1, :SQL-CUS-ADRESS2, 
+                        :SQL-CUS-ZIPCODE, :SQL-CUS-TOWN,
+                        :SQL-CUS-COUNTRY, :SQL-CUS-PHONE,
+                        :SQL-CUS-MAIL, :SQL-CUS-BIRTH-DATE, 
+                        :SQL-CUS-DOCTOR, :SQL-CUS-CODE-SECU, 
+                        :SQL-CUS-CODE-IBAN, :SQL-CUS-NBCHILDREN, 
+                        :SQL-CUS-COUPLE, :SQL-CUS-CREATE-DATE, 
+                        :SQL-CUS-UPDATE-DATE, :SQL-CUS-CLOSE-DATE, 
+                        :SQL-CUS-ACTIVE
                END-EXEC
 
                EVALUATE SQLCODE
@@ -219,8 +291,17 @@
            PERFORM UNTIL SQLCODE = 100
                EXEC SQL
                    FETCH CRSALL
-                   INTO :SQL-CUS-UUID, :SQL-CUS-LASTNAME, 
-                        :SQL-CUS-FIRSTNAME
+                   INTO :SQL-CUS-UUID, :SQL-CUS-GENDER,
+                        :SQL-CUS-LASTNAME, :SQL-CUS-FIRSTNAME,
+                        :SQL-CUS-ADRESS1, :SQL-CUS-ADRESS2, 
+                        :SQL-CUS-ZIPCODE, :SQL-CUS-TOWN,
+                        :SQL-CUS-COUNTRY, :SQL-CUS-PHONE,
+                        :SQL-CUS-MAIL, :SQL-CUS-BIRTH-DATE, 
+                        :SQL-CUS-DOCTOR, :SQL-CUS-CODE-SECU, 
+                        :SQL-CUS-CODE-IBAN, :SQL-CUS-NBCHILDREN, 
+                        :SQL-CUS-COUPLE, :SQL-CUS-CREATE-DATE, 
+                        :SQL-CUS-UPDATE-DATE, :SQL-CUS-CLOSE-DATE, 
+                        :SQL-CUS-ACTIVE
                END-EXEC
                
                EVALUATE SQLCODE
@@ -245,8 +326,26 @@
       *    TABLE customer.                                             *
       ******************************************************************
        4000-START-HANDLE.
-           MOVE SQL-CUS-UUID      TO LK-CUR-UUID.
-           MOVE SQL-CUS-LASTNAME  TO LK-CUR-LASTNAME.
-           MOVE SQL-CUS-FIRSTNAME TO LK-CUR-FIRSTNAME.
+           MOVE SQL-CUS-UUID        TO LK-CUR-UUID.
+           MOVE SQL-CUS-GENDER      TO LK-CUR-GENDER.
+           MOVE SQL-CUS-LASTNAME    TO LK-CUR-LASTNAME.
+           MOVE SQL-CUS-FIRSTNAME   TO LK-CUR-FIRSTNAME.
+           MOVE SQL-CUS-ADRESS1     TO LK-CUR-ADRESS1.
+           MOVE SQL-CUS-ADRESS2     TO LK-CUR-ADRESS2.
+           MOVE SQL-CUS-ZIPCODE     TO LK-CUR-ZIPCODE.
+           MOVE SQL-CUS-TOWN        TO LK-CUR-TOWN.
+           MOVE SQL-CUS-COUNTRY     TO LK-CUR-COUNTRY.
+           MOVE SQL-CUS-PHONE       TO LK-CUR-PHONE.
+           MOVE SQL-CUS-MAIL        TO LK-CUR-MAIL.
+           MOVE SQL-CUS-BIRTH-DATE  TO LK-CUR-BIRTH-DATE.
+           MOVE SQL-CUS-DOCTOR      TO LK-CUR-DOCTOR.
+           MOVE SQL-CUS-CODE-SECU   TO LK-CUR-CODE-SECU.
+           MOVE SQL-CUS-CODE-IBAN   TO LK-CUR-CODE-IBAN.
+           MOVE SQL-CUS-NBCHILDREN  TO LK-CUR-NBCHILDREN.
+           MOVE SQL-CUS-COUPLE      TO LK-CUR-COUPLE.
+           MOVE SQL-CUS-CREATE-DATE TO LK-CUR-CREATE-DATE.
+           MOVE SQL-CUS-UPDATE-DATE TO LK-CUR-UPDATE-DATE.
+           MOVE SQL-CUS-CLOSE-DATE  TO LK-CUR-CLOSE-DATE.
+           MOVE SQL-CUS-ACTIVE      TO LK-CUR-ACTIVE.
        END-4000-HANDLE.
            EXIT.

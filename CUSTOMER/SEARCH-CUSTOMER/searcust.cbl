@@ -33,15 +33,27 @@
        01  WS-ERROR-CODE        PIC 9(01).
 
        01  CUSTOMER-RETURN.
-           03 CUR-UUID          PIC X(36).
-           03 CUR-LASTNAME      PIC X(20).
-           03 CUR-FIRSTNAME     PIC X(20).
-
-       SCREEN SECTION.
-       01  SCREEN-TEST FOREGROUND-COLOR IS 2.
-           05 BLANK SCREEN.
-           05 FILLER PIC X(20) FROM CUR-LASTNAME  LINE 2 COL 40.
-           05 FILLER PIC X(20) FROM CUR-FIRSTNAME LINE 3 COL 40.
+           03 CUR-UUID        PIC X(36).
+           03 CUR-GENDER      PIC X(10).
+           03 CUR-LASTNAME    PIC X(20).
+           03 CUR-FIRSTNAME   PIC X(20).
+           03 CUR-ADRESS1	  PIC X(50).
+           03 CUR-ADRESS2	  PIC X(50).
+           03 CUR-ZIPCODE	  PIC X(15).
+           03 CUR-TOWN	      PIC X(50).
+           03 CUR-COUNTRY	  PIC X(20).
+           03 CUR-PHONE	      PIC X(10).
+           03 CUR-MAIL	      PIC X(50).
+           03 CUR-BIRTH-DATE  PIC X(10).
+           03 CUR-DOCTOR	  PIC X(50).
+           03 CUR-CODE-SECU   PIC 9(15).
+           03 CUR-CODE-IBAN   PIC X(34).
+           03 CUR-NBCHILDREN  PIC 9(03).
+           03 CUR-COUPLE      PIC X(05).
+           03 CUR-CREATE-DATE PIC X(10).
+           03 CUR-UPDATE-DATE PIC X(10).
+           03 CUR-CLOSE-DATE  PIC X(10).
+           03 CUR-ACTIVE	  PIC X(01).
 
       ******************************************************************
 
@@ -70,11 +82,11 @@
       *    [RD] Si le résultat de la requête SQL est NULL redirige vers 
       *    le début de ce programme avec le message d'erreur adéquat.
            IF CUSTOMER-RETURN EQUAL SPACES
-               MOVE "AUCUN ADHERENT TROUVE..." TO WS-ERROR-MESSAGE
+               MOVE "AUCUN ADHERENT TROUVE." TO WS-ERROR-MESSAGE
                GO TO 0000-START-MAIN
            END-IF.
 
-      *    [RD] A CHANGER POUR APPELER LE MENU D'ADHERENT.
-           DISPLAY SCREEN-TEST.
+      *    [RD] Appel le MENU D'ADHERENT.
+           CALL 'menucust' USING CUSTOMER-RETURN.
        END-0000-MAIN.
            GOBACK.
