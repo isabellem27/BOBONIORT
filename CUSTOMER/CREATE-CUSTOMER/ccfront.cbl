@@ -55,7 +55,7 @@
 
 
        SCREEN SECTION.
-       COPY 'screen-frame.cpy'.
+       COPY 'screen-add-customer.cpy'.
 
       ******************************************************************
 
