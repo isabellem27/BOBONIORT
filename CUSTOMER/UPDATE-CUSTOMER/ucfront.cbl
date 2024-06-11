@@ -12,11 +12,10 @@
 
        DATA DIVISION.
        WORKING-STORAGE SECTION.
-       01  WS-MENU-RETURN       PIC X.
-       01  WS-SEARCH-VALIDATION PIC X.
-       01  WS-ERROR-MESSAGE     PIC X(70).
-       01  WS-MESSAGE           PIC X(31) 
-           VALUE 'ERREUR DE SAISIE'.
+
+       01 WS-ERROR-MESSAGE     PIC X(70) VALUE SPACES.
+       01 WS-MENU-RETURN       PIC X.
+       01 WS-SEARCH-VALIDATION PIC X.
            
       * [SK] Structure des données client
        01  CUSTOMER-DATA.
@@ -64,7 +63,7 @@
       ******************************************************************
 
       * LINKAGE SECTION.
-      * 01  LK-REQUEST-CODE      PIC 9(01).
+
 
       * 01  LK-ADHERENT-INPUT.
       *     05  LK-UUID                 PIC X(36).
@@ -115,6 +114,13 @@
           
             ACCEPT SCREEN-FRAME.
 
+            IF SCREEN-FRAME NOT = 'O'
+            MOVE "Veuillez confirmer les modifications"
+                            TO WS-ERROR-MESSAGE
+               DISPLAY SCREEN-MODIFY-CUSTOMER
+           ELSE
+               PERFORM 3000-UPDATE-RECORD.
+
        1000-END-CONTROL-IMPUT.
          
            EXIT.   
@@ -141,5 +147,10 @@
        1100-FIN-ALIM-ZONE-NON-MODIF.
            EXIT.
       ******************************************************************     
-    
+       3000-UPDATE-RECORD.
+           OPEN I-O ClientFile.
+           REWRITE ClientRecord.
+           CLOSE ClientFile.
+           MOVE 'Modification réussie.' TO WS-ERROR-MESSAGE.
+           DISPLAY SCREEN-MODIFY-CUSTOMER.
       
