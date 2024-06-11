@@ -1,4 +1,4 @@
-       01  SCREEN-FRAME FOREGROUND-COLOR IS 2.
+       01  SCREEN-ADD-CUSTOMER FOREGROUND-COLOR IS 2.
            05 BLANK SCREEN.
 
       ******************************************************************
