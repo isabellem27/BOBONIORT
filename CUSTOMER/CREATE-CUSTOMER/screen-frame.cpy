@@ -12,30 +12,21 @@
       *    [RD-AL] CHAMPS DE SAISIS.                                   *
       ******************************************************************
 
-      *    [RD] Champ de saisi pour le genre.     
-           05 FILLER PIC X(05) VALUE 'Genre' LINE 11 COL 21. 
-
-           05 FILLER PIC X VALUE ':' LINE 11 COL 53.
-
-           05 FILLER PIC X(10) TO LK-GENDER  LINE 11 COL 55 AUTO 
+      *    [RD-AL] Champ de saisi pour le nom.     
+           05 FILLER PIC X(03) VALUE 'Nom' LINE 13 COL 45. 
+           05 FILLER PIC X(20) TO LK-LASTNAME LINE 14 COL 45 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.
 
-      *    [RD] Champ de saisi pour le nom.     
-           05 FILLER PIC X(03) VALUE 'Nom' LINE 13 COL 21. 
-
-           05 FILLER PIC X VALUE ':' LINE 13 COL 53.
-
-           05 FILLER PIC X(20) TO LK-LASTNAME  LINE 13 COL 55 AUTO 
+      *    [RD-AL] Champ de saisi pour le prenom.
+           05 FILLER PIC X(06) VALUE 'Prenom' LINE 15 COL 45. 
+           05 FILLER PIC X(20) TO LK-FIRSTNAME LINE 16 COL 45 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 
 
-      *    [RD] Champ de saisi pour le prenom.
-           05 FILLER PIC X(06) VALUE 'Prenom' LINE 13 COL 111. 
-
-           05 FILLER PIC X VALUE ':' LINE 13 COL 129.
-
-           05 FILLER PIC X(20) TO LK-FIRSTNAME  LINE 13 COL 131 AUTO 
+      *    [RD-AL] Champ de saisi pour le genre.     
+           05 FILLER PIC X(05) VALUE 'Genre' LINE 17 COL 45. 
+           05 FILLER PIC X(10) TO LK-GENDER LINE 18 COL 45 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.           
 
@@ -43,9 +34,8 @@
            05 FILLER PIC X(31) VALUE 'Date de naissance (AAAA-MM-JJ)' 
            LINE 19 COL 45. 
 
-           05 FILLER PIC X VALUE ':' LINE 15 COL 53.
-
-           05 FILLER PIC X(02) TO LK-DAYS  LINE 15 COL 63 AUTO 
+           05 FILLER PIC X(04) TO LK-YEAR
+           LINE 20 COL 45 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.
            
@@ -54,7 +44,7 @@
            FOREGROUND-COLOR IS 2.
 
            05 FILLER PIC X(02) TO LK-MONTH
-           LINE 15 COL 60 AUTO 
+           LINE 20 COL 50 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.
 
@@ -62,17 +52,7 @@
            LINE 20 COL 52 AUTO 
            FOREGROUND-COLOR IS 2.
 
-           05 FILLER PIC X(04) TO LK-YEAR
-           LINE 15 COL 55 AUTO 
-           BACKGROUND-COLOR IS 2
-           FOREGROUND-COLOR IS 0.
-
-      *    [RD] Champ de saisi pour l'adresse 1.
-           05 FILLER PIC X(09) VALUE 'Adresse 1' LINE 17 COL 21. 
-
-           05 FILLER PIC X VALUE ':' LINE 17 COL 53.
-
-           05 FILLER PIC X(50) TO LK-ADRESS1 LINE 17 COL 55 AUTO 
+           05 FILLER PIC X(02) TO LK-DAYS LINE 20 COL 53 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 
 
@@ -80,9 +60,7 @@
            05 FILLER PIC X(16) VALUE "Nombre d'enfants" 
            LINE 21 COL 45. 
 
-           05 FILLER PIC X VALUE ':' LINE 17 COL 129.
-
-           05 FILLER PIC X(50) TO LK-ADRESS2 LINE 17 COL 131 AUTO 
+           05 FILLER PIC X(03) TO LK-NBCHILDREN LINE 22 COL 45 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.
 
@@ -90,18 +68,14 @@
            05 FILLER PIC X(19) VALUE 'En couple (Oui/Non)' 
            LINE 23 COL 45. 
 
-           05 FILLER PIC X VALUE ':' LINE 19 COL 53.
-
-           05 FILLER PIC X(15) TO LK-ZIPCODE LINE 19 COL 55 AUTO 
+           05 FILLER PIC X(03) TO LK-COUPLE LINE 24 COL 45 AUTO        
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.
 
       *    [RD-AL] Champ de saisi pour le telephone.
            05 FILLER PIC X(09) VALUE 'Telephone' LINE 25 COL 45. 
 
-           05 FILLER PIC X VALUE ':' LINE 19 COL 129.
-
-           05 FILLER PIC X(50) TO LK-TOWN LINE 19 COL 131 AUTO 
+           05 FILLER PIC X(10) TO LK-PHONE LINE 26 COL 45 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.
 
@@ -109,9 +83,7 @@
            05 FILLER PIC X(04) VALUE 'IBAN' 
            LINE 27 COL 45. 
 
-           05 FILLER PIC X VALUE ':' LINE 21 COL 53.
-
-           05 FILLER PIC X(20) TO LK-COUNTRY  LINE 21 COL 55 AUTO 
+           05 FILLER PIC X(34) TO LK-CODE-IBAN  LINE 28 COL 45 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.   
 
@@ -119,9 +91,7 @@
            05 FILLER PIC X(27) VALUE 'Numero de securite sociale' 
            LINE 13 COL 108.
 
-           05 FILLER PIC X VALUE ':' LINE 23 COL 53.
-
-           05 FILLER PIC X(10) TO LK-PHONE  LINE 23 COL 55 AUTO 
+           05 FILLER PIC X(01) TO LK-SECU-1 LINE 14 COL 108 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.
 
@@ -129,9 +99,7 @@
            LINE 14 COL 109 AUTO 
            FOREGROUND-COLOR IS 2.
 
-           05 FILLER PIC X VALUE ':' LINE 23 COL 129.
-
-           05 FILLER PIC X(50) TO LK-MAIL LINE 23 COL 131 AUTO 
+           05 FILLER PIC X(02) TO LK-SECU-2 LINE 14 COL 110 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.
 
@@ -139,7 +107,7 @@
            LINE 14 COL 112 AUTO 
            FOREGROUND-COLOR IS 2.
 
-           05 FILLER PIC X(02) TO CCS-SECU-3 LINE 14 COL 113 AUTO 
+           05 FILLER PIC X(02) TO LK-SECU-3 LINE 14 COL 113 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 
 
@@ -147,7 +115,7 @@
            LINE 14 COL 115 AUTO 
            FOREGROUND-COLOR IS 2.
 
-           05 FILLER PIC X(02) TO CCS-SECU-4 LINE 14 COL 116 AUTO 
+           05 FILLER PIC X(02) TO LK-SECU-4 LINE 14 COL 116 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.
 
@@ -155,7 +123,7 @@
            LINE 14 COL 118 AUTO 
            FOREGROUND-COLOR IS 2.
 
-           05 FILLER PIC X(03) TO CCS-SECU-5 LINE 14 COL 119 AUTO 
+           05 FILLER PIC X(03) TO LK-SECU-5 LINE 14 COL 119 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 
 
@@ -163,7 +131,7 @@
            LINE 14 COL 122 AUTO 
            FOREGROUND-COLOR IS 2.
 
-           05 FILLER PIC X(03) TO CCS-SECU-6 LINE 14 COL 123 AUTO 
+           05 FILLER PIC X(03) TO LK-SECU-6 LINE 14 COL 123 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 
 
@@ -171,7 +139,7 @@
            LINE 14 COL 126 AUTO 
            FOREGROUND-COLOR IS 2.
 
-           05 FILLER PIC X(02) TO CCS-SECU-7 LINE 14 COL 127 AUTO 
+           05 FILLER PIC X(02) TO LK-SECU-7 LINE 14 COL 127 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 
 
@@ -179,52 +147,52 @@
            05 FILLER PIC X(07) VALUE 'Docteur' 
            LINE 15 COL 108. 
 
-           05 FILLER PIC X(50) TO CUD-DOCTOR LINE 16 COL 108 AUTO 
+           05 FILLER PIC X(50) TO LK-DOCTOR LINE 16 COL 108 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.   
 
       *    [RD-AL] Champ de saisi pour le mail.
            05 FILLER PIC X(04) VALUE 'Mail' LINE 17 COL 108. 
 
-           05 FILLER PIC X(50) TO CUD-MAIL LINE 18 COL 108 AUTO 
+           05 FILLER PIC X(50) TO LK-MAIL LINE 18 COL 108 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.  
 
       *    [RD-AL] Champ de saisi pour l'adresse 1.
            05 FILLER PIC X(07) VALUE 'Adresse' LINE 19 COL 108. 
 
-           05 FILLER PIC X(50) TO CUD-ADRESS1 LINE 20 COL 108 AUTO 
+           05 FILLER PIC X(50) TO LK-ADRESS1 LINE 20 COL 108 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 
 
       *    [RD-AL] Champ de saisi pour l'adresse 2.
-           05 FILLER PIC X(50) TO CUD-ADRESS2 LINE 21 COL 108 AUTO 
+           05 FILLER PIC X(50) TO LK-ADRESS2 LINE 21 COL 108 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 
 
       *    [RD-AL] Champ de saisi pour la ville.
            05 FILLER PIC X(05) VALUE 'Ville' LINE 22 COL 108. 
 
-           05 FILLER PIC X(50) TO CUD-TOWN LINE 23 COL 108 AUTO 
+           05 FILLER PIC X(50) TO LK-TOWN LINE 23 COL 108 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.
 
       *    [RD-AL] Champ de saisi pour le code postal.
            05 FILLER PIC X(11) VALUE 'Code postal' LINE 24 COL 108. 
 
-           05 FILLER PIC X(15) TO CUD-ZIPCODE LINE 25 COL 108 AUTO 
+           05 FILLER PIC X(15) TO LK-ZIPCODE LINE 25 COL 108 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.
 
       *    [RD-AL] Champ de saisi pour le pays.
            05 FILLER PIC X(04) VALUE 'Pays' LINE 26 COL 108. 
 
-           05 FILLER PIC X(20) TO CUD-COUNTRY LINE 27 COL 108 AUTO 
+           05 FILLER PIC X(20) TO LK-COUNTRY LINE 27 COL 108 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.
 
       *    [RD-AL] zone message d'erreur.
-           05 FILLER PIC X(70) FROM WS-ERROR-MESSAGE 
+           05 FILLER PIC X(70) FROM LK-ERROR-MESSAGE 
            LINE 30 COL 45 AUTO 
            FOREGROUND-COLOR IS 8.
 
@@ -232,12 +200,12 @@
            05 FILLER PIC X(23) VALUE "Creation de l'adherent" 
            LINE 32 COL 45 
            FOREGROUND-COLOR IS 2. 
-           05 FILLER PIC X(01) TO WS-SEARCH-VALIDATION LINE 32 COL 69
+           05 FILLER PIC X(01) TO LK-ADD-VALIDATION LINE 32 COL 69
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 
 
       *    [RD-AL] Bouton retour au menu.
-           05 FILLER PIC X(01) TO WS-MENU-RETURN LINE 34 COL 170 
+           05 FILLER PIC X(01) TO LK-MENU-RETURN LINE 34 COL 170 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 
            05 FILLER PIC X(14) VALUE 'Retour menu' LINE 34 COL 172 
