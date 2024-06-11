@@ -135,3 +135,4 @@
              :WS-CREATE-DATE, :WS-UPDATE-DATE, :WS-CLOSE-DATE )
            END-EXEC.
 
+           EXIT.

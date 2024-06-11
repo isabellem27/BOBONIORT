@@ -88,6 +88,7 @@
            END-IF.
 
            IF LK-MENU-RETURN NOT EQUAL 'O' 
+            AND LK-MENU-RETURN NOT EQUAL SPACES 
 
                MOVE 'ERREUR DE SAISIE, "O" POUR RETOURNER AU MENU' 
                TO LK-ERROR-MESSAGE
@@ -113,11 +114,8 @@
            EXIT.
 
       ******************************************************************
-      *    [MF] En fonction des champs remplis, attribu un chiffre à   *
-      *    LK-CODE-REQUEST-SQL qui va servir à déterminer quelle       *
-      *    requête SQL effectuer.                                      *
-      *    Si aucune des conditions n'est remplies redirige vers le    *
-      *    début de ce programme avec le message d'erreur adéquat.     *
+      *    [MF] Si une des vérifications n'est pas valable alors cela
+      *    redirige vers le MAIN
       ******************************************************************
 
        3000-START-ERROR-FIELDS.
@@ -293,3 +291,5 @@
            END-IF.
        END-3000-ERROR-FIELDS.
            EXIT.
+
+       

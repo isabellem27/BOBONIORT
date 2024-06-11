@@ -129,7 +129,7 @@ OCESQL     END-CALL.
            IF LK-VALIDATION-STATUS = 'Y'
                PERFORM INSERT-DATA-TO-DB
            ELSE
-               DISPLAY 'Erreur: ' LK-ERROR-MESSAGE
+               MOVE 'Erreur: ' TO LK-ERROR-MESSAGE
                
            END-IF
 
@@ -297,5 +297,4 @@ OCESQL     END-CALL
 OCESQL     CALL "OCESQLEndSQL"
 OCESQL     END-CALL.
 
-
-
+           EXIT.           EXIT.           EXIT.           EXIT.
