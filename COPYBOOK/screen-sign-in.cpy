@@ -1,10 +1,8 @@
-
-
-       01 SCREEN-CONNECTION FOREGROUND-COLOR IS 2.
+       01 SCREEN-SIGN-IN FOREGROUND-COLOR IS 2.
            05 BLANK SCREEN.
-           05 PIC X(45) FROM SC-ERROR-MESSAGE
+           
+           05 PIC X(45) FROM SI-ERROR-MESSAGE
            LINE 24 COL 125 FOREGROUND-COLOR IS 7.
-
 
            05 FILLER PIC X(182) VALUE all " " LINE 4 COL 10 
            BACKGROUND-COLOR IS 2.
@@ -114,7 +112,7 @@
            05 FILLER PIC X(15) VALUE  "IDENTIFIANT  : " 
            COL 125 
            FOREGROUND-COLOR IS 2.
-           05 PIC X(14) USING  SC-USER-NAME  
+           05 PIC X(14) USING  SI-USER-ID  
            COL 150 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 
@@ -147,7 +145,7 @@
            05 FILLER PIC X(15) VALUE  "MOT-DE-PASSE : " 
            COL 125
            FOREGROUND-COLOR IS 2.
-           05 PIC X(14) USING SC-PASS SECURE
+           05 PIC X(14) USING SI-USER-PWD SECURE
            COL 150
            BACKGROUND-COLOR IS 2. 
 
@@ -351,7 +349,7 @@
            BACKGROUND-COLOR IS 2.         
            05 FILLER PIC X(2) VALUE  "  " COL  190
            BACKGROUND-COLOR IS 2. 
-           05 PIC X(1) USING  SC-CONNECT  
+           05 PIC X(1) USING  SI-CONNECT  
            COL 170 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 

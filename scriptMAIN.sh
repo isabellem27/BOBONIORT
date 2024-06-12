@@ -1,32 +1,12 @@
 #!/bin/bash
 
-# Ce script prend au moins deux arguments en ligne de commande :
-# 1. Le chemin du répertoire contenant les copybooks (dossier COPYBOOK).
-# 2. Le nom du premier fichier COBOL à compiler.
-# Suivi éventuellement par d'autres fichiers COBOL à compiler.
-
-# Exemple d'utilisation :
-# ./scriptCOBC.sh ./COPYBOOK my_program1.cbl my_program2.cob my_program3.cbl
-
-# Cela signifie :
-# - Le chemin de ce script.
-# - Le chemin du répertoire contenant les copybooks qui correspond au dossier COPYBOOK.
-# - Les noms des fichiers COBOL à compiler, tels que "my_program1.cbl", "my_program2.cbl", etc.
-
-# Le script va alors :
-# - Vérifier s'il y a au moins deux arguments passés.
-# - Supprimer l'ancien exécutable "run" s'il existe.
-# - Définir les variables d'environnement nécessaires, COB_LDFLAGS et COBCPY.
-# - Compiler chaque fichier COBOL spécifié en utilisant "cobc" et générer un exécutable "run".
-# - Exécuter le programme COBOL compilé.
-
 # Vérifie si l'exécutable existe et le supprime s'il est présent.
 if [ -f "run" ]; then
     echo "Deleting old executable run..."
     rm "run"
 fi
 
-# Récupère le chemin vers le DOSSIER COPYBOOK à partir du premier argument
+# Récupère le chemin vers le DOSSIER COPYBOOK.
 COPYBOOK_DIR='./COPYBOOK'
 shift
 
@@ -34,8 +14,17 @@ shift
 export COB_LDFLAGS="-Wl,--no-as-needed"
 export COBCPY="$COPYBOOK_DIR"
 
+# Chemin des programmes et sous-programmes.
+SIGN_IN_FRONT='./USER/SIGN-IN/sifront.cbl'
+SIGN_IN_BACK='./USER/SIGN-IN/siback.cob'
+MANAGEMENT_CUSTOMER='./CUSTOMER/MANAGEMENT-CUSTOMER/manacust.cbl'
+SEARCH_CUSTOMER_MAIN='./CUSTOMER/SEARCH-CUSTOMER/searcust.cbl'
+SEARCH_CUSTOMER_FRONT='./CUSTOMER/SEARCH-CUSTOMER/scfront.cbl'
+SEARCH_CUSTOMER_BACK='./CUSTOMER/SEARCH-CUSTOMER/scback.cob'
+MENU_CUSTOMER='./CUSTOMER/MENU-CUSTOMER/menucust.cbl'
+
 # Compile chaque programme COBOL spécifié.
-cobc -locesql -x -o run ./CUSTOMER/MANAGEMENT-CUSTOMER/manacust.cbl ./CUSTOMER/SEARCH-CUSTOMER/searcust.cbl ./CUSTOMER/SEARCH-CUSTOMER/scfront.cbl ./CUSTOMER/SEARCH-CUSTOMER/scback.cob ./CUSTOMER/MENU-CUSTOMER/menucust.cbl
+cobc -locesql -x -o run $SIGN_IN_FRONT $SIGN_IN_BACK $MANAGEMENT_CUSTOMER $SEARCH_CUSTOMER_MAIN $SEARCH_CUSTOMER_FRONT $SEARCH_CUSTOMER_BACK $MENU_CUSTOMER
 
 # Exécute le programme COBOL compilé.
 ./run

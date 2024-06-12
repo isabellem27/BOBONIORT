@@ -1,4 +1,5 @@
        01  SCREEN-MANAGEMENT-CUSTOMER FOREGROUND-COLOR IS 2.
+           05 BLANK SCREEN.
            05 FILLER PIC X(182) VALUE all ' ' LINE 4 COL 10 
            BACKGROUND-COLOR IS 2.
 
@@ -217,7 +218,7 @@
            BACKGROUND-COLOR IS 2.      
            05 FILLER PIC X(2) VALUE  '  ' COL  190
            BACKGROUND-COLOR IS 2. 
-           05 PIC X(1) USING  WS-RETURN-CHOICE  
+           05 PIC X(1) USING  LK-RETURN-CHOICE  
            COL 170 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 

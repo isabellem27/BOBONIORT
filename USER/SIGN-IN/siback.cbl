@@ -1,71 +1,62 @@
       ******************************************************************
-      *    Ce programme gère la validation de la saisine des champs:
-      *    - code utilisateur
-      *    - mot de passe
+      *    [YM-AL] Ce programme gère la validation de la saisie des    *
+      *    champs :                                                    *
+      *    - Identifiant                                               * 
+      *    - Mot de passe                                              * 
       ****************************************************************** 
        IDENTIFICATION DIVISION.
        PROGRAM-ID. siback.
-       AUTHOR. Yves.
+       AUTHOR.       Yves.
+
       ******************************************************************
+
        DATA DIVISION.
-       
-
        WORKING-STORAGE SECTION.
+       01  WS-USER-ID  PIC X(08).
+       01  WS-USER-PWD PIC X(09).
 
-       01  WS-INPUT-DATAS.
-           05 WS-INPUT-USER-ID      PIC X(08).
-           05 WS-INPUT-USER-PASSWRD PIC X(09).
-           05 WS-ERROR-MESSAGE      PIC x(45).  
-           05 WS-PASS-CHECK         PIC X(05) VALUE 'FALSE'.
-
-           EXEC SQL BEGIN DECLARE SECTION END-EXEC.
-       01  DBNAME               PIC X(11) VALUE 'boboniortdb'.   
-       01  USERNAME             PIC X(05) VALUE 'cobol'.
-       01  PASSWRD              PIC X(05) VALUE 'cbl85'.
-  
-       01  SQL-USER.
-           03 SQL-USER-ID       PIC X(10).
-           03 SQL-USER-PWD      PIC X(30).       
-
-           EXEC SQL END DECLARE SECTION END-EXEC.
-           EXEC SQL INCLUDE SQLCA END-EXEC.
+       EXEC SQL BEGIN DECLARE SECTION END-EXEC.
+       01  DBNAME          PIC X(11) VALUE 'boboniortdb'.   
+       01  USERNAME        PIC X(05) VALUE 'cobol'.
+       01  PASSWRD         PIC X(05) VALUE 'cbl85'.
+      
+       01  SQL-USER.    
+           03 SQL-USER-ID  PIC X(10).
+           03 SQL-USER-PWD PIC X(30).       
+       EXEC SQL END DECLARE SECTION END-EXEC.
+       EXEC SQL INCLUDE SQLCA END-EXEC.
            
        LINKAGE SECTION.
-       
-       01  LK-INPUT-DATAS.
-           05 LK-INPUT-USER-ID      PIC X(08).
-           05 LK-INPUT-USER-PASSWRD PIC X(09).
-           05 LK-ERROR-MESSAGE      PIC x(45).  
-           05 LK-PASS-CHECK         PIC X(05) VALUE 'FALSE'.
+           01 LK-USER-ID   PIC X(08).
+           01 LK-USER-PWD  PIC X(09).
+           01 LK-PWD-CHECK PIC X(05) VALUE 'FALSE'.
 
       ******************************************************************
-       PROCEDURE DIVISION USING LK-INPUT-DATAS.
+       PROCEDURE DIVISION USING LK-USER-ID, LK-USER-PWD, LK-PWD-CHECK.
        
        0000-MAIN-START.
-
-           MOVE LK-INPUT-DATAS TO WS-INPUT-DATAS.
-
            EXEC SQL
               CONNECT :USERNAME IDENTIFIED BY :PASSWRD USING :DBNAME
            END-EXEC.
 
-           IF SQLCODE NOT = ZERO 
+           MOVE LK-USER-ID  TO WS-USER-ID.
+           MOVE LK-USER-PWD TO WS-USER-PWD.
+
+           IF SQLCODE NOT EQUAL ZERO 
                PERFORM 1000-START-ERROR-RTN THRU END-1000-ERROR-RTN
            ELSE
-            PERFORM 2001-START-SQL-REQUEST
-               THRU END-2001-SQL-REQUEST
+               PERFORM 2000-START-SQL-REQUEST THRU END-2000-SQL-REQUEST
            END-IF.
-
        END-0000-MAIN.
            EXEC SQL COMMIT WORK END-EXEC.
            EXEC SQL DISCONNECT ALL END-EXEC.  
            GOBACK.
+
       ******************************************************************
-      *    Bloc de gestion des erreurs
+      *    [YM] Bloc de gestion des erreurs pour une valeur de SQLCODE *
+      *    différente de 0.                                            *
       ******************************************************************
        1000-START-ERROR-RTN.
-      *     DISPLAY "*** SQL ERROR ***".
-      *     DISPLAY "SQLCODE: " SQLCODE SPACE.
            EVALUATE SQLCODE
               WHEN  +100
                  DISPLAY "Record not found"
@@ -89,16 +80,19 @@
            EXIT.
 
       ******************************************************************
-      *    Requêtes SQL
+      *    [RD] Effectue une requête SQL qui récupère les informations *
+      *    d'un utilisateur si l'identifiant et le mot de passe        *
+      *    saisis à partir de la SCREEN SECTION sont corrects.         * 
+      *    S'ils sont corrects, attribu 'TRUE' à la LK-PWD-CHECK.      *        
       ******************************************************************
-       2001-START-SQL-REQUEST.
+       2000-START-SQL-REQUEST.
 
-      *    Récupère les informations d'un usser selon l'id saisie
            EXEC SQL
-            DECLARE CRUSER CURSOR FOR
-            SELECT user_identification, user_password
-            FROM user_tab
-            WHERE user_identification = trim(:WS-INPUT-USER-ID)
+               DECLARE CRUSER CURSOR FOR
+               SELECT user_identification, user_password
+               FROM user_tab
+               WHERE user_identification = trim(:WS-USER-ID)
+               AND user_password = trim(:WS-USER-PWD)
            END-EXEC.
            
            EXEC SQL
@@ -109,27 +103,13 @@
               FETCH CRUSER INTO :SQL-USER-ID, :SQL-USER-PWD
            END-EXEC.
 
-           IF SQLCODE = ZERO THEN
-               PERFORM 3000-TEST-PWD-START
-                  THRU END-3000-TEST-PWD
+           IF SQLCODE EQUAL ZERO
+               MOVE 'TRUE' TO LK-PWD-CHECK
            END-IF.
 
-           MOVE WS-PASS-CHECK TO LK-PASS-CHECK.
            EXEC SQL
               CLOSE CRUSER
            END-EXEC.
-
-       END-2001-SQL-REQUEST.
+       END-2000-SQL-REQUEST.
            EXIT.
 
-      ******************************************************************
-       3000-TEST-PWD-START.
-
-           IF SQL-USER-PWD =
-               FUNCTION TRIM(WS-INPUT-USER-PASSWRD) THEN
-                 MOVE 'TRUE' TO WS-PASS-CHECK
-           END-IF.
-       END-3000-TEST-PWD.
-           EXIT.
-
-      ******************************************************************
