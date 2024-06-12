@@ -32,17 +32,15 @@
 
        PROCEDURE DIVISION.    
        0000-START-MAIN.
-           INITIALIZE WS-RETURN-CHOICE.
-           INITIALIZE SI-ERROR-MESSAGE.
+           INITIALIZE WS-RETURN-CHOICE
+                      SI-ERROR-MESSAGE.
            MOVE 'FALSE' TO WS-PWD-CHECK.
 
            PERFORM 1000-START-SCREEN THRU END-1000-SCREEN.
            
       *    [RD] Appel le sous programme de Gestion d'un adhérent. 
            CALL 
-               'manacust' 
-               USING BY REFERENCE 
-               WS-RETURN-CHOICE
+               'manacust'
            END-CALL. 
        END-0000-MAIN.
            STOP RUN.  
@@ -53,8 +51,8 @@
        1000-START-SCREEN.
            PERFORM UNTIL WS-PWD-CHECK EQUAL 'TRUE'
                INITIALIZE SI-USER-ID
-               INITIALIZE SI-USER-PWD
-               INITIALIZE SI-CONNECT
+                          SI-USER-PWD
+                          SI-CONNECT
 
                ACCEPT screen-sign-in
 

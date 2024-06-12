@@ -52,37 +52,37 @@
            LINE 16 COL 60 .
            05 FILLER PIC X VALUE ":" 
            LINE 16 COL 92 .
-           05 FILLER PIC X(1) TO  LK-CCS-SECU-1 
+           05 FILLER PIC X(1) USING SCCS-SECU-1 
             LINE 16 COL 115 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.
          
-           05 FILLER PIC X(2) TO  LK-CCS-SECU-2 
+           05 FILLER PIC X(2) USING SCCS-SECU-2 
             LINE 16 COL 117 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.
           
-           05 FILLER PIC X(2) TO  LK-CCS-SECU-3 
+           05 FILLER PIC X(2) USING SCCS-SECU-3 
             LINE 16 COL 119 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 
            
-           05 FILLER PIC X(2) TO  LK-CCS-SECU-4 
+           05 FILLER PIC X(2) USING SCCS-SECU-4 
             LINE 16 COL 122 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.
         
-           05 FILLER PIC X(3) TO  LK-CCS-SECU-5 
+           05 FILLER PIC X(3) USING SCCS-SECU-5 
             LINE 16 COL 125 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 
         
-           05 FILLER PIC X(3) TO  LK-CCS-SECU-6 
+           05 FILLER PIC X(3) USING SCCS-SECU-6 
             LINE 16 COL 129 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 
         
-           05 FILLER PIC X(2) TO  LK-CCS-SECU-7 
+           05 FILLER PIC X(2) USING SCCS-SECU-7 
            LINE 16 COL 133 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.
@@ -94,7 +94,7 @@
            LINE 18 COL 60 . 
            05 FILLER PIC X VALUE ":" 
            LINE 18 COL 92 .
-           05 FILLER PIC X(20) TO  LK-CUS-FIRSTNAME
+           05 FILLER PIC X(20) USING SC-FIRSTNAME
            LINE 18 COL 115 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.  
@@ -121,7 +121,7 @@
            LINE 20 COL 60 . 
            05 FILLER PIC X VALUE ":" 
            LINE 20 COL 92 .
-           05 FILLER PIC X(20) TO  LK-CUS-LASTNAME
+           05 FILLER PIC X(20) USING SC-LASTNAME
            LINE 20 COL 115 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.
@@ -129,35 +129,35 @@
            LINE 22 COL 60 . 
            05 FILLER PIC X VALUE ":" 
            LINE 22 COL 92 .
-           05 FILLER PIC X(2) TO  LK-CUB-DAYS
+           05 FILLER PIC X(2) USING SCB-DAYS
            LINE 22 COL 133 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 
            05 FILLER PIC X(1) VALUE "-"
            LINE 22 COL 132 AUTO 
            FOREGROUND-COLOR IS 2.
-           05 FILLER PIC X(2) TO  LK-CUB-MONTH
+           05 FILLER PIC X(2) USING SCB-MONTH
            LINE 22 COL 130 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.
            05 FILLER PIC X(1) VALUE "-"
            LINE 22 COL 129 AUTO 
            FOREGROUND-COLOR IS 2.
-           05 FILLER PIC X(4) TO  LK-CUB-YEAR
+           05 FILLER PIC X(4) USING SCB-YEAR
            LINE 22 COL 125 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.
            05 FILLER PIC X(10) VALUE "Rechercher" 
            LINE 27 COL 60 
            FOREGROUND-COLOR IS 2. 
-           05 FILLER PIC X(1) TO  LK-SEARCH-VALIDATION
+           05 FILLER PIC X(1) USING WS-SEARCH-VALIDATION
            LINE 27 COL 71
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 
            
           
-           05 FILLER PIC X(70) FROM  LK-ERROR-MESSAGE
-           LINE 29 COL 60 AUTO 
+           05 FILLER PIC X(70) FROM WS-ERROR-MESSAGE
+           LINE 29 COL 60 
            FOREGROUND-COLOR IS 8.
            05 FILLER PIC X(2) VALUE  "  " LINE 18 COL 10 
            BACKGROUND-COLOR IS 2.       
@@ -293,7 +293,7 @@
            BACKGROUND-COLOR IS 2.      
            05 FILLER PIC X(2) VALUE  "  " COL  190
            BACKGROUND-COLOR IS 2. 
-           05 FILLER PIC X(1) TO  LK-MENU-RETURN  
+           05 FILLER PIC X(1) USING WS-MENU-RETURN  
            COL 170 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 

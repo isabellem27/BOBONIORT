@@ -20,7 +20,6 @@
        01  WS-CREATE-CHOICE     PIC X(01)   VALUE SPACE       .
        01  WS-SEARCH-CHOICE     PIC X(01)   VALUE SPACE       .
 
-       LINKAGE SECTION.
        01  LK-RETURN-CHOICE     PIC X(01)   VALUE SPACE       .
 
       ******************************************************************
@@ -28,7 +27,7 @@
            COPY 'screen-management-customer.cpy'.
 
       ******************************************************************
-       PROCEDURE DIVISION USING LK-RETURN-CHOICE.
+       PROCEDURE DIVISION.
       ****************************************************************** 
       * [IM]- le 06-06-2024                                            *
       *    Le paragraphe affiche la screen, contrôle la saisie et      *
@@ -45,10 +44,13 @@
       *    de saisie de l'utilisateur                                  *
       ****************************************************************** 
        1000-SCREEN-LOOP-START. 
-           INITIALIZE WS-SCREEN-ERROR.
-           INITIALIZE WS-SELECT-OPTION.
+           INITIALIZE WS-CREATE-CHOICE
+                      WS-SEARCH-CHOICE
+                      LK-RETURN-CHOICE 
+                      WS-SCREEN-ERROR  .
+           MOVE 'FALSE' TO WS-SELECT-OPTION.
 
-           PERFORM UNTIL WS-SELECT-OPTION = 'TRUE'            
+           PERFORM UNTIL WS-SELECT-OPTION EQUAL 'TRUE'            
               ACCEPT SCREEN-MANAGEMENT-CUSTOMER 
 
               PERFORM 3000-WITCH-CHOICE-START
@@ -70,7 +72,7 @@
            ELSE IF FUNCTION UPPER-CASE(WS-SEARCH-CHOICE)
            EQUAL 'O' THEN
               MOVE 'TRUE' TO WS-SELECT-OPTION 
-              CALL 'searcust'  
+              CALL 'scfront'  
 
            ELSE IF FUNCTION UPPER-CASE(LK-RETURN-CHOICE)
            EQUAL 'O' THEN
@@ -89,10 +91,9 @@
       ****************************************************************** 
        9000-ERROR-MESSAGE-START. 
            MOVE WS-ERROR-MESSAGE TO WS-SCREEN-ERROR.
-            INITIALIZE 
-                 WS-CREATE-CHOICE
-                 WS-SEARCH-CHOICE
-                 LK-RETURN-CHOICE .                      
+            INITIALIZE WS-CREATE-CHOICE
+                       WS-SEARCH-CHOICE
+                       LK-RETURN-CHOICE .                      
        END-9000-ERROR-MESSAGE.
            EXIT.
 
