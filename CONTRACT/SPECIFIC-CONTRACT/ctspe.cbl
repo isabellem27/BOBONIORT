@@ -1,6 +1,6 @@
       ******************************************************************
-      *    Sous programme de "menuuser.cbl" gerant le Front            *
-      *    de l'écran de connection                                    *
+      *    Sous programme de "            " gerant le Front            *
+      *    de l'écran de                                               *
       ****************************************************************** 
 
        IDENTIFICATION DIVISION.
