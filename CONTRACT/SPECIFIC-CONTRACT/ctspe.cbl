@@ -1,7 +1,4 @@
-      ******************************************************************
-      *    Sous programme de "            " gerant le Front            *
-      *    de l'écran de                                               *
-      ****************************************************************** 
+
 
        IDENTIFICATION DIVISION.
        PROGRAM-ID. ctspe.
