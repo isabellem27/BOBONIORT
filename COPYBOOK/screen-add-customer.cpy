@@ -1,3 +1,5 @@
+
+       
        01  SCREEN-ADD-CUSTOMER FOREGROUND-COLOR IS 2.
            05 BLANK SCREEN.
 
@@ -52,15 +54,15 @@
            LINE 20 COL 52 AUTO 
            FOREGROUND-COLOR IS 2.
 
-           05 FILLER PIC X(02) TO LK-DAYS LINE 20 COL 53 AUTO 
+           05 FILLER PIC X(02) TO LK-DAY LINE 20 COL 53 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 
 
       *    [RD-AL] Champ de saisi pour le nombre d'enfants.
-           05 FILLER PIC X(16) VALUE "Nombre d'enfants" 
+           05 FILLER PIC X(31) VALUE "Nombre d'enfants (0 par defaut)" 
            LINE 21 COL 45. 
 
-           05 FILLER PIC X(03) TO LK-NBCHILDREN LINE 22 COL 45 AUTO 
+           05 FILLER PIC X(02) TO LK-NBCHILDREN LINE 22 COL 45 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.
 
