@@ -3,7 +3,7 @@
       *    d'effectuer une recherche d'un adhérent.                    *
       ******************************************************************
        IDENTIFICATION DIVISION.
-       PROGRAM-ID. searcust.
+       PROGRAM-ID. searcust RECURSIVE.
        
       ******************************************************************
 
@@ -81,7 +81,7 @@
 
       *    [RD] Si le résultat de la requête SQL est NULL redirige vers 
       *    le début de ce programme avec le message d'erreur adéquat.
-           IF CUSTOMER-RETURN EQUAL SPACES
+           IF CUR-LASTNAME EQUAL SPACES
                MOVE "AUCUN ADHERENT TROUVE." TO WS-ERROR-MESSAGE
                GO TO 0000-START-MAIN
            END-IF.

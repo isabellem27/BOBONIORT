@@ -41,8 +41,6 @@
       *    [RD] Appel le sous programme de Gestion d'un adhérent. 
            CALL 
                'manacust' 
-               USING BY REFERENCE 
-               WS-RETURN-CHOICE
            END-CALL. 
        END-0000-MAIN.
            STOP RUN.  

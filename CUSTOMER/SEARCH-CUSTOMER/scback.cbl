@@ -15,7 +15,7 @@
 
        DATA DIVISION.
        WORKING-STORAGE SECTION.
-       01  WS-CUSTOMER-ACCEPT.
+       01  WS-CUSTOMER.
            05 WS-CUS-FIRSTNAME PIC X(20).
            05 WS-CUS-LASTNAME  PIC X(20).
            05 WS-CUS-BIRTHDATE PIC X(10).
@@ -52,13 +52,7 @@
        EXEC SQL INCLUDE SQLCA END-EXEC.  
 
        LINKAGE SECTION.
-       01  LK-CUSTOMER-ACCEPT.
-           05 LK-CUS-FIRSTNAME     PIC X(20).
-           05 LK-CUS-LASTNAME      PIC X(20).
-           05 LK-CUS-BIRTHDATE     PIC X(10).
-           05 LK-CUS-CODE-SECU     PIC 9(15).
-
-       01  LK-CUSTOMER-RETURN.
+       01  LK-CUSTOMER.
            03 LK-CUR-UUID        PIC X(36).
            03 LK-CUR-GENDER      PIC X(10).
            03 LK-CUR-LASTNAME    PIC X(20).
@@ -85,8 +79,7 @@
 
       ******************************************************************
 
-       PROCEDURE DIVISION USING LK-CUSTOMER-ACCEPT, LK-REQUEST-CODE,
-       LK-CUSTOMER-RETURN.
+       PROCEDURE DIVISION USING LK-CUSTOMER, LK-REQUEST-CODE.
        
        0000-START-MAIN.
            EXEC SQL
@@ -107,11 +100,14 @@
            GOBACK.
 
       ******************************************************************
-      *    [RD] Transfert les données de LK-CUSTOMER-ACCEPT vers       *
-      *    WS-CUSTOMER-ACCEPT.                                         *
+      *    [RD] Transfert les données de LK-CUSTOMER vers              *
+      *    WS-CUSTOMER.                                                *
       ******************************************************************
        1000-START-HANDLE-CUSTOMER-ACCEPT.
-           MOVE LK-CUSTOMER-ACCEPT TO WS-CUSTOMER-ACCEPT.
+           MOVE LK-CUR-CODE-SECU  TO WS-CUS-CODE-SECU.
+           MOVE LK-CUR-FIRSTNAME  TO WS-CUS-FIRSTNAME.
+           MOVE LK-CUR-LASTNAME   TO WS-CUS-LASTNAME.
+           MOVE LK-CUR-BIRTH-DATE TO WS-CUS-BIRTHDATE.
        END-1000-HANDLE-CUSTOMER-ACCEPT.
            EXIT.
 
