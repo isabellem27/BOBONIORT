@@ -7,73 +7,74 @@
        PROGRAM-ID. menucust.
        AUTHOR. Yves&Alexandre.
 
-      ******************************************************************       
-       
-       ENVIRONMENT DIVISION.
-
       ******************************************************************
 
        DATA DIVISION.
        WORKING-STORAGE SECTION. 
        01  WS-OPTIONS-MENU-CUST.
-           05 WS-CUSTOMER-MODIF       PIC X(01).
-           05 WS-CONTRACT-LIST        PIC X(01).
-           05 WS-CUST-ARCHIVE         PIC X(01).
-           05 WS-CALL-MENU            PIC X(01).               
-           05 WS-ERROR-MESSAGE        PIC X(62).                     
-       
-       01 WS-MESSAGE.
-           05 WS-MESSAGE1             PIC X(31)
-               VALUE 'ERREUR DE SAISIE, VEUILLEZ SELE'.
-           05 WS-MESSAGE2             PIC X(31)
-               VALUE 'CTIONNER VOTRE CHOIX AVEC "O".'.
-       
-       01 WS-SELECT-OPTION            PIC X(05) VALUE 'FALSE'.  
- 
-       01 WS-CUSTOMER-NAME.
-           05 WS-CUS-FIRSTNAME        PIC X(14).
-           05 FILLER                  PIC X(01) VALUE SPACE.
-           05 WS-CUS-LASTNAME         PIC X(14). 
+           03 WS-CUSTOMER-MODIF  PIC X(01).
+           03 WS-CUST-ARCHIVE    PIC X(01).
+           03 WS-CONTRACT-LIST   PIC X(01).             
+           03 WS-MENU-RETURN     PIC X(01).    
+           03 WS-ERROR-MESSAGE   PIC X(62).  
+
+       01  CUS-CODE-SECU. 
+           03 CCS-SECU-1 PIC X(01).
+           03 CCS-SECU-2 PIC X(02).
+           03 CCS-SECU-3 PIC X(02).
+           03 CCS-SECU-4 PIC X(02).
+           03 CCS-SECU-5 PIC X(03).
+           03 CCS-SECU-6 PIC X(03).
+           03 CCS-SECU-7 PIC X(02). 
+
+       01  WS-COUPLE PIC X(03).                
 
        LINKAGE SECTION.
-       
-       01 LK-CUSTOMER-NAME.
-           03 LK-CUR-UUID             PIC X(36).
-           03 LK-CUR-LASTNAME         PIC X(20).
-           03 LK-CUR-FIRSTNAME        PIC X(20).
+       01 LK-CUSTOMER.
+           03 LK-CUR-UUID        PIC X(36).
+           03 LK-CUR-GENDER      PIC X(10).
+           03 LK-CUR-LASTNAME    PIC X(20).
+           03 LK-CUR-FIRSTNAME   PIC X(20).
+           03 LK-CUR-ADRESS1	 PIC X(50).
+           03 LK-CUR-ADRESS2	 PIC X(50).
+           03 LK-CUR-ZIPCODE	 PIC X(15).
+           03 LK-CUR-TOWN	     PIC X(50).
+           03 LK-CUR-COUNTRY	 PIC X(20).
+           03 LK-CUR-PHONE	     PIC X(10).
+           03 LK-CUR-MAIL	     PIC X(50).
+           03 LK-CUR-BIRTH-DATE  PIC X(10).
+           03 LK-CUR-DOCTOR	     PIC X(50).
+           03 LK-CUR-CODE-SECU   PIC 9(15).
+           03 LK-CUR-CODE-IBAN   PIC X(34).
+           03 LK-CUR-NBCHILDREN  PIC 9(03).
+           03 LK-CUR-COUPLE      PIC X(05).
+           03 LK-CUR-CREATE-DATE PIC X(10).
+           03 LK-CUR-UPDATE-DATE PIC X(10).
+           03 LK-CUR-CLOSE-DATE  PIC X(10).
+           03 LK-CUR-ACTIVE	     PIC X(01).
 
        SCREEN SECTION.
            COPY 'screen-menu-customer.cpy'.   
 
       ******************************************************************
 
-       PROCEDURE DIVISION USING LK-CUSTOMER-NAME.
+       PROCEDURE DIVISION USING LK-CUSTOMER.
        
        0000-START-MAIN.
-           MOVE LK-CUR-FIRSTNAME TO WS-CUS-FIRSTNAME.
-           MOVE LK-CUR-LASTNAME  TO WS-CUS-LASTNAME.
+           MOVE LK-CUR-CODE-SECU TO CUS-CODE-SECU.
 
+           IF LK-CUR-COUPLE EQUAL 't'
+               MOVE 'Oui' TO WS-COUPLE
+           ELSE IF LK-CUR-COUPLE EQUAL 'f'
+               MOVE 'Non' TO WS-COUPLE
+           END-IF.
 
-           PERFORM 1000-START-CONTROL-IMPUT 
-           THRU 1000-END-CONTROL-IMPUT.
-
+           ACCEPT SCREEN-MENU-CUSTOMER.
+       
+           PERFORM 1100-START-CHECK-CHOICE 
+              THRU 1100-END-CHECK-CHOICE.
        END-0000-MAIN.
-           STOP RUN.
-      *     GOBACK.
-
-      ******************************************************************      
-       1000-START-CONTROL-IMPUT.
-      *    AL - Boucle d'affichage de la gestion du menu
-           
-           PERFORM UNTIL WS-SELECT-OPTION = 'TRUE'
-               
-              ACCEPT SCREEN-MENU-CUSTOMER 
-              PERFORM 1100-START-CHECK-CHOICE 
-              THRU 1100-END-CHECK-CHOICE
-              END-PERFORM.
-
-       1000-END-CONTROL-IMPUT.
-           EXIT.    
+           GOBACK.
 
       ******************************************************************      
        1100-START-CHECK-CHOICE.
@@ -82,43 +83,23 @@
 
            IF FUNCTION UPPER-CASE(WS-CUSTOMER-MODIF) 
            EQUAL 'O' THEN
-              CALL 'updacust'  USING LK-CUSTOMER-NAME
+              CALL 'updacust'  USING LK-CUSTOMER
 
            ELSE IF FUNCTION UPPER-CASE(WS-CONTRACT-LIST)
            EQUAL 'O' THEN
-              CALL 'detacust'  USING LK-CUSTOMER-NAME
+              CALL 'contcust'  USING LK-CUSTOMER
 
            ELSE IF FUNCTION UPPER-CASE(WS-CUST-ARCHIVE)
            EQUAL 'O' THEN           
-              CALL 'archust'   USING LK-CUSTOMER-NAME
+              CALL 'archust'   USING LK-CUSTOMER
 
-           ELSE IF FUNCTION UPPER-CASE(WS-CALL-MENU)
+           ELSE IF FUNCTION UPPER-CASE(WS-MENU-RETURN)
            EQUAL 'O' THEN
-               CALL 'menuuser' USING LK-CUSTOMER-NAME
- 
+               CALL 'menuuser' USING LK-CUSTOMER
            ELSE  
-              PERFORM 1200-START-ERROR-MESSAGE 
-              THRU 1200-END-ERROR-MESSAGE
+              MOVE 'ERREUR DE SAISIE' TO WS-ERROR-MESSAGE
+              GO TO 0000-START-MAIN
            END-IF.
-           
        1100-END-CHECK-CHOICE.
-           EXIT.   
-      ******************************************************************       
-       1200-START-ERROR-MESSAGE.
-      *    YM - Gère l'affichage du message d'erreur en 
-      *    cas d'erreur de saisie 
-
-            MOVE WS-MESSAGE          
-             TO WS-ERROR-MESSAGE.
-            DISPLAY WS-ERROR-MESSAGE
-            LINE 26 COL 60 FOREGROUND-COLOR IS 7.
-            INITIALIZE WS-CUSTOMER-MODIF 
-            WS-CONTRACT-LIST  
-            WS-CUST-ARCHIVE   
-            WS-CALL-MENU.      
-
-       1200-END-ERROR-MESSAGE.
-           EXIT.
-
-      ******************************************************************       
+           EXIT.  
        
