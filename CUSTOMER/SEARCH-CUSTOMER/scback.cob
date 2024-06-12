@@ -129,11 +129,12 @@ OCESQL*
            03 LK-CUS-ACTIVE	     PIC X(01).
 
        01  LK-REQUEST-CODE       PIC 9(01).
+       01  LK-COUNT-CUSTOMER     PIC 9(05).
 
       ******************************************************************
 
        PROCEDURE DIVISION USING LK-SCREEN-CUSTOMER, LK-CUSTOMER, 
-           LK-REQUEST-CODE.
+           LK-REQUEST-CODE, LK-COUNT-CUSTOMER.
        
        0000-START-MAIN.
 OCESQL*    EXEC SQL
@@ -901,6 +902,8 @@ OCESQL    .
       ******************************************************************
        4000-START-HANDLE.
            INITIALIZE LK-CUSTOMER.
+
+           ADD 1 TO LK-COUNT-CUSTOMER.
 
            MOVE SQL-CUS-UUID        TO LK-CUS-UUID.
            MOVE SQL-CUS-GENDER      TO LK-CUS-GENDER.

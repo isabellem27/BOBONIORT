@@ -58,6 +58,7 @@
        01  WS-SEARCH-VALIDATION  PIC X(01).
        01  WS-ERROR-MESSAGE      PIC X(70).
        01  WS-CODE-REQUEST-SQL   PIC 9(01).
+       01  WS-COUNT-CUSTOMER     PIC 9(05).
 
        SCREEN SECTION.
        COPY 'screen-search-customer.cpy'.
@@ -79,11 +80,15 @@
            CALL 
                'scback' 
                USING BY REFERENCE
-               SCREEN-CUSTOMER, WS-CUSTOMER, WS-CODE-REQUEST-SQL
+               SCREEN-CUSTOMER, WS-CUSTOMER, WS-CODE-REQUEST-SQL,
+               WS-COUNT-CUSTOMER
            END-CALL.
 
            PERFORM 2000-START-CUSTOMER-NOT-FOUND 
              THRU END-2000-CUSTOMER-NOT-FOUND.
+
+           PERFORM 3000-START-CUSTOMER-SEVERAL-FOUND 
+              THRU END-3000-CUSTOMER-SEVERAL-FOUND.
 
       *    [RD] Appel le MENU D'ADHERENT.
            CALL 
@@ -163,31 +168,7 @@
       *    début de ce programme avec le message d'erreur adéquat.     *
       ******************************************************************
        1300-START-ERROR-FIELDS.
-           IF SC-CODE-SECU IS NOT NUMERIC THEN
-               STRING 
-                   'Le numero de securite sociale ne doit contenir'
-                   SPACE 'que des chiffres.'
-                   DELIMITED BY SIZE
-                   INTO WS-ERROR-MESSAGE
-               END-STRING
-               GO TO 1000-START-SCREEN
-           END-IF.
-
-           IF    SCB-DAYS  IS NOT NUMERIC 
-              OR SCB-MONTH IS NOT NUMERIC
-              OR SCB-YEAR  IS NOT NUMERIC
-              THEN
-
-               STRING 
-                   'La date de naissance ne doit contenir'
-                   SPACE 'que des chiffres.'
-                   DELIMITED BY SIZE
-                   INTO WS-ERROR-MESSAGE
-               END-STRING
-               GO TO 1000-START-SCREEN
-           END-IF.
-           
-           IF     SC-CODE-SECU NOT EQUAL SPACES
+           IF     SC-CODE-SECU IS NUMERIC
               AND SC-FIRSTNAME     EQUAL SPACES
               AND SC-LASTNAME      EQUAL SPACES
               AND SCB-DAYS         EQUAL SPACES
@@ -202,21 +183,21 @@
            IF     SC-CODE-SECU     EQUAL SPACES
               AND SC-FIRSTNAME NOT EQUAL SPACES
               AND SC-LASTNAME  NOT EQUAL SPACES
-              AND SCB-DAYS     NOT EQUAL SPACES
-              AND SCB-MONTH    NOT EQUAL SPACES
-              AND SCB-YEAR     NOT EQUAL SPACES
+              AND SCB-DAYS     IS NUMERIC
+              AND SCB-MONTH    IS NUMERIC
+              AND SCB-YEAR     IS NUMERIC
               THEN
 
                SET WS-CODE-REQUEST-SQL TO 2
                GO TO END-1300-ERROR-FIELDS
            END-IF.
 
-           IF     SC-CODE-SECU NOT EQUAL SPACES
+           IF     SC-CODE-SECU IS NUMERIC
               AND SC-FIRSTNAME NOT EQUAL SPACES
               AND SC-LASTNAME  NOT EQUAL SPACES
-              AND SCB-DAYS     NOT EQUAL SPACES
-              AND SCB-MONTH    NOT EQUAL SPACES
-              AND SCB-YEAR     NOT EQUAL SPACES
+              AND SCB-DAYS     IS NUMERIC
+              AND SCB-MONTH    IS NUMERIC
+              AND SCB-YEAR     IS NUMERIC
               THEN
 
                SET WS-CODE-REQUEST-SQL TO 3
@@ -236,8 +217,21 @@
       ****************************************************************** 
        2000-START-CUSTOMER-NOT-FOUND.
            IF WS-CUS-UUID EQUAL SPACES THEN
-               MOVE "AUCUN ADHERENT TROUVE." TO WS-ERROR-MESSAGE
+               MOVE "Aucun adhérent trouve." TO WS-ERROR-MESSAGE
                GO TO 1000-START-SCREEN
            END-IF.
        END-2000-CUSTOMER-NOT-FOUND.
            EXIT.
+
+      ******************************************************************
+      *    [RD] Si la requête SQL du back a trouvé plusieurs adhérents *
+      *    redirige vers le paragraphe qui affiche l'écran de recherche*
+      *    avec le message d'erreur adéquat.                           *
+      ****************************************************************** 
+       3000-START-CUSTOMER-SEVERAL-FOUND.
+           IF WS-COUNT-CUSTOMER GREATER THAN 1 THEN
+               MOVE "Plusieurs adherents trouves." TO WS-ERROR-MESSAGE
+               GO TO 1000-START-SCREEN
+           END-IF.
+       END-3000-CUSTOMER-SEVERAL-FOUND.
+           EXIT. 
