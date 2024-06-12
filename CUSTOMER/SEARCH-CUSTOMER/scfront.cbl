@@ -71,7 +71,8 @@
                       WS-MENU-RETURN
                       WS-SEARCH-VALIDATION
                       WS-ERROR-MESSAGE
-                      WS-CODE-REQUEST-SQL.
+                      WS-CODE-REQUEST-SQL
+                      WS-COUNT-CUSTOMER.
 
            PERFORM 1000-START-SCREEN 
               THRU END-1000-SCREEN.

@@ -64,23 +64,24 @@
       *    Je vérifie la saisie                                        *
       ******************************************************************
        3000-WITCH-CHOICE-START.
-           IF FUNCTION UPPER-CASE(WS-CREATE-CHOICE) 
-           EQUAL 'O' THEN
-              MOVE 'TRUE' TO WS-SELECT-OPTION  
-              CALL 'creacust'  
-
-           ELSE IF FUNCTION UPPER-CASE(WS-SEARCH-CHOICE)
-           EQUAL 'O' THEN
-              MOVE 'TRUE' TO WS-SELECT-OPTION 
-              CALL 'scfront'  
-
-           ELSE IF FUNCTION UPPER-CASE(LK-RETURN-CHOICE)
-           EQUAL 'O' THEN
+           IF FUNCTION UPPER-CASE(LK-RETURN-CHOICE)
+                   EQUAL 'O' THEN
                MOVE 'TRUE' TO WS-SELECT-OPTION 
                CALL 'sifront'
+
+           ELSE IF FUNCTION UPPER-CASE(WS-CREATE-CHOICE) 
+                   EQUAL 'O' THEN
+               MOVE 'TRUE' TO WS-SELECT-OPTION  
+               CALL 'creacust'  
+
+           ELSE IF FUNCTION UPPER-CASE(WS-SEARCH-CHOICE)
+                   EQUAL 'O' THEN
+               MOVE 'TRUE' TO WS-SELECT-OPTION 
+               CALL 'scfront'  
+
            ELSE  
               PERFORM 9000-ERROR-MESSAGE-START 
-                       THRU END-9000-ERROR-MESSAGE
+                 THRU END-9000-ERROR-MESSAGE
            END-IF.
        END-3000-WITCH-CHOICE.
            EXIT.
@@ -91,9 +92,9 @@
       ****************************************************************** 
        9000-ERROR-MESSAGE-START. 
            MOVE WS-ERROR-MESSAGE TO WS-SCREEN-ERROR.
-            INITIALIZE WS-CREATE-CHOICE
-                       WS-SEARCH-CHOICE
-                       LK-RETURN-CHOICE .                      
+           INITIALIZE WS-CREATE-CHOICE
+                      WS-SEARCH-CHOICE
+                      LK-RETURN-CHOICE .                      
        END-9000-ERROR-MESSAGE.
            EXIT.
 
