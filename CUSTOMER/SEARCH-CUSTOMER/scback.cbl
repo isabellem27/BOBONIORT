@@ -15,11 +15,11 @@
 
        DATA DIVISION.
        WORKING-STORAGE SECTION.
-       01  WS-CUSTOMER.
-           05 WS-CUS-FIRSTNAME PIC X(20).
-           05 WS-CUS-LASTNAME  PIC X(20).
-           05 WS-CUS-BIRTHDATE PIC X(10).
-           05 WS-CUS-CODE-SECU PIC 9(15). 
+       01  WS-SCREEN-CUSTOMER.
+           05 WS-SC-FIRSTNAME PIC X(20).
+           05 WS-SC-LASTNAME  PIC X(20).
+           05 WS-SC-BIRTHDATE PIC X(10).
+           05 WS-SC-CODE-SECU PIC 9(15). 
 
        EXEC SQL BEGIN DECLARE SECTION END-EXEC.
        01  DBNAME   PIC  X(11) VALUE 'boboniortdb'.
@@ -52,34 +52,40 @@
        EXEC SQL INCLUDE SQLCA END-EXEC.  
 
        LINKAGE SECTION.
+       01  LK-SCREEN-CUSTOMER.
+           05 LK-SC-FIRSTNAME    PIC X(20).
+           05 LK-SC-LASTNAME     PIC X(20).
+           05 LK-SC-BIRTHDATE    PIC X(10).
+           05 LK-SC-CODE-SECU    PIC X(15).
        01  LK-CUSTOMER.
-           03 LK-CUR-UUID        PIC X(36).
-           03 LK-CUR-GENDER      PIC X(10).
-           03 LK-CUR-LASTNAME    PIC X(20).
-           03 LK-CUR-FIRSTNAME   PIC X(20).
-           03 LK-CUR-ADRESS1	 PIC X(50).
-           03 LK-CUR-ADRESS2	 PIC X(50).
-           03 LK-CUR-ZIPCODE	 PIC X(15).
-           03 LK-CUR-TOWN	     PIC X(50).
-           03 LK-CUR-COUNTRY	 PIC X(20).
-           03 LK-CUR-PHONE	     PIC X(10).
-           03 LK-CUR-MAIL	     PIC X(50).
-           03 LK-CUR-BIRTH-DATE  PIC X(10).
-           03 LK-CUR-DOCTOR	     PIC X(50).
-           03 LK-CUR-CODE-SECU   PIC 9(15).
-           03 LK-CUR-CODE-IBAN   PIC X(34).
-           03 LK-CUR-NBCHILDREN  PIC 9(03).
-           03 LK-CUR-COUPLE      PIC X(05).
-           03 LK-CUR-CREATE-DATE PIC X(10).
-           03 LK-CUR-UPDATE-DATE PIC X(10).
-           03 LK-CUR-CLOSE-DATE  PIC X(10).
-           03 LK-CUR-ACTIVE	     PIC X(01).
+           03 LK-CUS-UUID        PIC X(36).
+           03 LK-CUS-GENDER      PIC X(10).
+           03 LK-CUS-LASTNAME    PIC X(20).
+           03 LK-CUS-FIRSTNAME   PIC X(20).
+           03 LK-CUS-ADRESS1	 PIC X(50).
+           03 LK-CUS-ADRESS2	 PIC X(50).
+           03 LK-CUS-ZIPCODE	 PIC X(15).
+           03 LK-CUS-TOWN	     PIC X(50).
+           03 LK-CUS-COUNTRY	 PIC X(20).
+           03 LK-CUS-PHONE	     PIC X(10).
+           03 LK-CUS-MAIL	     PIC X(50).
+           03 LK-CUS-BIRTH-DATE  PIC X(10).
+           03 LK-CUS-DOCTOR	     PIC X(50).
+           03 LK-CUS-CODE-SECU   PIC 9(15).
+           03 LK-CUS-CODE-IBAN   PIC X(34).
+           03 LK-CUS-NBCHILDREN  PIC 9(03).
+           03 LK-CUS-COUPLE      PIC X(05).
+           03 LK-CUS-CREATE-DATE PIC X(10).
+           03 LK-CUS-UPDATE-DATE PIC X(10).
+           03 LK-CUS-CLOSE-DATE  PIC X(10).
+           03 LK-CUS-ACTIVE	     PIC X(01).
 
        01  LK-REQUEST-CODE       PIC 9(01).
 
       ******************************************************************
 
-       PROCEDURE DIVISION USING LK-CUSTOMER, LK-REQUEST-CODE.
+       PROCEDURE DIVISION USING LK-SCREEN-CUSTOMER, LK-CUSTOMER, 
+           LK-REQUEST-CODE.
        
        0000-START-MAIN.
            EXEC SQL
@@ -104,10 +110,7 @@
       *    WS-CUSTOMER.                                                *
       ******************************************************************
        1000-START-HANDLE-CUSTOMER-ACCEPT.
-           MOVE LK-CUR-CODE-SECU  TO WS-CUS-CODE-SECU.
-           MOVE LK-CUR-FIRSTNAME  TO WS-CUS-FIRSTNAME.
-           MOVE LK-CUR-LASTNAME   TO WS-CUS-LASTNAME.
-           MOVE LK-CUR-BIRTH-DATE TO WS-CUS-BIRTHDATE.
+           MOVE LK-SCREEN-CUSTOMER  TO WS-SCREEN-CUSTOMER.
        END-1000-HANDLE-CUSTOMER-ACCEPT.
            EXIT.
 
@@ -129,7 +132,7 @@
                customer_create_date, customer_update_date,
                customer_close_date, customer_active
                FROM customer
-               WHERE customer_code_secu = :WS-CUS-CODE-SECU
+               WHERE customer_code_secu = :WS-SC-CODE-SECU
                AND customer_active != 'A'
            END-EXEC.
 
@@ -145,9 +148,9 @@
                customer_create_date, customer_update_date,
                customer_close_date, customer_active
                FROM customer
-               WHERE customer_lastname = TRIM(:WS-CUS-LASTNAME)
-               AND customer_firstname = TRIM(:WS-CUS-FIRSTNAME)
-               AND customer_birth_date = :WS-CUS-BIRTHDATE
+               WHERE customer_lastname = TRIM(:WS-SC-LASTNAME)
+               AND customer_firstname = TRIM(:WS-SC-FIRSTNAME)
+               AND customer_birth_date = :WS-SC-BIRTHDATE
                AND customer_active != 'A'
            END-EXEC.
 
@@ -164,10 +167,10 @@
                customer_create_date, customer_update_date,
                customer_close_date, customer_active
                FROM customer
-               WHERE customer_code_secu = :WS-CUS-CODE-SECU
-               AND customer_lastname = TRIM(:WS-CUS-LASTNAME)
-               AND customer_firstname = TRIM(:WS-CUS-FIRSTNAME)
-               AND customer_birth_date = :WS-CUS-BIRTHDATE
+               WHERE customer_code_secu = :WS-SC-CODE-SECU
+               AND customer_lastname = TRIM(:WS-SC-LASTNAME)
+               AND customer_firstname = TRIM(:WS-SC-FIRSTNAME)
+               AND customer_birth_date = :WS-SC-BIRTHDATE
                AND customer_active != 'A'
            END-EXEC.
        END-2000-SQL-REQUEST.
@@ -322,26 +325,28 @@
       *    TABLE customer.                                             *
       ******************************************************************
        4000-START-HANDLE.
-           MOVE SQL-CUS-UUID        TO LK-CUR-UUID.
-           MOVE SQL-CUS-GENDER      TO LK-CUR-GENDER.
-           MOVE SQL-CUS-LASTNAME    TO LK-CUR-LASTNAME.
-           MOVE SQL-CUS-FIRSTNAME   TO LK-CUR-FIRSTNAME.
-           MOVE SQL-CUS-ADRESS1     TO LK-CUR-ADRESS1.
-           MOVE SQL-CUS-ADRESS2     TO LK-CUR-ADRESS2.
-           MOVE SQL-CUS-ZIPCODE     TO LK-CUR-ZIPCODE.
-           MOVE SQL-CUS-TOWN        TO LK-CUR-TOWN.
-           MOVE SQL-CUS-COUNTRY     TO LK-CUR-COUNTRY.
-           MOVE SQL-CUS-PHONE       TO LK-CUR-PHONE.
-           MOVE SQL-CUS-MAIL        TO LK-CUR-MAIL.
-           MOVE SQL-CUS-BIRTH-DATE  TO LK-CUR-BIRTH-DATE.
-           MOVE SQL-CUS-DOCTOR      TO LK-CUR-DOCTOR.
-           MOVE SQL-CUS-CODE-SECU   TO LK-CUR-CODE-SECU.
-           MOVE SQL-CUS-CODE-IBAN   TO LK-CUR-CODE-IBAN.
-           MOVE SQL-CUS-NBCHILDREN  TO LK-CUR-NBCHILDREN.
-           MOVE SQL-CUS-COUPLE      TO LK-CUR-COUPLE.
-           MOVE SQL-CUS-CREATE-DATE TO LK-CUR-CREATE-DATE.
-           MOVE SQL-CUS-UPDATE-DATE TO LK-CUR-UPDATE-DATE.
-           MOVE SQL-CUS-CLOSE-DATE  TO LK-CUR-CLOSE-DATE.
-           MOVE SQL-CUS-ACTIVE      TO LK-CUR-ACTIVE.
+           INITIALIZE LK-CUSTOMER.
+
+           MOVE SQL-CUS-UUID        TO LK-CUS-UUID.
+           MOVE SQL-CUS-GENDER      TO LK-CUS-GENDER.
+           MOVE SQL-CUS-LASTNAME    TO LK-CUS-LASTNAME.
+           MOVE SQL-CUS-FIRSTNAME   TO LK-CUS-FIRSTNAME.
+           MOVE SQL-CUS-ADRESS1     TO LK-CUS-ADRESS1.
+           MOVE SQL-CUS-ADRESS2     TO LK-CUS-ADRESS2.
+           MOVE SQL-CUS-ZIPCODE     TO LK-CUS-ZIPCODE.
+           MOVE SQL-CUS-TOWN        TO LK-CUS-TOWN.
+           MOVE SQL-CUS-COUNTRY     TO LK-CUS-COUNTRY.
+           MOVE SQL-CUS-PHONE       TO LK-CUS-PHONE.
+           MOVE SQL-CUS-MAIL        TO LK-CUS-MAIL.
+           MOVE SQL-CUS-BIRTH-DATE  TO LK-CUS-BIRTH-DATE.
+           MOVE SQL-CUS-DOCTOR      TO LK-CUS-DOCTOR.
+           MOVE SQL-CUS-CODE-SECU   TO LK-CUS-CODE-SECU.
+           MOVE SQL-CUS-CODE-IBAN   TO LK-CUS-CODE-IBAN.
+           MOVE SQL-CUS-NBCHILDREN  TO LK-CUS-NBCHILDREN.
+           MOVE SQL-CUS-COUPLE      TO LK-CUS-COUPLE.
+           MOVE SQL-CUS-CREATE-DATE TO LK-CUS-CREATE-DATE.
+           MOVE SQL-CUS-UPDATE-DATE TO LK-CUS-UPDATE-DATE.
+           MOVE SQL-CUS-CLOSE-DATE  TO LK-CUS-CLOSE-DATE.
+           MOVE SQL-CUS-ACTIVE      TO LK-CUS-ACTIVE.
        END-4000-HANDLE.
            EXIT.

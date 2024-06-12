@@ -44,7 +44,10 @@
       *    de saisie de l'utilisateur                                  *
       ****************************************************************** 
        1000-SCREEN-LOOP-START. 
-           INITIALIZE WS-SCREEN-ERROR.
+           INITIALIZE WS-CREATE-CHOICE
+                      WS-SEARCH-CHOICE
+                      LK-RETURN-CHOICE 
+                      WS-SCREEN-ERROR  .
            MOVE 'FALSE' TO WS-SELECT-OPTION.
 
            PERFORM UNTIL WS-SELECT-OPTION EQUAL 'TRUE'            
@@ -88,10 +91,9 @@
       ****************************************************************** 
        9000-ERROR-MESSAGE-START. 
            MOVE WS-ERROR-MESSAGE TO WS-SCREEN-ERROR.
-            INITIALIZE 
-                 WS-CREATE-CHOICE
-                 WS-SEARCH-CHOICE
-                 LK-RETURN-CHOICE .                      
+            INITIALIZE WS-CREATE-CHOICE
+                       WS-SEARCH-CHOICE
+                       LK-RETURN-CHOICE .                      
        END-9000-ERROR-MESSAGE.
            EXIT.
 
