@@ -42,14 +42,16 @@
            03 WS-CUS-NBCHILDREN  PIC 9(03).
            03 WS-CUS-COUPLE      PIC X(05).
            03 WS-CUS-CREATE-DATE PIC X(10).
-           03 WS-CUS-UPDATE-DATE PIC X(10).
+           03 WS-CUS-UPDATE-DATE PIC X(08).
            03 WS-CUS-CLOSE-DATE  PIC X(10).
            03 WS-CUS-ACTIVE	     PIC X(01).       
 
        EXEC SQL BEGIN DECLARE SECTION END-EXEC.
+
        01 DBNAME PIC X(11) VALUE 'boboniortdb'.
        01 USERNAME PIC X(05) VALUE 'cobol'.
        01 PASSWD PIC X(10) VALUE 'cbl85'.
+
        EXEC SQL END DECLARE SECTION END-EXEC.
        EXEC SQL INCLUDE SQLCA END-EXEC.       
 
@@ -90,45 +92,60 @@
            03 LK-CUS-ACTIVE	     PIC X(01).         
 
       ******************************************************************       
+       
+       PROCEDURE DIVISION USING LK-CUSTOMER.    
 
-       PROCEDURE DIVISION USING LK-CUSTOMER.      
+      * [SK] Connexion à la base de données avec les identifiants fournis
 
        0000-START-MAIN.
            EXEC SQL
                CONNECT :USERNAME IDENTIFIED BY :PASSWD USING :DBNAME
-           END-EXEC.       
+           END-EXEC.
+
+      *  [SK] Convertit le statut de couple en 't' ou 'f' pour 
+      *la base de données 
+           IF LK-CUS-COUPLE EQUAL 'OUI'
+               MOVE 't' TO LK-CUS-COUPLE
+           ELSE IF LK-CUS-COUPLE EQUAL 'NON'
+               MOVE 'f' TO LK-CUS-COUPLE
+           END-IF. 
 
            MOVE LK-CUSTOMER TO WS-CUSTOMER.       
 
            PERFORM 1200-START-UPDATE-DATA-DB
               THRU END-1200-UPDATE-DATA-DB.
        END-0000-MAIN.
+
            EXEC SQL COMMIT WORK END-EXEC.
            EXEC SQL DISCONNECT ALL END-EXEC.
+
            GOBACK.        
 
       ******************************************************************
       * [SK] Met à jour les données dans la base de données
       ******************************************************************
        1200-START-UPDATE-DATA-DB.
-      *     MOVE FUNCTION CURRENT-DATE TO WS-CUS-UPDATE-DATE.
+         
+           ACCEPT WS-CUS-UPDATE-DATE FROM DATE YYYYMMDD.
+
            EXEC SQL
                UPDATE CUSTOMER SET
-                   CUSTOMER_GENDER = :WS-CUS-GENDER, 
-                   CUSTOMER_LASTNAME = :WS-CUS-LASTNAME,
-                   CUSTOMER_FIRSTNAME = :WS-CUS-FIRSTNAME, 
-                   CUSTOMER_ADRESS1 = :WS-CUS-ADRESS1, 
-                   CUSTOMER_ADRESS2 = :WS-CUS-ADRESS2, 
-                   CUSTOMER_ZIPCODE = :WS-CUS-ZIPCODE, 
-                   CUSTOMER_TOWN = :WS-CUS-TOWN, 
-                   CUSTOMER_COUNTRY = :WS-CUS-COUNTRY, 
-                   CUSTOMER_PHONE = :WS-CUS-PHONE, 
-                   CUSTOMER_MAIL = :WS-CUS-MAIL,
-                   CUSTOMER_CODE_IBAN = :WS-CUS-CODE-IBAN,
-                   CUSTOMER_NBCHILDREN = :WS-CUS-NBCHILDREN,
-                   CUSTOMER_COUPLE = :WS-CUS-COUPLE,
-                   CUSTOMER_ACTIVE = :WS-CUS-ACTIVE
-                  
+
+                   CUSTOMER_GENDER      = :WS-CUS-GENDER, 
+                   CUSTOMER_LASTNAME    = :WS-CUS-LASTNAME,
+                   CUSTOMER_FIRSTNAME   = :WS-CUS-FIRSTNAME, 
+                   CUSTOMER_ADRESS1     = :WS-CUS-ADRESS1, 
+                   CUSTOMER_ADRESS2     = :WS-CUS-ADRESS2, 
+                   CUSTOMER_ZIPCODE     = :WS-CUS-ZIPCODE, 
+                   CUSTOMER_TOWN        = :WS-CUS-TOWN, 
+                   CUSTOMER_COUNTRY     = :WS-CUS-COUNTRY, 
+                   CUSTOMER_PHONE       = :WS-CUS-PHONE, 
+                   CUSTOMER_MAIL        = :WS-CUS-MAIL,
+                   CUSTOMER_CODE_IBAN   = :WS-CUS-CODE-IBAN,
+                   CUSTOMER_NBCHILDREN  = :WS-CUS-NBCHILDREN,
+                   CUSTOMER_COUPLE      = :WS-CUS-COUPLE,
+                   CUSTOMER_ACTIVE      = :WS-CUS-ACTIVE,
+                   CUSTOMER_UPDATE_DATE = :WS-CUS-UPDATE-DATE
                WHERE UUID_CUSTOMER = :WS-CUS-UUID
            END-EXEC.       
        END-1200-UPDATE-DATA-DB.
