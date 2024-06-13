@@ -38,12 +38,12 @@
            03 LK-CUS-ADRESS1	 PIC X(50).
            03 LK-CUS-ADRESS2	 PIC X(50).
            03 LK-CUS-ZIPCODE	 PIC X(15).
-           03 LK-CUS-TOWN	     PIC X(50).
+           03 LK-CUS-TOWN	     PIC X(30).
            03 LK-CUS-COUNTRY	 PIC X(20).
            03 LK-CUS-PHONE	     PIC X(10).
            03 LK-CUS-MAIL	     PIC X(50).
            03 LK-CUS-BIRTH-DATE  PIC X(10).
-           03 LK-CUS-DOCTOR	     PIC X(50).
+           03 LK-CUS-DOCTOR	     PIC X(20).
            03 LK-CUS-CODE-SECU   PIC 9(15).
            03 LK-CUS-CODE-IBAN   PIC X(34).
            03 LK-CUS-NBCHILDREN  PIC 9(03).

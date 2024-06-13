@@ -17,11 +17,11 @@
            05 SC-FIRSTNAME       PIC X(20).
            05 SC-LASTNAME        PIC X(20).
            05 SC-BIRTHDATE.   
-               10 SCB-DAYS       PIC X(02).
+               10 SCB-YEAR       PIC X(04).
                10 FILLER         PIC X(01) VALUE '-'.
                10 SCB-MONTH      PIC X(02).
                10 FILLER         PIC X(01) VALUE '-'.
-               10 SCB-YEAR       PIC X(04).
+               10 SCB-DAYS       PIC X(02).
            05 SC-CODE-SECU.    
                10 SCCS-SECU-1    PIC X(01).
                10 SCCS-SECU-2    PIC X(02).
@@ -39,12 +39,12 @@
            03 WS-CUS-ADRESS1	 PIC X(50).
            03 WS-CUS-ADRESS2	 PIC X(50).
            03 WS-CUS-ZIPCODE	 PIC X(15).
-           03 WS-CUS-TOWN	     PIC X(50).
+           03 WS-CUS-TOWN	     PIC X(30).
            03 WS-CUS-COUNTRY	 PIC X(20).
            03 WS-CUS-PHONE	     PIC X(10).
            03 WS-CUS-MAIL	     PIC X(50).
            03 WS-CUS-BIRTH-DATE  PIC X(10).
-           03 WS-CUS-DOCTOR	     PIC X(50).
+           03 WS-CUS-DOCTOR	     PIC X(20).
            03 WS-CUS-CODE-SECU   PIC 9(15).
            03 WS-CUS-CODE-IBAN   PIC X(34).
            03 WS-CUS-NBCHILDREN  PIC 9(03).
@@ -68,15 +68,36 @@
        PROCEDURE DIVISION.
        0000-START-MAIN.
            INITIALIZE SCREEN-CUSTOMER
+                      WS-CUSTOMER 
                       WS-MENU-RETURN
                       WS-SEARCH-VALIDATION
                       WS-ERROR-MESSAGE
                       WS-CODE-REQUEST-SQL
                       WS-COUNT-CUSTOMER.
 
-           PERFORM 1000-START-SCREEN 
-              THRU END-1000-SCREEN.
-      
+           PERFORM 1000-START-INITIALIZATION 
+              THRU END-1000-INITIALIZATION.
+       END-0000-MAIN. 
+           GOBACK.
+
+      ******************************************************************
+      *    [RD] Affiche l'écran de la recherche, appel les             *    
+      *    paragraphes qui s'occupent de vérifier les saisis de        *
+      *    l'utilisateur et appel les sous-programmes BACK et menu     *
+      *    d'un adhérent.                                              *
+      ****************************************************************** 
+       1000-START-INITIALIZATION.
+           ACCEPT SCREEN-SEARCH-CUSTOMER.
+           
+           PERFORM 1100-START-MENU-RETURN 
+              THRU END-1100-MENU-RETURN.
+
+           PERFORM 1200-START-SEARCH-VALIDATION
+              THRU END-1200-SEARCH-VALIDATION.
+
+           PERFORM 1300-START-ERROR-FIELDS 
+              THRU END-1300-ERROR-FIELDS.
+
       *    [RD] Appel du BACK.
            CALL 
                'scback' 
@@ -97,26 +118,7 @@
                USING BY REFERENCE 
                WS-CUSTOMER
            END-CALL.
-       END-0000-MAIN. 
-           GOBACK.
-
-      ******************************************************************
-      *    [RD] Affiche l'écran de la recherche et appel les           *    
-      *    paragraphes qui s'occupent de vérifier les saisis de        *
-      *    l'utilisateur.                                              *
-      ****************************************************************** 
-       1000-START-SCREEN.
-           ACCEPT SCREEN-SEARCH-CUSTOMER.
-           
-           PERFORM 1100-START-MENU-RETURN 
-              THRU END-1100-MENU-RETURN.
-
-           PERFORM 1200-START-SEARCH-VALIDATION
-              THRU END-1200-SEARCH-VALIDATION.
-
-           PERFORM 1300-START-ERROR-FIELDS 
-              THRU END-1300-ERROR-FIELDS.
-       END-1000-SCREEN.
+       END-1000-INITIALIZATION.
            EXIT. 
 
       ******************************************************************
@@ -139,7 +141,7 @@
                MOVE 'Veuillez entrer "O" pour retourner au menu.' 
                TO WS-ERROR-MESSAGE
 
-               GO TO 1000-START-SCREEN
+               GO TO 1000-START-INITIALIZATION
            END-IF.
        END-1100-MENU-RETURN.
            EXIT.
@@ -156,7 +158,7 @@
                MOVE 'Veuillez entrer "O" pour rechercher.' 
                TO WS-ERROR-MESSAGE
 
-               GO TO 1000-START-SCREEN
+               GO TO 1000-START-INITIALIZATION
            END-IF.
        END-1200-SEARCH-VALIDATION.
            EXIT.
@@ -207,7 +209,7 @@
 
            MOVE "Erreur de saisie sur l'un des champs de la recherche."
            TO WS-ERROR-MESSAGE.
-           GO TO 1000-START-SCREEN.
+           GO TO 1000-START-INITIALIZATION.
        END-1300-ERROR-FIELDS.
            EXIT.
 
@@ -217,9 +219,9 @@
       *    avec le message d'erreur adéquat.                           *
       ****************************************************************** 
        2000-START-CUSTOMER-NOT-FOUND.
-           IF WS-CUS-UUID EQUAL SPACES THEN
-               MOVE "Aucun adhérent trouve." TO WS-ERROR-MESSAGE
-               GO TO 1000-START-SCREEN
+           IF WS-COUNT-CUSTOMER EQUAL 0 THEN
+               MOVE "Aucun adherent trouve." TO WS-ERROR-MESSAGE
+               GO TO 1000-START-INITIALIZATION
            END-IF.
        END-2000-CUSTOMER-NOT-FOUND.
            EXIT.
@@ -232,7 +234,7 @@
        3000-START-CUSTOMER-SEVERAL-FOUND.
            IF WS-COUNT-CUSTOMER GREATER THAN 1 THEN
                MOVE "Plusieurs adherents trouves." TO WS-ERROR-MESSAGE
-               GO TO 1000-START-SCREEN
+               GO TO 1000-START-INITIALIZATION
            END-IF.
        END-3000-CUSTOMER-SEVERAL-FOUND.
            EXIT. 
