@@ -35,7 +35,7 @@ export COB_LDFLAGS="-Wl,--no-as-needed"
 export COBCPY="$COPYBOOK_DIR"
 
 # Compile chaque programme COBOL spécifié.
-cobc -locesql -x -o run ./CUSTOMER/MANAGEMENT-CUSTOMER/manacust.cbl ./CUSTOMER/SEARCH-CUSTOMER/searcust.cbl ./CUSTOMER/SEARCH-CUSTOMER/scfront.cbl ./CUSTOMER/SEARCH-CUSTOMER/scback.cob ./CUSTOMER/MENU-CUSTOMER/menucust.cbl
-
+cobc -locesql -x -o run ./CUSTOMER/MANAGEMENT-CUSTOMER/manacust.cbl ./CUSTOMER/SEARCH-CUSTOMER/searcust.cbl ./CUSTOMER/SEARCH-CUSTOMER/scfront.cbl ./CUSTOMER/SEARCH-CUSTOMER/scback.cob ./CUSTOMER/MENU-CUSTOMER/menucust.cbl  ./CUSTOMER/UPDATE-CUSTOMER/ucfront.cbl ./CUSTOMER/UPDATE-CUSTOMER/ucback.cob   
+#cobc -locesql -x -o run ./CUSTOMER/MANAGEMENT-CUSTOMER/manacust.cbl ./CUSTOMER/SEARCH-CUSTOMER/searcust.cbl ./CUSTOMER/SEARCH-CUSTOMER/scfront.cbl ./CUSTOMER/SEARCH-CUSTOMER/scback.cob ./CUSTOMER/MENU-CUSTOMER/menucust.cbl
 # Exécute le programme COBOL compilé.
 ./run
