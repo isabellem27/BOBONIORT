@@ -34,12 +34,12 @@ OCESQL*EXEC SQL BEGIN DECLARE SECTION END-EXEC.
            03 SQL-CUS-ADRESS1	  PIC X(50).
            03 SQL-CUS-ADRESS2	  PIC X(50).
            03 SQL-CUS-ZIPCODE	  PIC X(15).
-           03 SQL-CUS-TOWN	      PIC X(50).
+           03 SQL-CUS-TOWN	      PIC X(30).
            03 SQL-CUS-COUNTRY	  PIC X(20).
            03 SQL-CUS-PHONE	      PIC X(10).
            03 SQL-CUS-MAIL	      PIC X(50).
            03 SQL-CUS-BIRTH-DATE  PIC X(10).
-           03 SQL-CUS-DOCTOR	  PIC X(50).
+           03 SQL-CUS-DOCTOR	  PIC X(20).
            03 SQL-CUS-CODE-SECU   PIC 9(15).
            03 SQL-CUS-CODE-IBAN   PIC X(34).
            03 SQL-CUS-NBCHILDREN  PIC 9(03).
@@ -113,12 +113,12 @@ OCESQL*
            03 LK-CUS-ADRESS1	 PIC X(50).
            03 LK-CUS-ADRESS2	 PIC X(50).
            03 LK-CUS-ZIPCODE	 PIC X(15).
-           03 LK-CUS-TOWN	     PIC X(50).
+           03 LK-CUS-TOWN	     PIC X(30).
            03 LK-CUS-COUNTRY	 PIC X(20).
            03 LK-CUS-PHONE	     PIC X(10).
            03 LK-CUS-MAIL	     PIC X(50).
            03 LK-CUS-BIRTH-DATE  PIC X(10).
-           03 LK-CUS-DOCTOR	     PIC X(50).
+           03 LK-CUS-DOCTOR	     PIC X(20).
            03 LK-CUS-CODE-SECU   PIC 9(15).
            03 LK-CUS-CODE-IBAN   PIC X(34).
            03 LK-CUS-NBCHILDREN  PIC 9(03).
@@ -179,7 +179,10 @@ OCESQL     END-CALL.
       *    WS-CUSTOMER.                                                *
       ******************************************************************
        1000-START-HANDLE-CUSTOMER-ACCEPT.
-           MOVE LK-SCREEN-CUSTOMER  TO WS-SCREEN-CUSTOMER.
+           INITIALIZE WS-SCREEN-CUSTOMER.
+           INITIALIZE SQL-CUSTOMER.
+
+           MOVE LK-SCREEN-CUSTOMER TO WS-SCREEN-CUSTOMER.
        END-1000-HANDLE-CUSTOMER-ACCEPT.
            EXIT.
 
@@ -328,6 +331,7 @@ OCESQL     END-CALL.
       *    du numéro de LK-REQUEST-CODE.                               *
       ******************************************************************
        3000-START-FETCH-CURSOR.
+
            EVALUATE LK-REQUEST-CODE
                WHEN 1
                    PERFORM 3100-START-FETCH-CRSCODESECU
@@ -417,7 +421,7 @@ OCESQL          BY REFERENCE SQL-CUS-ZIPCODE
 OCESQL     END-CALL
 OCESQL     CALL "OCESQLSetResultParams" USING
 OCESQL          BY VALUE 16
-OCESQL          BY VALUE 50
+OCESQL          BY VALUE 30
 OCESQL          BY VALUE 0
 OCESQL          BY REFERENCE SQL-CUS-TOWN
 OCESQL     END-CALL
@@ -447,7 +451,7 @@ OCESQL          BY REFERENCE SQL-CUS-BIRTH-DATE
 OCESQL     END-CALL
 OCESQL     CALL "OCESQLSetResultParams" USING
 OCESQL          BY VALUE 16
-OCESQL          BY VALUE 50
+OCESQL          BY VALUE 20
 OCESQL          BY VALUE 0
 OCESQL          BY REFERENCE SQL-CUS-DOCTOR
 OCESQL     END-CALL
@@ -601,7 +605,7 @@ OCESQL          BY REFERENCE SQL-CUS-ZIPCODE
 OCESQL     END-CALL
 OCESQL     CALL "OCESQLSetResultParams" USING
 OCESQL          BY VALUE 16
-OCESQL          BY VALUE 50
+OCESQL          BY VALUE 30
 OCESQL          BY VALUE 0
 OCESQL          BY REFERENCE SQL-CUS-TOWN
 OCESQL     END-CALL
@@ -631,7 +635,7 @@ OCESQL          BY REFERENCE SQL-CUS-BIRTH-DATE
 OCESQL     END-CALL
 OCESQL     CALL "OCESQLSetResultParams" USING
 OCESQL          BY VALUE 16
-OCESQL          BY VALUE 50
+OCESQL          BY VALUE 20
 OCESQL          BY VALUE 0
 OCESQL          BY REFERENCE SQL-CUS-DOCTOR
 OCESQL     END-CALL
@@ -785,7 +789,7 @@ OCESQL          BY REFERENCE SQL-CUS-ZIPCODE
 OCESQL     END-CALL
 OCESQL     CALL "OCESQLSetResultParams" USING
 OCESQL          BY VALUE 16
-OCESQL          BY VALUE 50
+OCESQL          BY VALUE 30
 OCESQL          BY VALUE 0
 OCESQL          BY REFERENCE SQL-CUS-TOWN
 OCESQL     END-CALL
@@ -815,7 +819,7 @@ OCESQL          BY REFERENCE SQL-CUS-BIRTH-DATE
 OCESQL     END-CALL
 OCESQL     CALL "OCESQLSetResultParams" USING
 OCESQL          BY VALUE 16
-OCESQL          BY VALUE 50
+OCESQL          BY VALUE 20
 OCESQL          BY VALUE 0
 OCESQL          BY REFERENCE SQL-CUS-DOCTOR
 OCESQL     END-CALL
