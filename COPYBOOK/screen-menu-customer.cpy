@@ -35,11 +35,29 @@
            FOREGROUND-COLOR IS 0.           
 
       *    [RD-AL] Champ de saisi pour la date de naissance.
-           05 FILLER PIC X(31) VALUE 'Date de naissance (AAAA-MM-JJ)' 
+           05 FILLER PIC X(31) VALUE 'Date de naissance (JJ-MM-AAA)' 
            LINE 19 COL 45. 
 
-           05 FILLER PIC X(10) FROM LK-CUS-BIRTH-DATE
-           LINE 20 COL 45 AUTO 
+           05 FILLER PIC X(02) FROM CUB-DAY
+           LINE 20 COL 45 
+           BACKGROUND-COLOR IS 2
+           FOREGROUND-COLOR IS 0. 
+
+           05 FILLER PIC X(1) VALUE '-'
+           LINE 20 COL 47 
+           FOREGROUND-COLOR IS 2.
+
+           05 FILLER PIC X(02) FROM CUB-MONTH
+           LINE 20 COL 48 
+           BACKGROUND-COLOR IS 2
+           FOREGROUND-COLOR IS 0.
+
+           05 FILLER PIC X(01) VALUE '-'
+           LINE 20 COL 50 
+           FOREGROUND-COLOR IS 2.
+
+           05 FILLER PIC X(04) FROM CUB-YEAR
+           LINE 20 COL 51 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.
 

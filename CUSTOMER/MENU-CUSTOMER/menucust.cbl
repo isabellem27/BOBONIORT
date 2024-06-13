@@ -27,6 +27,11 @@
            03 CCS-SECU-6 PIC X(03).
            03 CCS-SECU-7 PIC X(02). 
 
+       01  CUS-BIRTH-DATE.
+           03 CUB-DAY       PIC X(02).
+           03 CUB-MONTH     PIC X(02).
+           03 CUB-YEAR      PIC X(04).
+
        01  WS-COUPLE PIC X(03).                
 
        LINKAGE SECTION.
@@ -78,6 +83,9 @@
            INITIALIZE WS-OPTIONS-MENU-CUST.
 
            MOVE LK-CUS-CODE-SECU TO CUS-CODE-SECU.
+           MOVE LK-CUS-BIRTH-DATE(1:4) TO CUB-YEAR.
+           MOVE LK-CUS-BIRTH-DATE(6:2) TO CUB-MONTH.
+           MOVE LK-CUS-BIRTH-DATE(9:2) TO CUB-DAY.
 
            IF LK-CUS-COUPLE EQUAL 't'
                MOVE 'Oui' TO WS-COUPLE
