@@ -182,6 +182,7 @@
       *    du numéro de LK-REQUEST-CODE.                               *
       ******************************************************************
        3000-START-FETCH-CURSOR.
+
            EVALUATE LK-REQUEST-CODE
                WHEN 1
                    PERFORM 3100-START-FETCH-CRSCODESECU
