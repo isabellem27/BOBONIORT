@@ -123,9 +123,9 @@
            END-CALL.  
 
            CALL
-               'menucust'
+               'mcfront'
                USING BY REFERENCE
-               LK-CUSTOMER
+               LK-CUS-UUID
            END-CALL. 
        END-1000-INITIALIZATION.
            EXIT.
@@ -141,7 +141,7 @@
 
            IF WS-MENU-RETURN EQUAL 'O' THEN
                CALL 
-                   'menucust'
+                   'mcfront'
                    USING BY REFERENCE
                    LK-CUSTOMER
                END-CALL

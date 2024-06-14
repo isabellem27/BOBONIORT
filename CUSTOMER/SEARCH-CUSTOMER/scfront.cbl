@@ -31,29 +31,7 @@
                10 SCCS-SECU-6    PIC X(03).
                10 SCCS-SECU-7    PIC X(02).
 
-       01  WS-CUSTOMER.
-           03 WS-CUS-UUID        PIC X(36).
-           03 WS-CUS-GENDER      PIC X(10).
-           03 WS-CUS-LASTNAME    PIC X(20).
-           03 WS-CUS-FIRSTNAME   PIC X(20).
-           03 WS-CUS-ADRESS1	 PIC X(50).
-           03 WS-CUS-ADRESS2	 PIC X(50).
-           03 WS-CUS-ZIPCODE	 PIC X(15).
-           03 WS-CUS-TOWN	     PIC X(30).
-           03 WS-CUS-COUNTRY	 PIC X(20).
-           03 WS-CUS-PHONE	     PIC X(10).
-           03 WS-CUS-MAIL	     PIC X(50).
-           03 WS-CUS-BIRTH-DATE  PIC X(10).
-           03 WS-CUS-DOCTOR	     PIC X(20).
-           03 WS-CUS-CODE-SECU   PIC 9(15).
-           03 WS-CUS-CODE-IBAN   PIC X(34).
-           03 WS-CUS-NBCHILDREN  PIC 9(03).
-           03 WS-CUS-COUPLE      PIC X(05).
-           03 WS-CUS-CREATE-DATE PIC X(10).
-           03 WS-CUS-UPDATE-DATE PIC X(10).
-           03 WS-CUS-CLOSE-DATE  PIC X(10).
-           03 WS-CUS-ACTIVE	     PIC X(01).
-
+       01  WS-CUS-UUID           PIC X(36).
        01  WS-MENU-RETURN        PIC X(01).
        01  WS-SEARCH-VALIDATION  PIC X(01).
        01  WS-ERROR-MESSAGE      PIC X(70).
@@ -68,7 +46,7 @@
        PROCEDURE DIVISION.
        0000-START-MAIN.
            INITIALIZE SCREEN-CUSTOMER
-                      WS-CUSTOMER 
+                      WS-CUS-UUID 
                       WS-MENU-RETURN
                       WS-SEARCH-VALIDATION
                       WS-ERROR-MESSAGE
@@ -102,7 +80,7 @@
            CALL 
                'scback' 
                USING BY REFERENCE
-               SCREEN-CUSTOMER, WS-CUSTOMER, WS-CODE-REQUEST-SQL,
+               SCREEN-CUSTOMER, WS-CUS-UUID, WS-CODE-REQUEST-SQL,
                WS-COUNT-CUSTOMER
            END-CALL.
 
@@ -114,9 +92,9 @@
 
       *    [RD] Appel le MENU D'ADHERENT.
            CALL 
-               'menucust' 
+               'mcfront' 
                USING BY REFERENCE 
-               WS-CUSTOMER
+               WS-CUS-UUID
            END-CALL.
        END-1000-INITIALIZATION.
            EXIT. 
