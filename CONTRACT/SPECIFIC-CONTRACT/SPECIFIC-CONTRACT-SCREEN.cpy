@@ -1,22 +1,13 @@
-       01 CLASSIC-CONTRACT-SCREEN FOREGROUND-COLOR IS 2.
+       01  SPECIFIC-CONTRACT-SCREEN FOREGROUND-COLOR IS 2.
            05 BLANK SCREEN.
 
       * [AL] - Nom des contrats type
-           05 FILLER PIC X(10) FROM  WS-ALLEGE-LABEL 
-           LINE 11 COL 89 
-           FOREGROUND-COLOR IS 2. 
-           05 FILLER PIC X(10) FROM  WS-MODERE-LABEL
-           LINE 11 COL 119 
-           FOREGROUND-COLOR IS 2. 
-           05 FILLER PIC X(10) FROM  WS-EXCELL-LABEL 
-           LINE 11 COL 148 
+           05 FILLER PIC X(18) VALUE  'CONTRAT SPECIFIQUE' 
+           LINE 11 COL 85 
            FOREGROUND-COLOR IS 2. 
 
-      * [AL] - Parties Soins courants
-           05 FILLER PIC X(14) VALUE 'Soins Courants'
-           LINE 13 COL 35 
-           FOREGROUND-COLOR IS 2.  
-      * [AL] - Honoraires medecins para et valeurs dans les 3 types cts
+
+      * [AL] - Honoraires medecins para et % médecin
            05 FILLER PIC X(19) VALUE 'Honoraires medecins'  
            LINE 14 COL 38 
            FOREGROUND-COLOR IS 2. 
@@ -37,9 +28,25 @@
            FOREGROUND-COLOR IS 3.
            05 FILLER PIC X(2) VALUE ' %'
            COL 153
-           FOREGROUND-COLOR IS 3.               
+           FOREGROUND-COLOR IS 3. 
+
+      * [AL] - Boutons medecin
+           05 PIC X USING  SC-VALUE-MEDIC-1
+           COL 98 
+           BACKGROUND-COLOR IS 3
+           FOREGROUND-COLOR IS 0.
+           05 PIC X USING  SC-VALUE-MEDIC-2
+           COL 128 
+           BACKGROUND-COLOR IS 3
+           FOREGROUND-COLOR IS 0. 
+           05 PIC X USING  SC-VALUE-MEDIC-3
+            COL 158 
+           BACKGROUND-COLOR IS 3
+           FOREGROUND-COLOR IS 0. 
+
+      * [IM] - % paramédical
            05 FILLER PIC X(23) VALUE 'Reglements paramedicaux' 
-           LINE 15 COL 38 
+           LINE 16 COL 38 
            FOREGROUND-COLOR IS 2. 
            05 FILLER PIC X(3) FROM WS-ALLEGE-PARMEDICAL
            COL 90 
@@ -59,9 +66,24 @@
            05 FILLER PIC X(2) VALUE ' %'
            COL 153
            FOREGROUND-COLOR IS 3.   
-      * [AL] - Hospitalisation (la fidélité est géré dans le bac)        
+
+      * [AL] -  Boutons paramédical
+           05 PIC X USING  SC-VALUE-PARAMEDIC-1
+           COL 98 
+           BACKGROUND-COLOR IS 3
+           FOREGROUND-COLOR IS 0.
+           05 PIC X USING  SC-VALUE-PARAMEDIC-2
+           COL 128 
+           BACKGROUND-COLOR IS 3
+           FOREGROUND-COLOR IS 0. 
+           05 PIC X USING  SC-VALUE-PARAMEDIC-3
+            COL 158 
+           BACKGROUND-COLOR IS 3
+           FOREGROUND-COLOR IS 0. 
+
+      * [AL] - % Hospitalisation (la fidélité est géré dans le bac)        
            05 FILLER PIC X(15) VALUE 'Hospitalisation' 
-           LINE 17 COL 35 
+           LINE 18 COL 38 
            FOREGROUND-COLOR IS 2. 
            05 FILLER PIC X(3) FROM WS-ALLEGE-HOSPITAL
            COL 90 
@@ -80,12 +102,23 @@
            FOREGROUND-COLOR IS 3.
            05 FILLER PIC X(2) VALUE ' %'
            COL 153
-           FOREGROUND-COLOR IS 3.        
+           FOREGROUND-COLOR IS 3.            
 
-      * [AL] - Optique et valeurs dans les 3 types cts 
-           05 FILLER PIC X(7) VALUE 'Optique'
-           LINE 19 COL 35 
-           FOREGROUND-COLOR IS 2.            
+      * [AL] - Boutons hospitalisation 
+           05 PIC X USING  SC-VALUE-HOSPITAL-1
+           COL 98 
+           BACKGROUND-COLOR IS 3
+           FOREGROUND-COLOR IS 0.
+           05 PIC X USING  SC-VALUE-HOSPITAL-2
+           COL 128 
+           BACKGROUND-COLOR IS 3
+           FOREGROUND-COLOR IS 0. 
+           05 PIC X USING  SC-VALUE-HOSPITAL-3
+            COL 158 
+           BACKGROUND-COLOR IS 3
+           FOREGROUND-COLOR IS 0. 
+
+      * [AL] - Optique et % verres simples            
            05 FILLER PIC X(14) VALUE 'Verres simples'  
            LINE 20 COL 38 
            FOREGROUND-COLOR IS 2. 
@@ -106,9 +139,25 @@
            FOREGROUND-COLOR IS 3.
            05 FILLER PIC X(2) VALUE ' %'
            COL 153
-           FOREGROUND-COLOR IS 3.               
+           FOREGROUND-COLOR IS 3.        
+
+      * [AL] - Boutons verres simples
+           05 PIC X USING  SC-VALUE-S-GLASSES-1
+           COL 98 
+           BACKGROUND-COLOR IS 3
+           FOREGROUND-COLOR IS 0.
+           05 PIC X USING  SC-VALUE-S-GLASSES-2
+           COL 128 
+           BACKGROUND-COLOR IS 3
+           FOREGROUND-COLOR IS 0. 
+           05 PIC X USING  SC-VALUE-S-GLASSES-3
+            COL 158 
+           BACKGROUND-COLOR IS 3
+           FOREGROUND-COLOR IS 0. 
+
+      * [IM] - % verres progressifs
            05 FILLER PIC X(18) VALUE 'Verres progressifs'  
-           LINE 21 COL 38 
+           LINE 22 COL 38 
            FOREGROUND-COLOR IS 2. 
            05 FILLER PIC X(3) FROM WS-ALLEGE-P-GLASSES
            COL 90 
@@ -127,12 +176,23 @@
            FOREGROUND-COLOR IS 3.
            05 FILLER PIC X(2) VALUE ' %'
            COL 153
-           FOREGROUND-COLOR IS 3.     
+           FOREGROUND-COLOR IS 3.  
 
-      * [AL] - Dentaire et valeurs dans les 3 types cts 
-           05 FILLER PIC X(8) VALUE 'Dentaire'
-           LINE 23 COL 35 
-           FOREGROUND-COLOR IS 2.            
+      * [AL] - Boutons verres progressifs
+           05 PIC X USING  SC-VALUE-P-GLASSES-1
+           COL 98 
+           BACKGROUND-COLOR IS 3
+           FOREGROUND-COLOR IS 0.
+           05 PIC X USING  SC-VALUE-P-GLASSES-2
+           COL 128 
+           BACKGROUND-COLOR IS 3
+           FOREGROUND-COLOR IS 0. 
+           05 PIC X USING  SC-VALUE-P-GLASSES-3
+            COL 158 
+           BACKGROUND-COLOR IS 3
+           FOREGROUND-COLOR IS 0. 
+
+      * [AL] - Dentaire et % molaires           
            05 FILLER PIC X(20) VALUE 'Couronnes (molaires)' 
            LINE 24 COL 38 
            FOREGROUND-COLOR IS 2. 
@@ -151,11 +211,24 @@
            05 FILLER PIC X(3) FROM WS-EXCELL-MOLAR
            COL 150
            FOREGROUND-COLOR IS 3.
-           05 FILLER PIC X(2) VALUE ' %'
-           COL 153
-           FOREGROUND-COLOR IS 3.                
+
+      * [AL] - Boutons molaire 
+           05 PIC X USING  SC-VALUE-MOLAR-1
+           COL 98 
+           BACKGROUND-COLOR IS 3
+           FOREGROUND-COLOR IS 0.
+           05 PIC X USING  SC-VALUE-MOLAR-2
+           COL 128 
+           BACKGROUND-COLOR IS 3
+           FOREGROUND-COLOR IS 0. 
+           05 PIC X USING  SC-VALUE-MOLAR-3
+            COL 158 
+           BACKGROUND-COLOR IS 3
+           FOREGROUND-COLOR IS 0. 
+
+      * [IM] - % hors molaire
            05 FILLER PIC X(25) VALUE 'Couronnes (hors molaires)'  
-            LINE 25 COL 38 
+            LINE 26 COL 38 
            FOREGROUND-COLOR IS 2. 
            05 FILLER PIC X(3) FROM WS-ALLEGE-NON-MOLAR
            COL 90 
@@ -172,11 +245,24 @@
            05 FILLER PIC X(3) FROM WS-EXCELL-NON-MOLAR
            COL 150
            FOREGROUND-COLOR IS 3.
-           05 FILLER PIC X(2) VALUE ' %'
-           COL 153
-           FOREGROUND-COLOR IS 3.  
+
+      * [AL] - boutons non molaire
+           05 PIC X USING  SC-VALUE-NON-MOLAR-1
+           COL 98 
+           BACKGROUND-COLOR IS 3
+           FOREGROUND-COLOR IS 0.
+           05 PIC X USING  SC-VALUE-NON-MOLAR-2
+           COL 128 
+           BACKGROUND-COLOR IS 3
+           FOREGROUND-COLOR IS 0. 
+           05 PIC X USING  SC-VALUE-NON-MOLAR-3
+            COL 158 
+           BACKGROUND-COLOR IS 3
+           FOREGROUND-COLOR IS 0. 
+
+      * [IM] - % détartrage
            05 FILLER PIC X(10) VALUE 'Detartrage'
-           LINE 26 COL 38 
+           LINE 28 COL 38 
            FOREGROUND-COLOR IS 2. 
            05 FILLER PIC X(3) FROM WS-ALLEGE-DESCALINGS
            COL 90 
@@ -195,119 +281,64 @@
            FOREGROUND-COLOR IS 3.
            05 FILLER PIC X(2) VALUE ' %'
            COL 153
-           FOREGROUND-COLOR IS 3.             
-
-      * [AL] - Montant des cotisations dans les 3 types cts 
-           05 FILLER PIC X(14) VALUE 'Adulte -30 ans'
-           LINE 28 COL 35 
-           FOREGROUND-COLOR IS 2. 
-           05 FILLER PIC X(3) FROM WS-ALLEGE-COST-30
-           COL 90 
-           FOREGROUND-COLOR IS 2.
-           05 FILLER PIC X(6) VALUE ' euros'
-           COL 93 
-           FOREGROUND-COLOR IS 2.
-           05 FILLER PIC X(3) FROM WS-MODERE-COST-30
-           COL 120
-           FOREGROUND-COLOR IS 2.
-           05 FILLER PIC X(6) VALUE ' euros'
-           COL 123
-           FOREGROUND-COLOR IS 2.  
-           05 FILLER PIC X(3) FROM WS-EXCELL-COST-30
-           COL 150
-           FOREGROUND-COLOR IS 2.
-           05 FILLER PIC X(6) VALUE ' euros'
-           COL 153
-           FOREGROUND-COLOR IS 2. 
-           05 FILLER PIC X(18) VALUE 'Adulte 30 a 65 ans'
-           LINE 29 COL 35 
-           FOREGROUND-COLOR IS 2. 
-           05 FILLER PIC X(3) FROM WS-ALLEGE-COST
-           COL 90 
-           FOREGROUND-COLOR IS 2.
-           05 FILLER PIC X(6) VALUE ' euros'
-           COL 93 
-           FOREGROUND-COLOR IS 2.
-           05 FILLER PIC X(3) FROM WS-MODERE-COST
-           COL 120
-           FOREGROUND-COLOR IS 2.
-           05 FILLER PIC X(6) VALUE ' euros'
-           COL 123
-           FOREGROUND-COLOR IS 2.  
-           05 FILLER PIC X(3) FROM WS-EXCELL-COST
-           COL 150
-           FOREGROUND-COLOR IS 2.
-           05 FILLER PIC X(6) VALUE ' euros'
-           COL 153
-           FOREGROUND-COLOR IS 2.  
-           05 FILLER PIC X(14) VALUE 'Adulte +65 ans'
-           LINE 30 COL 35 
-           FOREGROUND-COLOR IS 2. 
-           05 FILLER PIC X(3) FROM WS-ALLEGE-COST-65
-           COL 90 
-           FOREGROUND-COLOR IS 2.
-           05 FILLER PIC X(6) VALUE ' euros'
-           COL 93 
-           FOREGROUND-COLOR IS 2.
-           05 FILLER PIC X(3) FROM WS-MODERE-COST-65
-           COL 120
-           FOREGROUND-COLOR IS 2.
-           05 FILLER PIC X(6) VALUE ' euros'
-           COL 123
-           FOREGROUND-COLOR IS 2.  
-           05 FILLER PIC X(3) FROM WS-EXCELL-COST-65
-           COL 150
-           FOREGROUND-COLOR IS 2.
-           05 FILLER PIC X(6) VALUE ' euros'
-           COL 153
-           FOREGROUND-COLOR IS 2. 
-
-      * [AL] - boutons de des 3 types cts 
-           05 PIC X USING  SC-BUTTON-ALLEGE
-           LINE 32 COL 92 
+           FOREGROUND-COLOR IS 3.              
+      * [AL] - Boutons détartrage           
+           05 PIC X USING  SC-VALUE-DESCALINGS-1
+           COL 98 
+           BACKGROUND-COLOR IS 3
+           FOREGROUND-COLOR IS 0.
+           05 PIC X USING  SC-VALUE-DESCALINGS-2
+           COL 128 
            BACKGROUND-COLOR IS 3
            FOREGROUND-COLOR IS 0. 
-           05 PIC X USING  SC-BUTTON-MODERE
-           LINE 32 COL 122 
+           05 PIC X USING  SC-VALUE-DESCALINGS-3
+            COL 158 
            BACKGROUND-COLOR IS 3
            FOREGROUND-COLOR IS 0. 
-           05 PIC X USING  SC-BUTTON-EXCELLENCE
-           LINE 32 COL 152 
+
+      * [AL] - Affichage coût contrat
+           05 FILLER PIC X(20) VALUE 'Montant du contrat :'
+           LINE 30
+           COL 127
+           FOREGROUND-COLOR IS 3.        
+           05 PIC X(3) FROM SC-CONTRACT-COST
+           COL 149
            BACKGROUND-COLOR IS 3
-           FOREGROUND-COLOR IS 0.          
+           FOREGROUND-COLOR IS 0.  
+           05 FILLER PIC X(5) VALUE 'euros'
+           COL 154
+           FOREGROUND-COLOR IS 3.  
 
-           05 PIC X(70) FROM SC-MESSAGE
-           COL 20 
-           BACKGROUND-COLOR IS 0
-           FOREGROUND-COLOR IS 7. 
-
-      * [AL] - boutons vers pages contrats spe 
-           05 FILLER PIC X(18) VALUE 'CONTRAT SPECIFIQUE'
-           LINE 34 COL 35
+      * [AL] - Gestion des boutons 
+           05 FILLER PIC X(20) VALUE 'Valider mes choix :'
+           LINE 30
+           COL 85
+           FOREGROUND-COLOR IS 3.        
+           05 PIC X(1) USING SC-BUTTON-CHOICE-VALIDATE
+           COL 107
+           BACKGROUND-COLOR IS 3
+           FOREGROUND-COLOR IS 0.  
+           05 FILLER PIC X(23) VALUE 'Validation du contrat :'
+           LINE 34 COL 38
            FOREGROUND-COLOR IS 3. 
-           05 PIC X USING SC-BUTTON-PERSO
-           COL 55 
+           05 PIC X USING  SC-BUTTON-CONT-VALIDATE
+           COL 61 
            BACKGROUND-COLOR IS 3
            FOREGROUND-COLOR IS 0. 
-
-
-      * [AL] - boutons de retour menu
-           05 FILLER PIC X(1) USING SC-BUTTON-RETURN 
-           LINE 34 COL 170 
+           05 FILLER PIC X(1) TO  SC-BUTTON-RETURN 
+           COL 170 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 
            05 FILLER PIC X(6) VALUE  'Retour' 
            COL 172 
            FOREGROUND-COLOR IS 2.
 
-      * [AL] - boutons de validation du ct et fer
-           05 FILLER PIC X(1) TO  SC-BUTTON-CONFIRM 
-           COL 107 
-           BACKGROUND-COLOR IS 3
-           FOREGROUND-COLOR IS 0. 
-           05 FILLER PIC X(9) VALUE  'Confirmer' 
-           COL 110 
-           FOREGROUND-COLOR IS 3.
+      * [AL] - Affichage message gestion d'erreur    
+                 
+           05 PIC X(45) FROM SC-MESSAGE
+           LINE 32 COL 20 
+           BACKGROUND-COLOR IS 0
+           FOREGROUND-COLOR IS 7. 
 
       * [AL] - cadre page
            05 FILLER PIC X(182) VALUE all ' ' LINE 4 COL 10 
@@ -321,8 +352,8 @@
            BACKGROUND-COLOR IS 2.        
            05 FILLER PIC X(2) VALUE  '  ' COL  190
            BACKGROUND-COLOR IS 2.
-           05 FILLER PIC X(19) VALUE  'CONTRATS CLASSIQUES' 
-           COL 87 
+           05 FILLER PIC X(30) VALUE  'CREATION DU CONTRAT SPECIFIQUE' 
+           COL 80 
            FOREGROUND-COLOR IS 2.            
 
            05 FILLER PIC X(2) VALUE  '  ' LINE 7 COL 10 
@@ -342,7 +373,7 @@
            BACKGROUND-COLOR IS 2. 
            05 FILLER PIC X(2) VALUE  '  ' COL  190
            BACKGROUND-COLOR IS 2. 
-
+                      
            05 FILLER PIC X(2) VALUE  '  ' LINE 11 COL 10 
            BACKGROUND-COLOR IS 2.                       
            05 FILLER PIC X(2) VALUE  '  ' COL  190
@@ -530,3 +561,4 @@
 
            05 FILLER PIC X(182) VALUE all  '  ' LINE 37 COL 10 
            BACKGROUND-COLOR IS 2.
+

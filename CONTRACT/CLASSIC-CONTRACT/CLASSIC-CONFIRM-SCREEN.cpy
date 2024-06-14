@@ -27,57 +27,59 @@
            FOREGROUND-COLOR IS 0. 
 
       * [IM] - cadre page de confirmation
-           05 FILLER PIC X(51) VALUE all " " LINE 7 COL 85 
+           05 FILLER PIC X(51) VALUE all ' ' LINE 7 COL 85 
            BACKGROUND-COLOR IS 2.
-           05 FILLER PIC X(01) VALUE  " " LINE 8 COL 85 
+           05 FILLER PIC X(01) VALUE  ' ' LINE 8 COL 85 
            BACKGROUND-COLOR IS 2.
-           05 FILLER PIC X(01) VALUE  " "  COL 135 
+           05 FILLER PIC X(01) VALUE  ' '  COL 135 
            BACKGROUND-COLOR IS 2.
-           05 FILLER PIC X(01) VALUE  " " LINE 9 COL 85 
+           05 FILLER PIC X(01) VALUE  ' ' LINE 9 COL 85 
            BACKGROUND-COLOR IS 2.
-           05 FILLER PIC X(01) VALUE  " "  COL 135  
+           05 FILLER PIC X(01) VALUE  ' '  COL 135  
            BACKGROUND-COLOR IS 2.
-           05 FILLER PIC X(01) VALUE  " " LINE 10 COL 85 
+           05 FILLER PIC X(01) VALUE  ' ' LINE 10 COL 85 
            BACKGROUND-COLOR IS 2.
-           05 FILLER PIC X(01) VALUE  " "  COL 135  
+           05 FILLER PIC X(01) VALUE  ' '  COL 135  
            BACKGROUND-COLOR IS 2.
-           05 FILLER PIC X(01) VALUE  " " LINE 11 COL 85 
+           05 FILLER PIC X(01) VALUE  ' ' LINE 11 COL 85 
            BACKGROUND-COLOR IS 2.
-           05 FILLER PIC X(01) VALUE  " "  COL 135 
+           05 FILLER PIC X(01) VALUE  ' '  COL 135 
            BACKGROUND-COLOR IS 2.
-           05 FILLER PIC X(01) VALUE  " " LINE 12 COL 85 
+           05 FILLER PIC X(01) VALUE  ' ' LINE 12 COL 85 
            BACKGROUND-COLOR IS 2.
-           05 FILLER PIC X(01) VALUE  " "  COL 135  
+           05 FILLER PIC X(01) VALUE  ' '  COL 135  
            BACKGROUND-COLOR IS 2.
-           05 FILLER PIC X(01) VALUE  " " LINE 13 COL 85 
+           05 FILLER PIC X(01) VALUE  ' ' LINE 13 COL 85 
            BACKGROUND-COLOR IS 2.
-           05 FILLER PIC X(01) VALUE  " "  COL 135  
+           05 FILLER PIC X(01) VALUE  ' '  COL 135  
            BACKGROUND-COLOR IS 2.
-           05 FILLER PIC X(01) VALUE  " " LINE 14 COL 85 
+           05 FILLER PIC X(01) VALUE  ' ' LINE 14 COL 85 
            BACKGROUND-COLOR IS 2.
-           05 FILLER PIC X(01) VALUE  " "  COL 135  
+           05 FILLER PIC X(01) VALUE  ' '  COL 135  
            BACKGROUND-COLOR IS 2.
-           05 FILLER PIC X(01) VALUE  " " LINE 15 COL 85 
+           05 FILLER PIC X(01) VALUE  ' ' LINE 15 COL 85 
            BACKGROUND-COLOR IS 2.
-           05 FILLER PIC X(01) VALUE  " "  COL 135  
+           05 FILLER PIC X(01) VALUE  ' '  COL 135  
            BACKGROUND-COLOR IS 2.
-           05 FILLER PIC X(01) VALUE  " " LINE 16 COL 85 
+           05 FILLER PIC X(01) VALUE  ' ' LINE 16 COL 85 
            BACKGROUND-COLOR IS 2.
-           05 FILLER PIC X(01) VALUE  " "  COL 135  
+           05 FILLER PIC X(01) VALUE  ' '  COL 135  
            BACKGROUND-COLOR IS 2.
-           05 FILLER PIC X(01) VALUE  " " LINE 17 COL 85 
+           05 FILLER PIC X(01) VALUE  ' ' LINE 17 COL 85 
            BACKGROUND-COLOR IS 2.
-           05 FILLER PIC X(01) VALUE  " "  COL 135  
+           05 FILLER PIC X(01) VALUE  ' '  COL 135  
            BACKGROUND-COLOR IS 2.
-           05 FILLER PIC X(01) VALUE  " " LINE 18 COL 85 
+           05 FILLER PIC X(01) VALUE  ' ' LINE 18 COL 85 
            BACKGROUND-COLOR IS 2.
-           05 FILLER PIC X(01) VALUE  " "  COL 135  
+           05 FILLER PIC X(01) VALUE  ' '  COL 135  
            BACKGROUND-COLOR IS 2.
-           05 FILLER PIC X(01) VALUE  " " LINE 19 COL 85 
+           05 FILLER PIC X(01) VALUE  ' ' LINE 19 COL 85 
            BACKGROUND-COLOR IS 2.
-           05 FILLER PIC X(01) VALUE  " "  COL 135  
+           05 FILLER PIC X(01) VALUE  ' '  COL 135  
            BACKGROUND-COLOR IS 2.   
-           05 FILLER PIC X(51) VALUE all " " LINE 20 COL 85 
+           05 FILLER PIC X(51) VALUE all ' ' LINE 20 COL 85 
            BACKGROUND-COLOR IS 2.
 
            
+
+
