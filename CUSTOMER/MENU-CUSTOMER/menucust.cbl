@@ -12,11 +12,13 @@
        DATA DIVISION.
        WORKING-STORAGE SECTION. 
        01  WS-OPTIONS-MENU-CUST.
-           03 WS-CUSTOMER-MODIF  PIC X(01).
-           03 WS-CUST-ARCHIVE    PIC X(01).
-           03 WS-CONTRACT-LIST   PIC X(01).             
-           03 WS-MENU-RETURN     PIC X(01).    
-           03 WS-ERROR-MESSAGE   PIC X(62).  
+           03 WS-CUSTOMER-MODIF       PIC X(01).
+           03 WS-CUST-ARCHIVE         PIC X(01).
+           03 WS-CONTRACT-LIST        PIC X(01).
+           03 WS-MENU-RAPPORT         PIC X(01).  
+           03 WS-MENU-REMBOURSEMENT   PIC X(01). 
+           03 WS-MENU-RETURN          PIC X(01).    
+           03 WS-ERROR-MESSAGE        PIC X(62).  
 
        01  CUS-CODE-SECU. 
            03 CCS-SECU-1 PIC X(01).
@@ -128,6 +130,14 @@
            ELSE IF FUNCTION UPPER-CASE(WS-CUST-ARCHIVE)
                    EQUAL 'O' THEN           
                CALL 'archust' USING LK-CUSTOMER
+
+           ELSE IF FUNCTION UPPER-CASE(WS-MENU-RAPPORT)
+                   EQUAL 'O' THEN           
+               CALL 'rptmenu' USING LK-CUSTOMER
+
+           ELSE IF FUNCTION UPPER-CASE(WS-MENU-REMBOURSEMENT)
+                   EQUAL 'O' THEN           
+               CALL 'rembmenu' USING LK-CUSTOMER
 
            ELSE  
               MOVE 'Veuillez entrer "O" pour confirmer.' 
