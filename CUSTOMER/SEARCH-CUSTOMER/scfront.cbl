@@ -123,7 +123,7 @@
 
       ******************************************************************
       *    [RD] Si l'utilisateur a saisi "O" sur "Retour au menu"      *
-      *    redirige vers la fin de ce programme.                       *
+      *    redirige vers la gestion d'adhérent.                        *
       *    Si l'utilisateur a effectué une saisie incorrecte redirige  *
       *    vers le début de ce programme avec un message d'erreur.     *
       ******************************************************************
