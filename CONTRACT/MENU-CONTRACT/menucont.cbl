@@ -7,6 +7,9 @@
       *    un bouton valider et un bouton retour                       *
       * Auteur: Isabelle                                               *     
       * Date de création : le 11/06/2024                               *
+      *                                                                *
+      *    [IM] - le 11/06/2024 - Modification pour intégrer le        *       
+      *                        LK-CUSTOMER complet                     *      
       ****************************************************************** 
        IDENTIFICATION DIVISION.
        PROGRAM-ID. menucont.
@@ -15,33 +18,49 @@
        DATA DIVISION.
        WORKING-STORAGE SECTION.
       *    gestion des erreurs de saisie
-       01 WS-SELECT-OPTION      PIC X(05)   VALUE 'FALSE'     . 
+       01 WS-SELECT-OPTION         PIC X(05)   VALUE 'FALSE'     . 
        01 WS-MESSAGE.
-           05 WS-MESSAGE1       PIC X(31)
-               VALUE 'ERREUR DE SAISIE, VEUILLEZ SELE'        .
-           05 WS-MESSAGE2       PIC X(31)
-               VALUE 'CTIONNER VOTRE CHOIX AVEC "O".'         .
-           05 WS-MESSAGE3       PIC X(45)
+           05 WS-MESSAGE1          PIC X(31)
+               VALUE 'ERREUR DE SAISIE, VEUILLEZ SELE'           .
+           05 WS-MESSAGE2          PIC X(31)
+               VALUE 'CTIONNER VOTRE CHOIX AVEC "O".'            .
+           05 WS-MESSAGE3          PIC X(45)
                VALUE 'Y COMPRIS POUR VALIDER OU RETOURNER AU MENU.'.    
-       01  WS-CUSTOMER          PIC X(45)   VALUE SPACE       .
+       01  WS-CUSTOMER             PIC X(45)   VALUE SPACE       .
           
       *    gestion de la saisie
-       01  WS-LINK-CHOICE       PIC X(01)   VALUE SPACE       .
-       01  WS-READ-CHOICE       PIC X(01)   VALUE SPACE       .
-       01  WS-UPDATE-CHOICE     PIC X(01)   VALUE SPACE       .
-       01  WS-VALIDE-CHOICE     PIC X(01)   VALUE SPACE       .
-       01  WS-RETURN-CHOICE     PIC X(01)   VALUE SPACE       .
+       01  WS-LINK-CHOICE          PIC X(01)   VALUE SPACE       .
+       01  WS-READ-CHOICE          PIC X(01)   VALUE SPACE       .
+       01  WS-UPDATE-CHOICE        PIC X(01)   VALUE SPACE       .
+       01  WS-VALIDE-CHOICE        PIC X(01)   VALUE SPACE       .
+       01  WS-RETURN-CHOICE        PIC X(01)   VALUE SPACE       .
 
       * LINKAGE SECTION.
-       01  LK-CUSTOMER.
-           05 LK-FIRSTNAME      PIC X(14)                     .
-           05 FILLER            PIC X(01)   VALUE SPACE       .
-           05 LK-LASTNAME       PIC X(14)                     . 
-           05 FILLER            PIC X(01)   VALUE SPACE       .
-           05 LK-SECU           PIC X(15)                     .    
+       01 LK-CUSTOMER.
+           03 LK-CUS-UUID          PIC X(36).
+           03 LK-CUS-GENDER        PIC X(10).
+           03 LK-CUS-LASTNAME      PIC X(20).
+           03 LK-CUS-FIRSTNAME     PIC X(20).
+           03 LK-CUS-ADRESS1       PIC X(50).
+           03 LK-CUS-ADRESS2       PIC X(50).
+           03 LK-CUS-ZIPCODE       PIC X(15).
+           03 LK-CUS-TOWN          PIC X(30).
+           03 LK-CUS-COUNTRY       PIC X(20).
+           03 LK-CUS-PHONE	       PIC X(10).
+           03 LK-CUS-MAIL	       PIC X(50).
+           03 LK-CUS-BIRTH-DATE    PIC X(10).           
+           03 LK-CUS-DOCTOR	       PIC X(20).
+           03 LK-CUS-CODE-SECU     PIC 9(15).
+           03 LK-CUS-CODE-IBAN     PIC X(34).
+           03 LK-CUS-NBCHILDREN    PIC 9(03).
+           03 LK-CUS-COUPLE        PIC X(05).
+           03 LK-CUS-CREATE-DATE   PIC X(10).
+           03 LK-CUS-UPDATE-DATE   PIC X(10).
+           03 LK-CUS-CLOSE-DATE    PIC X(10).
+           03 LK-CUS-ACTIVE	       PIC X(01).  
       ******************************************************************
        SCREEN SECTION.
-           COPY MENU-CONTRACT-SCREEN.CPY
+           COPY 'MENU-CONTRACT-SCREEN.cpy'.
       
       ******************************************************************
        PROCEDURE DIVISION.
@@ -63,9 +82,10 @@
       *    de saisie de l'utilisateur                                  *
       ****************************************************************** 
        1000-SCREEN-LOOP-START.  
-           MOVE 'Jean' TO LK-FIRSTNAME.
-           MOVE 'Guarette' TO LK-LASTNAME .
-           MOVE '106786227618713' TO LK-SECU .
+      *    Le 14-06-2024 [IM] Gestion du LK-CUSTOMER complet
+           MOVE 'Jean' TO LK-CUS-FIRSTNAME.
+           MOVE 'Guarette' TO LK-CUS-LASTNAME .
+           SET LK-CUS-CODE-SECU TO 106786227618713.
 
            PERFORM 1100-PREPARE-SCREEN-START 
                     THRU END-1100-PREPARE-SCREEN.
@@ -84,11 +104,11 @@
       *    Pour meilleure ergonomie je retire les espaces              *
       ******************************************************************
        1100-PREPARE-SCREEN-START.
-           STRING FUNCTION TRIM (LK-FIRSTNAME)
+           STRING FUNCTION TRIM (LK-CUS-FIRSTNAME)
                   SPACE 
-                  FUNCTION TRIM (LK-LASTNAME)
+                  FUNCTION TRIM (LK-CUS-LASTNAME)
                   SPACE 
-                  LK-SECU 
+                  LK-CUS-CODE-SECU 
            DELIMITED BY SIZE 
            INTO WS-CUSTOMER.  
        END-1100-PREPARE-SCREEN.
@@ -107,7 +127,8 @@
               EQUAL 'O' THEN
                  IF FUNCTION UPPER-CASE(WS-LINK-CHOICE)
                  EQUAL 'O' THEN
-                       CALL 'creacont' USING CONTENT LK-CUSTOMER
+      *    Le 14-06-2024 [IM] Gestion du bon nom de programme           
+                       CALL 'clascont' USING CONTENT LK-CUSTOMER
                     ELSE IF FUNCTION UPPER-CASE(WS-READ-CHOICE)
                     EQUAL 'O' THEN
                           CALL 'readcont' USING CONTENT LK-CUSTOMER
