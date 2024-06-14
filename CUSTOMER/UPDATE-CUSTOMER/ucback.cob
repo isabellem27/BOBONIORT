@@ -24,21 +24,9 @@
            03 WS-CUS-COUNTRY	 PIC X(20).
            03 WS-CUS-PHONE	     PIC X(10).
            03 WS-CUS-MAIL	     PIC X(50).
-           03 WS-CUS-BIRTH-DATE.
-               05 WS-YEAR        PIC X(04).
-               05 WS-SEPARATOR1  PIC X(01).
-               05 WS-MONTH       PIC X(02).
-               05 WS-SEPARATOR2  PIC X(01).
-               05 WS-DAY         PIC X(02).
+           03 WS-CUS-BIRTH-DATE  PIC X(10).
            03 WS-CUS-DOCTOR	     PIC X(20).
-           03 WS-CUS-CODE-SECU.
-               05 WS-SECU-1      PIC X(01).
-               05 WS-SECU-2      PIC X(02).
-               05 WS-SECU-3      PIC X(02).
-               05 WS-SECU-4      PIC X(02).
-               05 WS-SECU-5      PIC X(03).
-               05 WS-SECU-6      PIC X(03).
-               05 WS-SECU-7      PIC X(02).
+           03 WS-CUS-CODE-SECU   PIC 9(15).
            03 WS-CUS-CODE-IBAN   PIC X(34).
            03 WS-CUS-NBCHILDREN  PIC 9(03).
            03 WS-CUS-COUPLE      PIC X(05).
@@ -66,11 +54,13 @@ OCESQL  &  "ENDER = TRIM( $1 ), CUSTOMER_LASTNAME = TRIM( $2 ), CUSTOM"
 OCESQL  &  "ER_FIRSTNAME = TRIM( $3 ), CUSTOMER_ADRESS1 = TRIM( $4 ), "
 OCESQL  &  "CUSTOMER_ADRESS2 = TRIM( $5 ), CUSTOMER_ZIPCODE = TRIM( $6"
 OCESQL  &  " ), CUSTOMER_TOWN = TRIM( $7 ), CUSTOMER_COUNTRY = T".
-OCESQL     02  FILLER PIC X(236) VALUE "RIM( $8 ), CUSTOMER_PHONE = TR"
-OCESQL  &  "IM( $9 ), CUSTOMER_MAIL = TRIM( $10 ), CUSTOMER_DOCTOR = T"
-OCESQL  &  "RIM( $11 ), CUSTOMER_CODE_IBAN = TRIM( $12 ), CUSTOMER_NBC"
-OCESQL  &  "HILDREN = $13, CUSTOMER_COUPLE = $14, CUSTOMER_UPDATE_DATE"
-OCESQL  &  " = $15 WHERE UUID_CUSTOMER = $16".
+OCESQL     02  FILLER PIC X(256) VALUE "RIM( $8 ), CUSTOMER_PHONE = TR"
+OCESQL  &  "IM( $9 ), CUSTOMER_MAIL = TRIM( $10 ), CUSTOMER_BIRTH_DATE"
+OCESQL  &  " = $11, CUSTOMER_DOCTOR = TRIM( $12 ), CUSTOMER_CODE_SECU "
+OCESQL  &  "= $13, CUSTOMER_CODE_IBAN = TRIM( $14 ), CUSTOMER_NBCHILDR"
+OCESQL  &  "EN = $15, CUSTOMER_COUPLE = $16, CUSTOMER_UPDATE_DAT".
+OCESQL     02  FILLER PIC X(033) VALUE "E = $17 WHERE UUID_CUSTOMER = "
+OCESQL  &  "$18".
 OCESQL     02  FILLER PIC X(1) VALUE X"00".
 OCESQL*
        LINKAGE SECTION.
@@ -86,12 +76,7 @@ OCESQL*
            03 LK-CUS-COUNTRY	 PIC X(20).
            03 LK-CUS-PHONE	     PIC X(10).
            03 LK-CUS-MAIL	     PIC X(50).
-           03 LK-CUS-BIRTH-DATE.
-               05 LK-YEAR        PIC X(04).
-               05 LK-SEPARATOR1  PIC X(01).
-               05 LK-MONTH       PIC X(02).
-               05 LK-SEPARATOR2  PIC X(01).
-               05 LK-DAY         PIC X(02).
+           03 LK-CUS-BIRTH-DATE  PIC X(10).
            03 LK-CUS-DOCTOR	     PIC X(20).
            03 LK-CUS-CODE-SECU.
                05 LK-SECU-1      PIC X(01).
@@ -154,8 +139,7 @@ OCESQL     END-CALL.
       *    [SK-RD] Initialisation des données pour la requête SQL.     *
       ******************************************************************
        1000-START-INITIALIZATION.
-      *  [SK] Convertit le statut de couple en 't' ou 'f' pour 
-      *    la base de données. 
+      *    [SK] Convertit le statut de couple en 't' ou 'f' pour la DB. 
            IF LK-CUS-COUPLE EQUAL 'oui' THEN
                MOVE 't' TO LK-CUS-COUPLE
            ELSE IF LK-CUS-COUPLE EQUAL 'non' THEN
@@ -186,7 +170,9 @@ OCESQL*            CUSTOMER_TOWN        = TRIM(:WS-CUS-TOWN),
 OCESQL*            CUSTOMER_COUNTRY     = TRIM(:WS-CUS-COUNTRY), 
 OCESQL*            CUSTOMER_PHONE       = TRIM(:WS-CUS-PHONE), 
 OCESQL*            CUSTOMER_MAIL        = TRIM(:WS-CUS-MAIL),
+OCESQL*            CUSTOMER_BIRTH_DATE  = :WS-CUS-BIRTH-DATE,
 OCESQL*            CUSTOMER_DOCTOR      = TRIM(:WS-CUS-DOCTOR),
+OCESQL*            CUSTOMER_CODE_SECU   = :WS-CUS-CODE-SECU,
 OCESQL*            CUSTOMER_CODE_IBAN   = TRIM(:WS-CUS-CODE-IBAN),
 OCESQL*            CUSTOMER_NBCHILDREN  = :WS-CUS-NBCHILDREN,
 OCESQL*            CUSTOMER_COUPLE      = :WS-CUS-COUPLE,
@@ -257,9 +243,21 @@ OCESQL          BY REFERENCE WS-CUS-MAIL
 OCESQL     END-CALL
 OCESQL     CALL "OCESQLSetSQLParams" USING
 OCESQL          BY VALUE 16
+OCESQL          BY VALUE 10
+OCESQL          BY VALUE 0
+OCESQL          BY REFERENCE WS-CUS-BIRTH-DATE
+OCESQL     END-CALL
+OCESQL     CALL "OCESQLSetSQLParams" USING
+OCESQL          BY VALUE 16
 OCESQL          BY VALUE 20
 OCESQL          BY VALUE 0
 OCESQL          BY REFERENCE WS-CUS-DOCTOR
+OCESQL     END-CALL
+OCESQL     CALL "OCESQLSetSQLParams" USING
+OCESQL          BY VALUE 1
+OCESQL          BY VALUE 15
+OCESQL          BY VALUE 0
+OCESQL          BY REFERENCE WS-CUS-CODE-SECU
 OCESQL     END-CALL
 OCESQL     CALL "OCESQLSetSQLParams" USING
 OCESQL          BY VALUE 16
@@ -294,7 +292,7 @@ OCESQL     END-CALL
 OCESQL     CALL "OCESQLExecParams" USING
 OCESQL          BY REFERENCE SQLCA
 OCESQL          BY REFERENCE SQ0002
-OCESQL          BY VALUE 16
+OCESQL          BY VALUE 18
 OCESQL     END-CALL
 OCESQL     CALL "OCESQLEndSQL"
 OCESQL     END-CALL.

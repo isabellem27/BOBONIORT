@@ -24,21 +24,9 @@
            03 WS-CUS-COUNTRY	 PIC X(20).
            03 WS-CUS-PHONE	     PIC X(10).
            03 WS-CUS-MAIL	     PIC X(50).
-           03 WS-CUS-BIRTH-DATE.
-               05 WS-YEAR        PIC X(04).
-               05 WS-SEPARATOR1  PIC X(01).
-               05 WS-MONTH       PIC X(02).
-               05 WS-SEPARATOR2  PIC X(01).
-               05 WS-DAY         PIC X(02).
+           03 WS-CUS-BIRTH-DATE  PIC X(10).
            03 WS-CUS-DOCTOR	     PIC X(20).
-           03 WS-CUS-CODE-SECU.
-               05 WS-SECU-1      PIC X(01).
-               05 WS-SECU-2      PIC X(02).
-               05 WS-SECU-3      PIC X(02).
-               05 WS-SECU-4      PIC X(02).
-               05 WS-SECU-5      PIC X(03).
-               05 WS-SECU-6      PIC X(03).
-               05 WS-SECU-7      PIC X(02).
+           03 WS-CUS-CODE-SECU   PIC 9(15).
            03 WS-CUS-CODE-IBAN   PIC X(34).
            03 WS-CUS-NBCHILDREN  PIC 9(03).
            03 WS-CUS-COUPLE      PIC X(05).
@@ -67,12 +55,7 @@
            03 LK-CUS-COUNTRY	 PIC X(20).
            03 LK-CUS-PHONE	     PIC X(10).
            03 LK-CUS-MAIL	     PIC X(50).
-           03 LK-CUS-BIRTH-DATE.
-               05 LK-YEAR        PIC X(04).
-               05 LK-SEPARATOR1  PIC X(01).
-               05 LK-MONTH       PIC X(02).
-               05 LK-SEPARATOR2  PIC X(01).
-               05 LK-DAY         PIC X(02).
+           03 LK-CUS-BIRTH-DATE  PIC X(10).
            03 LK-CUS-DOCTOR	     PIC X(20).
            03 LK-CUS-CODE-SECU.
                05 LK-SECU-1      PIC X(01).
@@ -115,8 +98,7 @@
       *    [SK-RD] Initialisation des données pour la requête SQL.     *
       ******************************************************************
        1000-START-INITIALIZATION.
-      *  [SK] Convertit le statut de couple en 't' ou 'f' pour 
-      *    la base de données. 
+      *    [SK] Convertit le statut de couple en 't' ou 'f' pour la DB. 
            IF LK-CUS-COUPLE EQUAL 'oui' THEN
                MOVE 't' TO LK-CUS-COUPLE
            ELSE IF LK-CUS-COUPLE EQUAL 'non' THEN
@@ -147,7 +129,9 @@
                    CUSTOMER_COUNTRY     = TRIM(:WS-CUS-COUNTRY), 
                    CUSTOMER_PHONE       = TRIM(:WS-CUS-PHONE), 
                    CUSTOMER_MAIL        = TRIM(:WS-CUS-MAIL),
+                   CUSTOMER_BIRTH_DATE  = :WS-CUS-BIRTH-DATE,
                    CUSTOMER_DOCTOR      = TRIM(:WS-CUS-DOCTOR),
+                   CUSTOMER_CODE_SECU   = :WS-CUS-CODE-SECU,
                    CUSTOMER_CODE_IBAN   = TRIM(:WS-CUS-CODE-IBAN),
                    CUSTOMER_NBCHILDREN  = :WS-CUS-NBCHILDREN,
                    CUSTOMER_COUPLE      = :WS-CUS-COUPLE,

@@ -48,7 +48,7 @@
            05 FILLER PIC X(31) VALUE 'Date de naissance (JJ-MM-AAAA)' 
            LINE 19 COL 45. 
 
-           05 FILLER PIC X(02) USING LK-DAY
+           05 FILLER PIC X(02) USING WS-CUB-DAY
            LINE 20 COL 45 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.
@@ -57,7 +57,7 @@
            LINE 20 COL 47 AUTO 
            FOREGROUND-COLOR IS 2.
 
-           05 FILLER PIC X(02) USING LK-MONTH
+           05 FILLER PIC X(02) USING WS-CUB-MONTH
            LINE 20 COL 48 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.
@@ -66,7 +66,7 @@
            LINE 20 COL 50 AUTO 
            FOREGROUND-COLOR IS 2.
 
-           05 FILLER PIC X(04) USING LK-YEAR
+           05 FILLER PIC X(04) USING WS-CUB-YEAR
            LINE 20 COL 51 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 
@@ -231,8 +231,12 @@
            FOREGROUND-COLOR IS 0.
 
       *    [SK] zone message d'erreur.
-           05 FILLER PIC X(140) FROM WS-ERROR-MESSAGE 
+           05 FILLER PIC X(140) FROM WS-ERROR-MESSAGE1 
            LINE 31 COL 45 
+           FOREGROUND-COLOR IS 8.
+
+           05 FILLER PIC X(120) FROM WS-ERROR-MESSAGE2 
+           LINE 32 COL 64 
            FOREGROUND-COLOR IS 8.
 
       *    [SK] Bouton rechercher.

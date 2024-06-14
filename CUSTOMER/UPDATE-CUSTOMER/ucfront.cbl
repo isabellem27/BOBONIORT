@@ -12,12 +12,20 @@
 
        DATA DIVISION.
        WORKING-STORAGE SECTION.
-       01  WS-ERROR-MESSAGE     PIC X(140).
-       01  WS-ERROR-MESSAGE-POS PIC 9(03).   
-       01  WS-IS-ERROR          PIC X(01).   
-       01  WS-UPDATE-VALIDATION PIC X(01).
-       01  WS-MENU-RETURN       PIC X(01).
-       01  WS-MAIL-AROBASE      PIC 9(01) VALUE 0.
+       01  WS-CUS-BIRTH-DATE.
+           03 WS-CUB-DAY         PIC X(02).
+           03 FILLER             PIC X(01) VALUE '-'.
+           03 WS-CUB-MONTH       PIC X(02).
+           03 FILLER             PIC X(01) VALUE '-'.
+           03 WS-CUB-YEAR        PIC X(04).
+
+       01  WS-ERROR-MESSAGE1     PIC X(140).
+       01  WS-ERROR-MESSAGE2     PIC X(120).
+       01  WS-ERROR-MESSAGE-POS  PIC 9(03).   
+       01  WS-IS-ERROR           PIC X(01).   
+       01  WS-UPDATE-VALIDATION  PIC X(01).
+       01  WS-MENU-RETURN        PIC X(01).
+       01  WS-COUNT-AROBASE      PIC 9(02).
 
        LINKAGE SECTION.
        01 LK-CUSTOMER.
@@ -32,12 +40,7 @@
            03 LK-CUS-COUNTRY	 PIC X(20).
            03 LK-CUS-PHONE	     PIC X(10).
            03 LK-CUS-MAIL	     PIC X(50).
-           03 LK-CUS-BIRTH-DATE.
-               05 LK-YEAR        PIC X(04).
-               05 LK-SEPARATOR1  PIC X(01).
-               05 LK-MONTH       PIC X(02).
-               05 LK-SEPARATOR2  PIC X(01).
-               05 LK-DAY         PIC X(02).
+           03 LK-CUS-BIRTH-DATE  PIC X(10).
            03 LK-CUS-DOCTOR	     PIC X(20).
            03 LK-CUS-CODE-SECU.
                05 LK-SECU-1      PIC X(01).
@@ -63,23 +66,37 @@
        PROCEDURE DIVISION USING LK-CUSTOMER.
 
        0000-START-MAIN.
-           INITIALIZE WS-ERROR-MESSAGE
+           INITIALIZE WS-ERROR-MESSAGE1
+                      WS-ERROR-MESSAGE2 
                       WS-UPDATE-VALIDATION
                       WS-MENU-RETURN.
+
+      *    [SK] Convertit le statut de couple en 'oui' ou 'non' pour 
+      *         la screen section. 
+           IF LK-CUS-COUPLE EQUAL 't'
+               MOVE 'oui' TO LK-CUS-COUPLE
+           ELSE IF LK-CUS-COUPLE EQUAL 'f'
+               MOVE 'non' TO LK-CUS-COUPLE
+           END-IF.
+
+      *    [RD] Convertit la date au format JJ-MM-AAAA pour la screen
+      *         section.      
+           MOVE LK-CUS-BIRTH-DATE(1:4) TO WS-CUB-YEAR. 
+           MOVE LK-CUS-BIRTH-DATE(6:2) TO WS-CUB-MONTH.  
+           MOVE LK-CUS-BIRTH-DATE(9:2) TO WS-CUB-DAY.   
 
            PERFORM 1000-START-INITIALIZATION
               THRU END-1000-INITIALIZATION.
        END-0000-MAIN.
            GOBACK.
 
+      ******************************************************************
+      *    [RD] Affiche l'écran de la modification, appel les          *    
+      *    paragraphes qui s'occupent de vérifier les saisis de        *
+      *    l'utilisateur et appel les sous-programmes BACK et menu     *
+      *    d'un adhérent.                                              *
+      ******************************************************************
        1000-START-INITIALIZATION.
-      *    [SK] Convertit le statut de couple en 't' ou 'f' pour 
-      *    la base de donnees.. 
-           IF LK-CUS-COUPLE EQUAL 't'
-               MOVE 'oui' TO LK-CUS-COUPLE
-           ELSE IF LK-CUS-COUPLE EQUAL 'f'
-               MOVE 'non' TO LK-CUS-COUPLE
-           END-IF.  
 
            ACCEPT SCREEN-UPDATE-CUSTOMER.
 
@@ -91,6 +108,13 @@
 
            PERFORM 1300-START-ERROR-FIELDS 
              THRU END-1300-ERROR-FIELDS.  
+
+      *    [RD] Convertit la date au format AAAA-MM-JJ pour la DB. 
+           STRING 
+               WS-CUB-YEAR '-' WS-CUB-MONTH '-' WS-CUB-DAY
+               DELIMITED BY SIZE
+               INTO LK-CUS-BIRTH-DATE
+           END-STRING.
 
            CALL
                'ucback'
@@ -126,7 +150,7 @@
                AND WS-MENU-RETURN NOT EQUAL SPACES THEN
 
                MOVE 'Veuillez entrer "O" pour retourner au menu.' 
-               TO WS-ERROR-MESSAGE
+               TO WS-ERROR-MESSAGE1
 
                GO TO 1000-START-INITIALIZATION
            END-IF.
@@ -143,7 +167,7 @@
 
            IF WS-UPDATE-VALIDATION NOT EQUAL 'O' THEN
                MOVE 'Veuillez entrer "O" pour modifier.' 
-               TO WS-ERROR-MESSAGE
+               TO WS-ERROR-MESSAGE1
             
                GO TO 1000-START-INITIALIZATION
            END-IF.
@@ -156,134 +180,228 @@
       *    et redirige vers le début de ce programme.                  *
       ******************************************************************
        1300-START-ERROR-FIELDS.
-           INITIALIZE WS-ERROR-MESSAGE.
-           INITIALIZE WS-IS-ERROR.
-           SET WS-ERROR-MESSAGE-POS TO 21.
+           INITIALIZE WS-ERROR-MESSAGE1
+                      WS-ERROR-MESSAGE2
+                      WS-IS-ERROR
+                      WS-COUNT-AROBASE.
 
-           MOVE 'Champ obligatoire :' TO WS-ERROR-MESSAGE.
+           SET WS-ERROR-MESSAGE-POS TO 20.
+
+           MOVE 'Erreur de saisie :' TO WS-ERROR-MESSAGE1.
 
            IF LK-CUS-LASTNAME EQUAL SPACES THEN
                MOVE 'Nom' 
-               TO WS-ERROR-MESSAGE(WS-ERROR-MESSAGE-POS:3)
+               TO WS-ERROR-MESSAGE1(WS-ERROR-MESSAGE-POS:3)
 
-               ADD 4 TO WS-ERROR-MESSAGE-POS
+               ADD 3 TO WS-ERROR-MESSAGE-POS
 
                MOVE 'Y' TO WS-IS-ERROR
            END-IF.
 
            IF LK-CUS-FIRSTNAME EQUAL SPACES THEN
-               MOVE 'Prenom' 
-               TO WS-ERROR-MESSAGE(WS-ERROR-MESSAGE-POS:6)
+               IF WS-ERROR-MESSAGE-POS LESS THAN 23 THEN
+                   MOVE 'Prenom' 
+                   TO WS-ERROR-MESSAGE1(WS-ERROR-MESSAGE-POS:6)
 
-               ADD 7 TO WS-ERROR-MESSAGE-POS
+                   ADD 6 TO WS-ERROR-MESSAGE-POS
+               ELSE 
+                   MOVE ', Prenom' 
+                   TO WS-ERROR-MESSAGE1(WS-ERROR-MESSAGE-POS:8)
 
-               MOVE 'Y' TO WS-IS-ERROR
+                   ADD 8 TO WS-ERROR-MESSAGE-POS
+               END-IF
+                   MOVE 'Y' TO WS-IS-ERROR
            END-IF.
 
            IF LK-CUS-GENDER EQUAL SPACES THEN
-               MOVE 'Genre' 
-               TO WS-ERROR-MESSAGE(WS-ERROR-MESSAGE-POS:5)
+               IF WS-ERROR-MESSAGE-POS LESS THAN 23 THEN
+                   MOVE 'Genre' 
+                   TO WS-ERROR-MESSAGE1(WS-ERROR-MESSAGE-POS:5)
+       
+                   ADD 5 TO WS-ERROR-MESSAGE-POS
+               ELSE 
+                   MOVE ', Genre' 
+                   TO WS-ERROR-MESSAGE1(WS-ERROR-MESSAGE-POS:7)
 
-               ADD 6 TO WS-ERROR-MESSAGE-POS
-
+                   ADD 7 TO WS-ERROR-MESSAGE-POS
+               END-IF
                MOVE 'Y' TO WS-IS-ERROR
            END-IF.
 
            IF LK-CUS-ADRESS1 EQUAL SPACES THEN
-               MOVE 'Adresse'
-               TO WS-ERROR-MESSAGE(WS-ERROR-MESSAGE-POS:7)
+               IF WS-ERROR-MESSAGE-POS LESS THAN 23 THEN
+                   MOVE 'Adresse'
+                   TO WS-ERROR-MESSAGE1(WS-ERROR-MESSAGE-POS:7)
+       
+                   ADD 7 TO WS-ERROR-MESSAGE-POS
+               ELSE 
+                   MOVE ', Adresse' 
+                   TO WS-ERROR-MESSAGE1(WS-ERROR-MESSAGE-POS:9)
 
-               ADD 8 TO WS-ERROR-MESSAGE-POS
-
+                   ADD 9 TO WS-ERROR-MESSAGE-POS
+               END-IF
                MOVE 'Y' TO WS-IS-ERROR
            END-IF.
 
            IF LK-CUS-ZIPCODE EQUAL SPACES THEN
-               MOVE 'Code postal' 
-               TO WS-ERROR-MESSAGE(WS-ERROR-MESSAGE-POS:11)
+               IF WS-ERROR-MESSAGE-POS LESS THAN 23 THEN
+                   MOVE 'Code postal' 
+                   TO WS-ERROR-MESSAGE1(WS-ERROR-MESSAGE-POS:11)
+       
+                   ADD 11 TO WS-ERROR-MESSAGE-POS
+               ELSE 
+                   MOVE ', Code postal' 
+                   TO WS-ERROR-MESSAGE1(WS-ERROR-MESSAGE-POS:13)
 
-               ADD 12 TO WS-ERROR-MESSAGE-POS
-
+                   ADD 13 TO WS-ERROR-MESSAGE-POS
+               END-IF
                MOVE 'Y' TO WS-IS-ERROR
            END-IF.
 
            IF LK-CUS-TOWN EQUAL SPACES THEN
-               MOVE 'Ville' 
-               TO WS-ERROR-MESSAGE(WS-ERROR-MESSAGE-POS:5)
+               IF WS-ERROR-MESSAGE-POS LESS THAN 23 THEN
+                   MOVE 'Ville' 
+                   TO WS-ERROR-MESSAGE1(WS-ERROR-MESSAGE-POS:5)
+       
+                   ADD 5 TO WS-ERROR-MESSAGE-POS
+               ELSE 
+                   MOVE ', Ville' 
+                   TO WS-ERROR-MESSAGE1(WS-ERROR-MESSAGE-POS:7)
 
-               ADD 6 TO WS-ERROR-MESSAGE-POS
-
+                   ADD 7 TO WS-ERROR-MESSAGE-POS
+               END-IF
                MOVE 'Y' TO WS-IS-ERROR
            END-IF.
 
            IF LK-CUS-COUNTRY EQUAL SPACES THEN
-               MOVE 'Pays' 
-               TO WS-ERROR-MESSAGE(WS-ERROR-MESSAGE-POS:4)
+               IF WS-ERROR-MESSAGE-POS LESS THAN 23 THEN
+                   MOVE 'Pays' 
+                   TO WS-ERROR-MESSAGE1(WS-ERROR-MESSAGE-POS:4)
+       
+                   ADD 4 TO WS-ERROR-MESSAGE-POS
+               ELSE 
+                   MOVE ', Pays' 
+                   TO WS-ERROR-MESSAGE1(WS-ERROR-MESSAGE-POS:6)
 
-               ADD 5 TO WS-ERROR-MESSAGE-POS
-
+                   ADD 6 TO WS-ERROR-MESSAGE-POS
+               END-IF
                MOVE 'Y' TO WS-IS-ERROR
            END-IF.
 
            IF LK-CUS-PHONE EQUAL '0000000000' 
            OR LK-CUS-PHONE IS NOT NUMERIC THEN
-               MOVE 'Telephone'
-               TO WS-ERROR-MESSAGE(WS-ERROR-MESSAGE-POS:19)
+               IF WS-ERROR-MESSAGE-POS LESS THAN 23 THEN
+                   MOVE 'Telephone'
+                   TO WS-ERROR-MESSAGE1(WS-ERROR-MESSAGE-POS:9)
+       
+                   ADD 9 TO WS-ERROR-MESSAGE-POS
+               ELSE 
+                   MOVE ', Telephone' 
+                   TO WS-ERROR-MESSAGE1(WS-ERROR-MESSAGE-POS:11)
 
-               ADD 10 TO WS-ERROR-MESSAGE-POS
-
+                   ADD 11 TO WS-ERROR-MESSAGE-POS
+               END-IF
                MOVE 'Y' TO WS-IS-ERROR
            END-IF.
 
-           IF LK-CUS-MAIL EQUAL SPACES THEN
-               MOVE 'Mail'
-               TO WS-ERROR-MESSAGE(WS-ERROR-MESSAGE-POS:4)
+           INSPECT LK-CUS-MAIL TALLYING WS-COUNT-AROBASE FOR ALL '@'.
+           
+           IF LK-CUS-MAIL EQUAL SPACES 
+           OR WS-COUNT-AROBASE GREATER THAN 1 THEN
+               IF WS-ERROR-MESSAGE-POS LESS THAN 23 THEN
+                   MOVE 'Mail'
+                   TO WS-ERROR-MESSAGE1(WS-ERROR-MESSAGE-POS:4)
+       
+                   ADD 4 TO WS-ERROR-MESSAGE-POS
+               ELSE 
+                   MOVE ', Mail' 
+                   TO WS-ERROR-MESSAGE1(WS-ERROR-MESSAGE-POS:6)
 
-               ADD 5 TO WS-ERROR-MESSAGE-POS
-
+                   ADD 6 TO WS-ERROR-MESSAGE-POS
+               END-IF
                MOVE 'Y' TO WS-IS-ERROR
            END-IF.
 
-           IF LK-CUS-BIRTH-DATE EQUAL SPACES 
-           OR LK-YEAR IS NOT NUMERIC 
-           OR LK-MONTH IS NOT NUMERIC
-           OR LK-DAY IS NOT NUMERIC THEN
-               MOVE 'Date de naissance'
-               TO WS-ERROR-MESSAGE(WS-ERROR-MESSAGE-POS:17)
+           IF WS-CUB-DAY   IS NOT NUMERIC 
+           OR WS-CUB-MONTH IS NOT NUMERIC
+           OR WS-CUB-YEAR  IS NOT NUMERIC 
+           OR WS-CUB-DAY LESS THAN 01
+           OR WS-CUB-DAY GREATER THAN 31
+           OR WS-CUB-MONTH LESS THAN 01
+           OR WS-CUB-MONTH GREATER THAN 12
+           OR WS-CUB-YEAR LESS THAN 1000
+           THEN
+               IF WS-ERROR-MESSAGE-POS LESS THAN 23 THEN
+                   MOVE 'Date de naissance'
+                   TO WS-ERROR-MESSAGE1(WS-ERROR-MESSAGE-POS:17)
+       
+                   ADD 17 TO WS-ERROR-MESSAGE-POS
+               ELSE 
+                   MOVE ', Date de naissance' 
+                   TO WS-ERROR-MESSAGE1(WS-ERROR-MESSAGE-POS:19)
 
-               ADD 18 TO WS-ERROR-MESSAGE-POS
-
+                   ADD 19 TO WS-ERROR-MESSAGE-POS
+               END-IF
                MOVE 'Y' TO WS-IS-ERROR
            END-IF.
 
-           IF LK-CUS-CODE-SECU EQUAL SPACES 
-           OR LK-CUS-CODE-SECU IS NOT NUMERIC THEN
-               MOVE 'Numero de securite sociale'
-               TO WS-ERROR-MESSAGE(WS-ERROR-MESSAGE-POS:26)
+           IF LK-CUS-CODE-SECU IS NOT NUMERIC THEN
+               IF WS-ERROR-MESSAGE-POS LESS THAN 23 THEN
+                   MOVE 'Numero de securite sociale'
+                   TO WS-ERROR-MESSAGE1(WS-ERROR-MESSAGE-POS:26)
+       
+                   ADD 26 TO WS-ERROR-MESSAGE-POS
+               ELSE 
+                   MOVE ', Numero de securite sociale' 
+                   TO WS-ERROR-MESSAGE1(WS-ERROR-MESSAGE-POS:28)
 
-               ADD 27 TO WS-ERROR-MESSAGE-POS
-
+                   ADD 28 TO WS-ERROR-MESSAGE-POS
+               END-IF
                MOVE 'Y' TO WS-IS-ERROR
            END-IF.
 
            IF LK-CUS-CODE-IBAN EQUAL SPACES THEN
-               MOVE 'IBAN' 
-               TO WS-ERROR-MESSAGE(WS-ERROR-MESSAGE-POS:4)
+               IF WS-ERROR-MESSAGE-POS LESS THAN 23 THEN
+                   MOVE 'IBAN' 
+                   TO WS-ERROR-MESSAGE1(WS-ERROR-MESSAGE-POS:4)
+       
+                   ADD 4 TO WS-ERROR-MESSAGE-POS
+               ELSE IF WS-ERROR-MESSAGE-POS GREATER THAN 136 THEN
+                   MOVE 'IBAN'
+                   TO WS-ERROR-MESSAGE2
+               ELSE
+                   MOVE ', IBAN' 
+                   TO WS-ERROR-MESSAGE1(WS-ERROR-MESSAGE-POS:6)
 
-               ADD 5 TO WS-ERROR-MESSAGE-POS
-
+                   ADD 6 TO WS-ERROR-MESSAGE-POS
+               END-IF
                MOVE 'Y' TO WS-IS-ERROR
            END-IF.
            
            MOVE FUNCTION LOWER-CASE(LK-CUS-COUPLE) TO LK-CUS-COUPLE.
            IF LK-CUS-COUPLE NOT EQUAL 'oui' 
            AND LK-CUS-COUPLE NOT EQUAL 'non' THEN
-               MOVE 'En couple'
-               TO WS-ERROR-MESSAGE(WS-ERROR-MESSAGE-POS:9)
+               
+               IF WS-ERROR-MESSAGE-POS LESS THAN 23 THEN
+                   MOVE 'En couple'
+                   TO WS-ERROR-MESSAGE1(WS-ERROR-MESSAGE-POS:9)
 
-               ADD 10 TO WS-ERROR-MESSAGE-POS
+                   ADD 9 TO WS-ERROR-MESSAGE-POS
+               ELSE IF WS-ERROR-MESSAGE-POS GREATER THAN 132 
+                  AND WS-ERROR-MESSAGE2 EQUAL SPACES THEN
+                   MOVE 'En couple'
+                   TO WS-ERROR-MESSAGE2
+               ELSE IF WS-ERROR-MESSAGE-POS GREATER THAN 132 
+                   AND WS-ERROR-MESSAGE2 NOT EQUAL SPACES THEN
+                   MOVE ', En couple'
+                   TO WS-ERROR-MESSAGE2(5:11)
+               ELSE
+                   MOVE ', En couple' 
+                   TO WS-ERROR-MESSAGE1(WS-ERROR-MESSAGE-POS:11)
 
-               MOVE 'Y' TO WS-IS-ERROR
+                   ADD 11 TO WS-ERROR-MESSAGE-POS
+               END-IF
+                   MOVE 'Y' TO WS-IS-ERROR
            END-IF.
 
            IF WS-IS-ERROR EQUAL 'Y' THEN
