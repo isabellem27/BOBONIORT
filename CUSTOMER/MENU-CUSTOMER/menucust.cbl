@@ -119,7 +119,7 @@
 
            ELSE IF FUNCTION UPPER-CASE(WS-CUSTOMER-MODIF) 
                    EQUAL 'O' THEN
-               CALL 'updacust' USING LK-CUSTOMER
+               CALL 'ucfront' USING LK-CUSTOMER
 
            ELSE IF FUNCTION UPPER-CASE(WS-CONTRACT-LIST)
                    EQUAL 'O' THEN
