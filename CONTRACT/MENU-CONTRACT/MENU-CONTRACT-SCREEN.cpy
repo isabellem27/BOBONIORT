@@ -1,4 +1,4 @@
-  01  MENU-CONTRACT-SCREEN FOREGROUND-COLOR IS 2.
+       01  MENU-CONTRACT-SCREEN FOREGROUND-COLOR IS 2.
            05 FILLER PIC X(182) VALUE all ' ' LINE 4 COL 10 
            BACKGROUND-COLOR IS 2.
 
@@ -33,9 +33,9 @@
            05 FILLER PIC X(2) VALUE  '  ' COL  190
            BACKGROUND-COLOR IS 2. 
 
-           05 FILLER PIC X(2) VALUE  "  " LINE 11 COL 10 
+           05 FILLER PIC X(2) VALUE  '  ' LINE 11 COL 10 
            BACKGROUND-COLOR IS 2.                       
-           05 FILLER PIC X(2) VALUE  "  " COL  190
+           05 FILLER PIC X(2) VALUE  '  ' COL  190
            BACKGROUND-COLOR IS 2. 
            05 FILLER PIC X(80) FROM WS-CUSTOMER  
            COL 20
@@ -66,7 +66,6 @@
            BACKGROUND-COLOR IS 2.                
            05 FILLER PIC X(2) VALUE  '  ' COL  190
            BACKGROUND-COLOR IS 2.  
-
 
            05 FILLER PIC X(2) VALUE  '  ' LINE 17 COL 10 
            BACKGROUND-COLOR IS 2.      
@@ -109,7 +108,8 @@
            BACKGROUND-COLOR IS 2.         
            05 FILLER PIC X(2) VALUE  '  ' COL  190
            BACKGROUND-COLOR IS 2. 
-            05 FILLER PIC X(31) VALUE  'Lecture                       :' 
+           05 FILLER PIC X(31) 
+           VALUE  'Lecture                       :' 
            COL 70 
            FOREGROUND-COLOR IS 2.   
            05 PIC X(1) USING  WS-READ-CHOICE  

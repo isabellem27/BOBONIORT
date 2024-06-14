@@ -9,6 +9,8 @@
       *    Programme suivant : dépend du choix de l'utilisateur        *
       * Auteur: Isabelle                                               *     
       * Date de création : le 12/06/2024                               *
+      *                                                                *
+      * MAJ [IM] le 14-06-2024 Gestion du LK-CUSTOMER complet          *     
       ******************************************************************        
        
        IDENTIFICATION DIVISION.
@@ -43,7 +45,7 @@
            05 SC-BUTTON-PERSO      PIC X       VALUE SPACE       .
            05 SC-BUTTON-CONFIRM    PIC X       VALUE SPACE       .                          
            05 SC-BUTTON-RETURN     PIC X       VALUE SPACE       .
-
+           05 SC-MESSAGE           PIC X(70)   VALUE SPACE       .
 
        01  SC-CONFIRM-BUTTON.
            05 SC-BUTTON-OUI        PIC X       VALUE SPACE       .
@@ -164,12 +166,35 @@
        EXEC SQL INCLUDE SQLCA END-EXEC                           .
       ******************************************************************
       * LINKAGE SECTION.
-       01  LK-CUSTOMER.
-           05 LK-FIRSTNAME         PIC X(14)                     .
-           05 FILLER               PIC X(01)                     .
-           05 LK-LASTNAME          PIC X(14)                     . 
-           05 FILLER               PIC X(01)                     .
-           05 LK-SECU              PIC 9(15)                     .     
+       01 LK-CUSTOMER.
+           03 LK-CUS-UUID             PIC X(36).
+           03 LK-CUS-GENDER           PIC X(10).
+           03 LK-CUS-LASTNAME         PIC X(20).
+           03 LK-CUS-FIRSTNAME        PIC X(20).
+           03 LK-CUS-ADRESS1	        PIC X(50).
+           03 LK-CUS-ADRESS2	        PIC X(50).
+           03 LK-CUS-ZIPCODE	        PIC X(15).
+           03 LK-CUS-TOWN             PIC X(30).
+           03 LK-CUS-COUNTRY	        PIC X(20).
+           03 LK-CUS-PHONE	           PIC X(10).
+           03 LK-CUS-MAIL	           PIC X(50).
+           03 LK-CUS-BIRTH-DATE       PIC X(10).
+           03  WS-BIRTH REDEFINES LK-CUS-BIRTH-DATE              .
+              05 WS-YEAR              PIC 9(04)                  .
+              05 FILLER               PIC X(01)      VALUE '-'   .     
+              05 WS-MOUNTH            PIC 9(02)                  .
+              05 FILLER               PIC X(01)      VALUE '-'   .           
+              05 WS-DAY               PIC 9(02)                  .           
+           03 LK-CUS-DOCTOR	        PIC X(20).
+           03 LK-CUS-CODE-SECU        PIC 9(15).
+           03 LK-CUS-CODE-IBAN        PIC X(34).
+           03 LK-CUS-NBCHILDREN       PIC 9(03).
+           03 LK-CUS-COUPLE           PIC X(05).
+           03 LK-CUS-CREATE-DATE      PIC X(10).
+           03 LK-CUS-UPDATE-DATE      PIC X(10).
+           03 LK-CUS-CLOSE-DATE       PIC X(10).
+           03 LK-CUS-ACTIVE	        PIC X(01).
+    
       ******************************************************************
        SCREEN SECTION.
            COPY 'CLASSIC-CONTRACT-SCREEN.cpy'.  
@@ -197,9 +222,10 @@
       *    de saisie de l'utilisateur                                  *
       ****************************************************************** 
        1000-SCREEN-LOOP-START.  
-           MOVE 'Jean' TO LK-FIRSTNAME.
-           MOVE 'Guarette' TO LK-LASTNAME .
-           MOVE '195063475290876' TO LK-SECU .
+      * MAJ [IM] le 14-06-2024 Gestion du LK-CUSTOMER complet          *
+           MOVE 'Jean' TO LK-CUS-FIRSTNAME.
+           MOVE 'Guarette' TO LK-CUS-LASTNAME .
+           SET LK-CUS-CODE-SECU TO 195063475290876.
 
            PERFORM 1100-PREPARE-SCREEN-START 
                     THRU END-1100-PREPARE-SCREEN.     
@@ -216,11 +242,11 @@
       *    Pour meilleure ergonomie je retire les espaces              *
       ******************************************************************
        1100-PREPARE-SCREEN-START.
-           STRING FUNCTION TRIM (LK-FIRSTNAME)
+           STRING FUNCTION TRIM (LK-CUS-FIRSTNAME)
                   SPACE 
-                  FUNCTION TRIM (LK-LASTNAME)
+                  FUNCTION TRIM (LK-CUS-LASTNAME)
                   SPACE 
-                  LK-SECU 
+                  LK-CUS-CODE-SECU 
            DELIMITED BY SIZE 
            INTO WS-CUSTOMER.  
            PERFORM 1200-SQL-CONNECTION-START
@@ -498,37 +524,31 @@
            EQUAL 'O' THEN
                MOVE 'True' TO WS-SELECT-OPTION 
                CALL 'menucont' USING CONTENT LK-CUSTOMER
-           ELSE         
-               IF (FUNCTION UPPER-CASE(SC-BUTTON-ALLEGE) EQUAL 'O')
-               OR  (FUNCTION UPPER-CASE(SC-BUTTON-MODERE) EQUAL 'O')
-               OR  (FUNCTION UPPER-CASE(SC-BUTTON-EXCELLENCE) EQUAL 'O')  
-               THEN
-                   IF FUNCTION UPPER-CASE(SC-BUTTON-CONFIRM)
-                    EQUAL 'O' THEN 
-                       PERFORM 3100-DISPLAY-CONFIRM-START
+           ELSE IF FUNCTION UPPER-CASE(SC-BUTTON-PERSO) EQUAL 'O' THEN
+                   MOVE 'True' TO WS-SELECT-OPTION    
+                   CALL 'speccont' USING CONTENT LK-CUSTOMER                         
+                ELSE IF FUNCTION UPPER-CASE(SC-BUTTON-CONFIRM) 
+                      EQUAL 'O' THEN
+                          IF (FUNCTION UPPER-CASE(SC-BUTTON-ALLEGE) 
+                             EQUAL 'O') OR  
+                             (FUNCTION UPPER-CASE(SC-BUTTON-MODERE) 
+                             EQUAL 'O') OR          
+                             (FUNCTION UPPER-CASE(SC-BUTTON-EXCELLENCE) 
+                             EQUAL 'O') THEN
+                             INITIALIZE SC-CONFIRM-BUTTON 
+                            PERFORM 3100-DISPLAY-CONFIRM-START
                              THRU END-3100-DISPLAY-CONFIRM
-                   ELSE IF FUNCTION UPPER-CASE(SC-BUTTON-PERSO)
-                          EQUAL 'O' THEN 
-                          IF FUNCTION UPPER-CASE(SC-BUTTON-ALLEGE) 
-                          EQUAL 'O' THEN
-                             MOVE WS-ALLEGE-NUM  TO WS-CONTRACT-NUM
-                          ELSE IF FUNCTION UPPER-CASE(SC-BUTTON-MODERE) 
-                                EQUAL 'O' THEN
-                             MOVE WS-MODERE-NUM TO WS-CONTRACT-NUM
-                          ELSE  
-                             MOVE WS-EXCELL-NUM TO WS-CONTRACT-NUM               
-                          END-IF
-                          MOVE 'True' TO WS-SELECT-OPTION    
-                          CALL 'speccont' 
-                          USING CONTENT LK-CUSTOMER WS-CONTRACT-NUM
-                       ELSE 
+                          ELSE 
+      *                  Aucun contrat type sélectionné
+                             PERFORM 9200-ERROR-MESSAGE-START 
+                                THRU END-9200-ERROR-MESSAGE
+                          END-IF    
+                      ELSE
+      *                  Aucun bouton action sélectionné                 
                           PERFORM 9200-ERROR-MESSAGE-START 
                              THRU END-9200-ERROR-MESSAGE
-                   END-IF    
-               ELSE  
-                   PERFORM 9200-ERROR-MESSAGE-START 
-                             THRU END-9200-ERROR-MESSAGE
-               END-IF                              
+                      END-IF 
+                END-IF                                                                                                      
            END-IF.
        END-3000-WITCH-CHOICE.
            EXIT.
@@ -550,7 +570,9 @@
               MOVE 'True' TO WS-SELECT-OPTION 
               CALL 'menucont' USING CONTENT LK-CUSTOMER 
            ELSE IF (FUNCTION UPPER-CASE(SC-BUTTON-NON) EQUAL 'O') THEN
-      *    Si choix non confirmé, on revient à l'écran de sélection     
+      *    Si choix non confirmé, on revient à l'écran de sélection
+                    INITIALIZE SC-BUTTON-PERSO SC-BUTTON-CONFIRM    
+                               SC-BUTTON-RETURN     
                     ACCEPT CLASSIC-CONTRACT-SCREEN
                     PERFORM 3000-WITCH-CHOICE-START
                           THRU END-3000-WITCH-CHOICE  
@@ -580,7 +602,8 @@
        6100-SQL-INSERT-START. 
       * [IM] récupère année et mois 
            MOVE FUNCTION CURRENT-DATE(1:8) TO SQL-CDATE.  
-           MOVE LK-SECU TO SQL-SECU.
+      * MAJ [IM] le 14-06-2024 Gestion du LK-CUSTOMER complet          *     
+           MOVE LK-CUS-CODE-SECU TO SQL-SECU.
            PERFORM 6120-PREPARE-SQL-VARIABLE-START
                  THRU END-6120-PREPARE-SQL-VARIABLE.
            EXEC SQL
@@ -618,19 +641,9 @@
       *    Charge les variables SQL-* avec les varaibles du type de 
       *    contrat et calcule le coût du contrat en fonction de la 
       *    composition de la famille.
-      * [IM] Récupération des informations client
-      
-           EXEC SQL 
-               SELECT CUSTOMER_NBCHILDREN, CUSTOMER_BIRTH_DATE
-               INTO :SQL-NBCHILDREN, :SQL-BIRTHD
-               FROM CUSTOMER
-               WHERE CUSTOMER_CODE_SECU = :SQL-SECU
-           END-EXEC.
-           IF  (SQLCODE NOT = ZERO) AND (SQLCODE NOT EQUAL FIN) THEN
-               MOVE 'RECHERCHE INFOS ADHERENT' TO WS-SQL-LIB                      
-               PERFORM 9020-SQL-ERROR-START THRU END-9020-SQL-ERROR                
-           END-IF.
-           MOVE SQL-NBCHILDREN TO WS-NBCHILDREN.  
+     
+      * MAJ [IM] le 14-06-2024 Gestion du LK-CUSTOMER complet          *  
+           MOVE LK-CUS-NBCHILDREN TO WS-NBCHILDREN.  
            PERFORM 6125-CALC-CUSTOMER-AGE-START 
                     THRU END-6125-CALC-CUSTOMER-AGE.
            EVALUATE (WS-CONTRACT)
@@ -768,7 +781,7 @@
            EXIT.   
 
        6125-CALC-CUSTOMER-AGE-START. 
-           STRING SQL-YEAR SQL-MOUNTH SQL-DAY 
+           STRING WS-YEAR WS-MOUNTH WS-DAY 
            DELIMITED BY SIZE 
            INTO WS-BIRTHD.
            SUBTRACT WS-BIRTHD FROM FUNCTION NUMVAL(SQL-CDATE(1:8))
@@ -783,25 +796,25 @@
       *    gestion d'erreur SQL                                        *
       ******************************************************************       
        9020-SQL-ERROR-START.
-           DISPLAY "*** SQL ERROR ***".
-           DISPLAY WS-SQL-LIB SPACE "SQLCODE: " SQLCODE SPACE.
+           DISPLAY '*** SQL ERROR ***'.
+           DISPLAY WS-SQL-LIB SPACE 'SQLCODE: ' SQLCODE SPACE.
            EVALUATE SQLCODE
               WHEN  +100
-                 DISPLAY "Record not found"
+                 DISPLAY 'Record not found'
               WHEN  -01
-                 DISPLAY "Connection failed"
+                 DISPLAY 'Connection failed'
               WHEN  -20
-                 DISPLAY "Internal error"
+                 DISPLAY 'Internal error'
               WHEN  -30
-                 DISPLAY "PostgreSQL error"
-                 DISPLAY "ERRCODE:" SPACE SQLSTATE
+                 DISPLAY 'PostgreSQL error'
+                 DISPLAY 'ERRCODE:' SPACE SQLSTATE
                  DISPLAY SQLERRMC
                  EXEC SQL
                      ROLLBACK
                  END-EXEC
               WHEN  OTHER
-                 DISPLAY "Undefined error"
-                 DISPLAY "ERRCODE:" SPACE SQLSTATE
+                 DISPLAY 'Undefined error'
+                 DISPLAY 'ERRCODE:' SPACE SQLSTATE
                  DISPLAY SQLERRMC
            END-EVALUATE.
        END-9020-SQL-ERROR.
@@ -812,17 +825,19 @@
       *    J'envoie un message si erreur de saisie et efface la saisie *
       ****************************************************************** 
        9200-ERROR-MESSAGE-START. 
-            DISPLAY WS-MESSAGE
-            LINE 32 COL 20 FOREGROUND-COLOR IS 7.            
-            INITIALIZE SC-BUTTON.                      
+           MOVE WS-MESSAGE TO SC-MESSAGE.
+           DISPLAY SC-MESSAGE
+           LINE 32 COL 20 FOREGROUND-COLOR IS 7.            
+           INITIALIZE SC-BUTTON.                      
        END-9200-ERROR-MESSAGE.
            EXIT.
        
        9300-ERROR-MSG-CONFIRM-START. 
-            DISPLAY WS-MESSAGE
-            LINE 14 COL 87 FOREGROUND-COLOR IS 7.            
-            INITIALIZE SC-CONFIRM-BUTTON.  
-            PERFORM 3100-DISPLAY-CONFIRM-START
+           MOVE WS-MESSAGE TO SC-MESSAGE.
+           DISPLAY SC-MESSAGE
+           LINE 14 COL 87 FOREGROUND-COLOR IS 7.            
+           INITIALIZE SC-CONFIRM-BUTTON.  
+           PERFORM 3100-DISPLAY-CONFIRM-START
                     THRU END-3100-DISPLAY-CONFIRM.                    
        END-9300-ERROR-MSG-CONFIRM.
            EXIT.
