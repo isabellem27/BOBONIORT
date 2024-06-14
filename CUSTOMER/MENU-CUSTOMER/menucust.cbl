@@ -1,10 +1,10 @@
       ******************************************************************
-      *    Sous programme gerant l'affichage                           *
-      *    de l'écran de menu de l'adherent  et la gestion d'erreur    *
+      *    [AL-YM] Sous programme gérant l'affichage de l'écran de     *
+      *    menu de l'adherent.                                         *
       ****************************************************************** 
       
        IDENTIFICATION DIVISION.
-       PROGRAM-ID. menucust.
+       PROGRAM-ID. menucust RECURSIVE.
        AUTHOR. Yves&Alexandre.
 
       ******************************************************************
@@ -27,31 +27,36 @@
            03 CCS-SECU-6 PIC X(03).
            03 CCS-SECU-7 PIC X(02). 
 
+       01  CUS-BIRTH-DATE.
+           03 CUB-DAY       PIC X(02).
+           03 CUB-MONTH     PIC X(02).
+           03 CUB-YEAR      PIC X(04).
+
        01  WS-COUPLE PIC X(03).                
 
        LINKAGE SECTION.
        01 LK-CUSTOMER.
-           03 LK-CUR-UUID        PIC X(36).
-           03 LK-CUR-GENDER      PIC X(10).
-           03 LK-CUR-LASTNAME    PIC X(20).
-           03 LK-CUR-FIRSTNAME   PIC X(20).
-           03 LK-CUR-ADRESS1	 PIC X(50).
-           03 LK-CUR-ADRESS2	 PIC X(50).
-           03 LK-CUR-ZIPCODE	 PIC X(15).
-           03 LK-CUR-TOWN	     PIC X(50).
-           03 LK-CUR-COUNTRY	 PIC X(20).
-           03 LK-CUR-PHONE	     PIC X(10).
-           03 LK-CUR-MAIL	     PIC X(50).
-           03 LK-CUR-BIRTH-DATE  PIC X(10).
-           03 LK-CUR-DOCTOR	     PIC X(50).
-           03 LK-CUR-CODE-SECU   PIC 9(15).
-           03 LK-CUR-CODE-IBAN   PIC X(34).
-           03 LK-CUR-NBCHILDREN  PIC 9(03).
-           03 LK-CUR-COUPLE      PIC X(05).
-           03 LK-CUR-CREATE-DATE PIC X(10).
-           03 LK-CUR-UPDATE-DATE PIC X(10).
-           03 LK-CUR-CLOSE-DATE  PIC X(10).
-           03 LK-CUR-ACTIVE	     PIC X(01).
+           03 LK-CUS-UUID        PIC X(36).
+           03 LK-CUS-GENDER      PIC X(10).
+           03 LK-CUS-LASTNAME    PIC X(20).
+           03 LK-CUS-FIRSTNAME   PIC X(20).
+           03 LK-CUS-ADRESS1	 PIC X(50).
+           03 LK-CUS-ADRESS2	 PIC X(50).
+           03 LK-CUS-ZIPCODE	 PIC X(15).
+           03 LK-CUS-TOWN	     PIC X(30).
+           03 LK-CUS-COUNTRY	 PIC X(20).
+           03 LK-CUS-PHONE	     PIC X(10).
+           03 LK-CUS-MAIL	     PIC X(50).
+           03 LK-CUS-BIRTH-DATE  PIC X(10).
+           03 LK-CUS-DOCTOR	     PIC X(20).
+           03 LK-CUS-CODE-SECU   PIC 9(15).
+           03 LK-CUS-CODE-IBAN   PIC X(34).
+           03 LK-CUS-NBCHILDREN  PIC 9(03).
+           03 LK-CUS-COUPLE      PIC X(05).
+           03 LK-CUS-CREATE-DATE PIC X(10).
+           03 LK-CUS-UPDATE-DATE PIC X(10).
+           03 LK-CUS-CLOSE-DATE  PIC X(10).
+           03 LK-CUS-ACTIVE	     PIC X(01).
 
        SCREEN SECTION.
            COPY 'screen-menu-customer.cpy'.   
@@ -61,45 +66,74 @@
        PROCEDURE DIVISION USING LK-CUSTOMER.
        
        0000-START-MAIN.
-           MOVE LK-CUR-CODE-SECU TO CUS-CODE-SECU.
+           PERFORM 1000-START-INITIALIZATION 
+              THRU END-1000-INITIALIZATION.
 
-           IF LK-CUR-COUPLE EQUAL 't'
-               MOVE 'Oui' TO WS-COUPLE
-           ELSE IF LK-CUR-COUPLE EQUAL 'f'
-               MOVE 'Non' TO WS-COUPLE
-           END-IF.
-
-           ACCEPT SCREEN-MENU-CUSTOMER.
-       
-           PERFORM 1100-START-CHECK-CHOICE 
-              THRU 1100-END-CHECK-CHOICE.
+           PERFORM 2000-START-SCREEN 
+              THRU END-2000-SCREEN.
        END-0000-MAIN.
            GOBACK.
 
-      ******************************************************************      
-       1100-START-CHECK-CHOICE.
-      *    YM - Vérifie la saisine utilisateur : 'O' dans l'input
-      *    et appelle le sous programme necessaire.
+      ******************************************************************
+      *    [RD] Réinitialise les options du menu, envoi le code de     *
+      *    sécurité sociale et couple de la linkage à celui de la      *
+      *    working-storage qui sont au bon format.                     *
+      ****************************************************************** 
+       1000-START-INITIALIZATION.
+           INITIALIZE WS-OPTIONS-MENU-CUST.
 
-           IF FUNCTION UPPER-CASE(WS-CUSTOMER-MODIF) 
-           EQUAL 'O' THEN
-              CALL 'updacust'  USING LK-CUSTOMER
+           MOVE LK-CUS-CODE-SECU TO CUS-CODE-SECU.
+           MOVE LK-CUS-BIRTH-DATE(1:4) TO CUB-YEAR.
+           MOVE LK-CUS-BIRTH-DATE(6:2) TO CUB-MONTH.
+           MOVE LK-CUS-BIRTH-DATE(9:2) TO CUB-DAY.
+
+           IF LK-CUS-COUPLE EQUAL 't'
+               MOVE 'Oui' TO WS-COUPLE
+           ELSE IF LK-CUS-COUPLE EQUAL 'f'
+               MOVE 'Non' TO WS-COUPLE
+           END-IF.
+       END-1000-INITIALIZATION.
+           EXIT.
+
+      ******************************************************************
+      *    [RD] Affiche l'écran du menu de l'adhérent et appel le      *
+      *    paragraphe qui vérifie le choix effectué au niveau de la    *
+      *    navigation.                                                 *    
+      ****************************************************************** 
+       2000-START-SCREEN.
+           ACCEPT SCREEN-MENU-CUSTOMER.
+
+           PERFORM 2100-START-CHECK-CHOICE 
+              THRU 2100-END-CHECK-CHOICE.
+       END-2000-SCREEN.
+           EXIT.
+
+      ******************************************************************
+      *    [YM] Vérifie la saisie de l'utilisateur : 'O' dans l'input  *
+      *    et appelle le sous programme correspondant.                 *
+      ******************************************************************      
+       2100-START-CHECK-CHOICE.
+           IF FUNCTION UPPER-CASE(WS-MENU-RETURN)
+              EQUAL 'O' THEN
+               CALL 'scfront'
+
+           ELSE IF FUNCTION UPPER-CASE(WS-CUSTOMER-MODIF) 
+                   EQUAL 'O' THEN
+               CALL 'updacust' USING LK-CUSTOMER
 
            ELSE IF FUNCTION UPPER-CASE(WS-CONTRACT-LIST)
-           EQUAL 'O' THEN
-              CALL 'contcust'  USING LK-CUSTOMER
+                   EQUAL 'O' THEN
+               CALL 'contcust' USING LK-CUSTOMER
 
            ELSE IF FUNCTION UPPER-CASE(WS-CUST-ARCHIVE)
-           EQUAL 'O' THEN           
-              CALL 'archust'   USING LK-CUSTOMER
+                   EQUAL 'O' THEN           
+               CALL 'archust' USING LK-CUSTOMER
 
-           ELSE IF FUNCTION UPPER-CASE(WS-MENU-RETURN)
-           EQUAL 'O' THEN
-               CALL 'menuuser' USING LK-CUSTOMER
            ELSE  
-              MOVE 'ERREUR DE SAISIE' TO WS-ERROR-MESSAGE
-              GO TO 0000-START-MAIN
+              MOVE 'Veuillez entrer "O" pour confirmer.' 
+              TO WS-ERROR-MESSAGE
+              GO TO 2000-START-SCREEN
            END-IF.
-       1100-END-CHECK-CHOICE.
+       2100-END-CHECK-CHOICE.
            EXIT.  
        

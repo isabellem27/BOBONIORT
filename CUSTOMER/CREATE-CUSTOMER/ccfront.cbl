@@ -10,8 +10,8 @@
 
        DATA DIVISION.
        WORKING-STORAGE SECTION.
-       01  WS-MAIL-AROBASE             PIC 9 VALUE 0.
-       
+
+   
 
            LINKAGE SECTION.
    
@@ -24,33 +24,33 @@
            05  LK-ZIPCODE              PIC X(15).
            05  LK-TOWN                 PIC X(50).
            05  LK-COUNTRY              PIC X(20).
-           05  LK-PHONE                PIC 9(20).
+           05  LK-PHONE                PIC X(20).
            05  LK-MAIL                 PIC X(50).
            05 LK-BIRTHDATE.
-               10 LK-DAYS   PIC X(02).
-               10 LK-MONTH  PIC X(02).
-               10 LK-YEAR   PIC X(04).
+               10 LK-YEAR              PIC X(04).
+               10 LK-MONTH             PIC X(02).
+               10 LK-DAY               PIC X(02).
            05 LK-CUSTOMER-CODE-SECU.
-               10 LK-SECU-1  PIC X.
-               10 LK-SECU-2  PIC X(2).
-               10 LK-SECU-3  PIC X(2).
-               10 LK-SECU-4  PIC X(2).
-               10 LK-SECU-5  PIC X(3).
-               10 LK-SECU-6  PIC X(3).
-               10 LK-SECU-7  PIC X(2).
+               10 LK-SECU-1            PIC X.
+               10 LK-SECU-2            PIC X(2).
+               10 LK-SECU-3            PIC X(2).
+               10 LK-SECU-4            PIC X(2).
+               10 LK-SECU-5            PIC X(3).
+               10 LK-SECU-6            PIC X(3).
+               10 LK-SECU-7            PIC X(2).
            05  LK-DOCTOR               PIC X(50).
            05  LK-CODE-IBAN            PIC X(34).
-           05  LK-NBCHILDREN           PIC 9(03).
+           05  LK-NBCHILDREN           PIC X(02).
            05  LK-COUPLE               PIC X(05).
            05  LK-CREATE-DATE          PIC X(10).
            05  LK-UPDATE-DATE          PIC X(10).
            05  LK-CLOSE-DATE           PIC X(10).
            05  LK-ACTIVE               PIC X(01) VALUE "0".
 
-       01  LK-MENU-RETURN       PIC X(01).
-       01  LK-ADD-VALIDATION PIC X(01).
-       01  LK-ERROR-MESSAGE     PIC X(70). 
-       01  LK-VALIDATION-STATUS PIC X VALUE "Y".
+       01  LK-MENU-RETURN              PIC X(01).
+       01  LK-ADD-VALIDATION           PIC X(01).
+       01  LK-ERROR-MESSAGE            PIC X(70). 
+       01  LK-VALIDATION-STATUS        PIC X VALUE "Y".
 
 
        SCREEN SECTION.
@@ -118,18 +118,11 @@
       ******************************************************************
 
        3000-START-ERROR-FIELDS.
+           
+
+           MOVE FUNCTION UPPER-CASE(LK-COUPLE) TO LK-COUPLE.
             
-           IF LK-GENDER = SPACES
-               MOVE 'Le genre est obligatoire.' TO LK-ERROR-MESSAGE
-               MOVE 'N' TO LK-VALIDATION-STATUS
-               GO TO 0000-START-MAIN
-           END-IF
-           IF LENGTH OF LK-GENDER > 10
-               MOVE 'Le genre depasse les 10 caractères.'
-                   TO LK-ERROR-MESSAGE
-               MOVE 'N' TO LK-VALIDATION-STATUS
-               GO TO 0000-START-MAIN
-           END-IF
+         
            IF LK-LASTNAME = SPACES
                MOVE 'Le nom est obligatoire.' TO LK-ERROR-MESSAGE
                MOVE 'N' TO LK-VALIDATION-STATUS
@@ -140,91 +133,9 @@
                MOVE 'N' TO LK-VALIDATION-STATUS
                GO TO 0000-START-MAIN
            END-IF
-           IF LENGTH OF LK-LASTNAME > 20
-               MOVE 'Le nom depasse les 20 caractères.'
-                   TO LK-ERROR-MESSAGE
-               MOVE 'N' TO LK-VALIDATION-STATUS
-               GO TO 0000-START-MAIN
-           END-IF
-           IF LENGTH OF LK-FIRSTNAME > 20
-               MOVE 'Le prenom depasse les 20 caractères.'
-                   TO LK-ERROR-MESSAGE
-               MOVE 'N' TO LK-VALIDATION-STATUS
-               GO TO 0000-START-MAIN
-           END-IF
-           IF LK-ADRESS1 = SPACES
-               MOVE 'L''adresse est obligatoire.' TO LK-ERROR-MESSAGE
-               MOVE 'N' TO LK-VALIDATION-STATUS
-               GO TO 0000-START-MAIN
-           END-IF
-           IF LENGTH OF LK-ADRESS1 > 50
-               MOVE 'L''adresse depasse les 50 caractères.'
-                   TO LK-ERROR-MESSAGE
-               MOVE 'N' TO LK-VALIDATION-STATUS
-               GO TO 0000-START-MAIN
-           END-IF
-           IF LENGTH OF LK-ADRESS2 > 50
-               MOVE 'La deuxieme ligne d''adresse est trop longue'
-                   TO LK-ERROR-MESSAGE
-               MOVE 'N' TO LK-VALIDATION-STATUS
-               GO TO 0000-START-MAIN
-           END-IF
-           IF LK-ZIPCODE = SPACES
-               MOVE 'Le code postal est obligatoire.' 
-               TO LK-ERROR-MESSAGE
-               MOVE 'N' TO LK-VALIDATION-STATUS
-               GO TO 0000-START-MAIN
-           END-IF
-           IF LENGTH OF LK-ZIPCODE > 15
-               MOVE 'Le code postal depasse les 15 caractères.'
-                   TO LK-ERROR-MESSAGE
-               MOVE 'N' TO LK-VALIDATION-STATUS
-               GO TO 0000-START-MAIN
-           END-IF
-           IF LK-TOWN = SPACES
-               MOVE 'La ville est obligatoire.' TO LK-ERROR-MESSAGE
-               MOVE 'N' TO LK-VALIDATION-STATUS
-               GO TO 0000-START-MAIN
-           END-IF
-           IF LENGTH OF LK-TOWN > 50
-               MOVE 'La ville depasse les 50 caractères.'
-                   TO LK-ERROR-MESSAGE
-               MOVE 'N' TO LK-VALIDATION-STATUS
-               GO TO 0000-START-MAIN
-           END-IF
-           IF LK-COUNTRY = SPACES
-               MOVE 'Le pays est obligatoire.' TO LK-ERROR-MESSAGE
-               MOVE 'N' TO LK-VALIDATION-STATUS
-               GO TO 0000-START-MAIN
-           END-IF
-           IF LENGTH OF LK-COUNTRY > 20
-               MOVE 'Le pays depasse les 20 caractères.'
-                   TO LK-ERROR-MESSAGE
-               MOVE 'N' TO LK-VALIDATION-STATUS
-               GO TO 0000-START-MAIN
-           END-IF
-           IF LK-PHONE = SPACES
-               MOVE 'Le numero de telephone est obligatoire.'
-                   TO LK-ERROR-MESSAGE
-               MOVE 'N' TO LK-VALIDATION-STATUS
-               GO TO 0000-START-MAIN
-           END-IF
-           IF NOT FUNCTION NUMVAL(LK-PHONE) > 0
-               MOVE 'Le numero de telephone doit être numerique.'
-                   TO LK-ERROR-MESSAGE
-               MOVE 'N' TO LK-VALIDATION-STATUS
-               GO TO 0000-START-MAIN
-           END-IF
-           
           
-           IF LK-MAIL = SPACES
-               MOVE 'L''email est obligatoire.' TO LK-ERROR-MESSAGE
-               MOVE 'N' TO LK-VALIDATION-STATUS
-               GO TO 0000-START-MAIN
-           END-IF
-           IF LENGTH OF LK-MAIL > 50
-               MOVE 'L''email depasse les 50 caractères.'
-                TO LK-ERROR-MESSAGE
+           IF LK-GENDER = SPACES
+               MOVE 'Le genre est obligatoire.' TO LK-ERROR-MESSAGE
                MOVE 'N' TO LK-VALIDATION-STATUS
                GO TO 0000-START-MAIN
            END-IF
@@ -234,52 +145,99 @@
                MOVE 'N' TO LK-VALIDATION-STATUS
                GO TO 0000-START-MAIN
            END-IF
-           IF LENGTH OF LK-BIRTHDATE > 10
-               MOVE 'La date de naissance depasse les 10 caractères.'
+          
+         
+           IF LK-COUPLE NOT = 'OUI' AND LK-COUPLE NOT = 'NON'
+               MOVE 'Le statut de couple doit etre "OUI" ou "NON".'
+                TO LK-ERROR-MESSAGE
+               MOVE 'N' TO LK-VALIDATION-STATUS
+               GO TO 0000-START-MAIN
+           END-IF.
+
+          
+
+            IF LK-PHONE = SPACES
+               MOVE "Le numero de telephone est obligatoire."
                    TO LK-ERROR-MESSAGE
                MOVE 'N' TO LK-VALIDATION-STATUS
                GO TO 0000-START-MAIN
            END-IF
+           
+           IF LENGTH OF LK-PHONE < 10
+               MOVE "Le numero de téléphone n'est pas complet." 
+               TO LK-ERROR-MESSAGE
+               MOVE 'N' TO LK-VALIDATION-STATUS
+               GO TO 0000-START-MAIN
+           END-IF
+
+           IF LK-CODE-IBAN = SPACES
+               MOVE 'Le code IBAN est obligatoire.' TO LK-ERROR-MESSAGE
+               MOVE 'N' TO LK-VALIDATION-STATUS
+               GO TO 0000-START-MAIN
+           END-IF
+
            IF LK-CUSTOMER-CODE-SECU = SPACES
                MOVE 'Le code de securite sociale est obligatoire.'
                    TO LK-ERROR-MESSAGE
                MOVE 'N' TO LK-VALIDATION-STATUS
                GO TO 0000-START-MAIN
            END-IF
-           IF LENGTH OF LK-CUSTOMER-CODE-SECU > 15
-               MOVE 'Le code de securite sociale est trop long.'
+
+            IF LENGTH OF LK-CUSTOMER-CODE-SECU < 15
+               MOVE 'Le code de securite sociale est trop court'
                    TO LK-ERROR-MESSAGE
                MOVE 'N' TO LK-VALIDATION-STATUS
                GO TO 0000-START-MAIN
            END-IF
-           IF LK-CODE-IBAN = SPACES
-               MOVE 'Le code IBAN est obligatoire.' TO LK-ERROR-MESSAGE
+
+           IF LK-DOCTOR = SPACES
+               MOVE 'Le nom du docteur est obligatoire.'
+                   TO LK-ERROR-MESSAGE
                MOVE 'N' TO LK-VALIDATION-STATUS
                GO TO 0000-START-MAIN
            END-IF
-           IF LENGTH OF LK-CODE-IBAN > 34
-               MOVE 'Le code IBAN depasse les 34 caractères.' 
+
+           
+           IF LK-MAIL = SPACES
+               MOVE 'L''email est obligatoire.' TO LK-ERROR-MESSAGE
+               MOVE 'N' TO LK-VALIDATION-STATUS
+               GO TO 0000-START-MAIN
+           END-IF
+
+           IF LK-ADRESS1 = SPACES
+               MOVE 'L''adresse est obligatoire.' TO LK-ERROR-MESSAGE
+               MOVE 'N' TO LK-VALIDATION-STATUS
+               GO TO 0000-START-MAIN
+           END-IF
+          
+            IF LK-TOWN = SPACES
+               MOVE 'La ville est obligatoire.' TO LK-ERROR-MESSAGE
+               MOVE 'N' TO LK-VALIDATION-STATUS
+               GO TO 0000-START-MAIN
+           END-IF
+         
+           IF LK-ZIPCODE = SPACES
+               MOVE 'Le code postal est obligatoire.' 
                TO LK-ERROR-MESSAGE
                MOVE 'N' TO LK-VALIDATION-STATUS
                GO TO 0000-START-MAIN
-           END-IF.
-             IF LK-NBCHILDREN > 99
-               MOVE 'Le nombre d''enfants depasse la limite.'
-                TO LK-ERROR-MESSAGE
+           END-IF
+          
+       
+          
+           IF LK-COUNTRY = SPACES
+               MOVE 'Le pays est obligatoire.' TO LK-ERROR-MESSAGE
                MOVE 'N' TO LK-VALIDATION-STATUS
                GO TO 0000-START-MAIN
            END-IF
-           IF LK-COUPLE NOT = 'OUI' AND LK-COUPLE NOT = 'NON'
-               MOVE 'Le statut de couple doit être "OUI" ou "NON".'
-                TO LK-ERROR-MESSAGE
-               MOVE 'N' TO LK-VALIDATION-STATUS
-               GO TO 0000-START-MAIN
-           END-IF.
+          
+                                                                  
            
            MOVE 'Y' TO LK-VALIDATION-STATUS.
            IF LK-VALIDATION-STATUS = "Y"
            MOVE "Enregistrement reussi" TO LK-ERROR-MESSAGE
            MOVE FUNCTION CURRENT-DATE TO LK-CREATE-DATE 
+           MOVE FUNCTION CURRENT-DATE TO LK-UPDATE-DATE
            END-IF.
        END-3000-ERROR-FIELDS.
            EXIT.

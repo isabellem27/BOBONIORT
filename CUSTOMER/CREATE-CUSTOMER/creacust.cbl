@@ -16,12 +16,9 @@
            05  WS-ZIPCODE              PIC X(15).
            05  WS-TOWN                 PIC X(50).
            05  WS-COUNTRY              PIC X(20).
-           05  WS-PHONE                PIC 9(20).
+           05  WS-PHONE                PIC X(20).
            05  WS-MAIL                 PIC X(50).
-           05 WS-BIRTHDATE.
-               10 WS-DAYS              PIC X(02).
-               10 WS-MONTH             PIC X(02).
-               10 WS-YEAR              PIC X(04).
+           05 WS-BIRTHDATE             PIC X(8).
            05 WS-CUSTOMER-CODE-SECU.
                10 WS-SECU-1            PIC X.
                10 WS-SECU-2            PIC X(2).
@@ -32,7 +29,7 @@
                10 WS-SECU-7            PIC X(2).
            05  WS-DOCTOR               PIC X(50).
            05  WS-CODE-IBAN            PIC X(34).
-           05  WS-NBCHILDREN           PIC 9(03).
+           05  WS-NBCHILDREN           PIC X(02).
            05  WS-COUPLE               PIC X(05).
            05  WS-CREATE-DATE          PIC X(10).
            05  WS-UPDATE-DATE          PIC X(10).
@@ -50,14 +47,14 @@
                   WS-VALIDATION-STATUS, WS-ERROR-MESSAGE, 
                   WS-ADD-VALIDATION 
            END-CALL.
-          
-           IF WS-MENU-RETURN EQUAL 'O'
-               GO TO 0000-START-MAIN
-           END-IF.
-      
+       
            CALL
                'ccback'
                USING WS-ADHERENT-INPUT, WS-VALIDATION-STATUS 
            END-CALL.
            
+           IF WS-MENU-RETURN NOT EQUAL TO "O"
+           PERFORM 0000-START-MAIN
+           END-IF.
+
            GOBACK.

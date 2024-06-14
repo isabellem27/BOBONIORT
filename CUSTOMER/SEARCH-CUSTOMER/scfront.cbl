@@ -6,55 +6,120 @@
       ****************************************************************** 
        
        IDENTIFICATION DIVISION.
-       PROGRAM-ID. scfront.
-       AUTHOR.     Martial.
+       PROGRAM-ID. scfront RECURSIVE.
+       AUTHOR. Martial&Remi.
 
       ******************************************************************
 
        DATA DIVISION.
-       LINKAGE SECTION.
-       01  LK-CUSTOMER.
-           05 LK-CUS-FIRSTNAME  PIC X(20).
-           05 LK-CUS-LASTNAME   PIC X(20).
-           05 LK-CUS-BIRTHDATE.
-               10 LK-CUB-DAYS   PIC X(02).
-               10 FILLER        PIC X(01) VALUE '-'.
-               10 LK-CUB-MONTH  PIC X(02).
-               10 FILLER        PIC X(01) VALUE '-'.
-               10 LK-CUB-YEAR   PIC X(04).
-           05 LK-CUS-CODE-SECU. 
-               10 LK-CCS-SECU-1 PIC X.
-               10 LK-CCS-SECU-2 PIC X(02).
-               10 LK-CCS-SECU-3 PIC X(02).
-               10 LK-CCS-SECU-4 PIC X(02).
-               10 LK-CCS-SECU-5 PIC X(03).
-               10 LK-CCS-SECU-6 PIC X(03).
-               10 LK-CCS-SECU-7 PIC X(02).
+       WORKING-STORAGE SECTION.
+       01  SCREEN-CUSTOMER.
+           05 SC-FIRSTNAME       PIC X(20).
+           05 SC-LASTNAME        PIC X(20).
+           05 SC-BIRTHDATE.   
+               10 SCB-YEAR       PIC X(04).
+               10 FILLER         PIC X(01) VALUE '-'.
+               10 SCB-MONTH      PIC X(02).
+               10 FILLER         PIC X(01) VALUE '-'.
+               10 SCB-DAYS       PIC X(02).
+           05 SC-CODE-SECU.    
+               10 SCCS-SECU-1    PIC X(01).
+               10 SCCS-SECU-2    PIC X(02).
+               10 SCCS-SECU-3    PIC X(02).
+               10 SCCS-SECU-4    PIC X(02).
+               10 SCCS-SECU-5    PIC X(03).
+               10 SCCS-SECU-6    PIC X(03).
+               10 SCCS-SECU-7    PIC X(02).
 
-       01  LK-MENU-RETURN       PIC X(01).
-       01  LK-SEARCH-VALIDATION PIC X(01).
-       01  LK-ERROR-MESSAGE     PIC X(70). 
-       01  LK-CODE-REQUEST-SQL        PIC 9(01).
+       01  WS-CUSTOMER.
+           03 WS-CUS-UUID        PIC X(36).
+           03 WS-CUS-GENDER      PIC X(10).
+           03 WS-CUS-LASTNAME    PIC X(20).
+           03 WS-CUS-FIRSTNAME   PIC X(20).
+           03 WS-CUS-ADRESS1	 PIC X(50).
+           03 WS-CUS-ADRESS2	 PIC X(50).
+           03 WS-CUS-ZIPCODE	 PIC X(15).
+           03 WS-CUS-TOWN	     PIC X(30).
+           03 WS-CUS-COUNTRY	 PIC X(20).
+           03 WS-CUS-PHONE	     PIC X(10).
+           03 WS-CUS-MAIL	     PIC X(50).
+           03 WS-CUS-BIRTH-DATE  PIC X(10).
+           03 WS-CUS-DOCTOR	     PIC X(20).
+           03 WS-CUS-CODE-SECU   PIC 9(15).
+           03 WS-CUS-CODE-IBAN   PIC X(34).
+           03 WS-CUS-NBCHILDREN  PIC 9(03).
+           03 WS-CUS-COUPLE      PIC X(05).
+           03 WS-CUS-CREATE-DATE PIC X(10).
+           03 WS-CUS-UPDATE-DATE PIC X(10).
+           03 WS-CUS-CLOSE-DATE  PIC X(10).
+           03 WS-CUS-ACTIVE	     PIC X(01).
+
+       01  WS-MENU-RETURN        PIC X(01).
+       01  WS-SEARCH-VALIDATION  PIC X(01).
+       01  WS-ERROR-MESSAGE      PIC X(70).
+       01  WS-CODE-REQUEST-SQL   PIC 9(01).
+       01  WS-COUNT-CUSTOMER     PIC 9(05).
 
        SCREEN SECTION.
        COPY 'screen-search-customer.cpy'.
 
       ******************************************************************
 
-       PROCEDURE DIVISION USING LK-CUSTOMER, LK-MENU-RETURN, 
-       LK-SEARCH-VALIDATION, LK-ERROR-MESSAGE, LK-CODE-REQUEST-SQL.
-           
+       PROCEDURE DIVISION.
        0000-START-MAIN.
-           ACCEPT SCREEN-SEARCH-CUSTOMER.
-           
-           PERFORM 1000-START-MENU-RETURN 
-              THRU END-1000-MENU-RETURN.
-           PERFORM 2000-START-SEARCH-VALIDATION
-              THRU END-2000-SEARCH-VALIDATION.
-           PERFORM 3000-START-ERROR-FIELDS 
-              THRU END-3000-ERROR-FIELDS.
+           INITIALIZE SCREEN-CUSTOMER
+                      WS-CUSTOMER 
+                      WS-MENU-RETURN
+                      WS-SEARCH-VALIDATION
+                      WS-ERROR-MESSAGE
+                      WS-CODE-REQUEST-SQL
+                      WS-COUNT-CUSTOMER.
+
+           PERFORM 1000-START-INITIALIZATION 
+              THRU END-1000-INITIALIZATION.
        END-0000-MAIN. 
            GOBACK.
+
+      ******************************************************************
+      *    [RD] Affiche l'écran de la recherche, appel les             *    
+      *    paragraphes qui s'occupent de vérifier les saisis de        *
+      *    l'utilisateur et appel les sous-programmes BACK et menu     *
+      *    d'un adhérent.                                              *
+      ****************************************************************** 
+       1000-START-INITIALIZATION.
+           ACCEPT SCREEN-SEARCH-CUSTOMER.
+           
+           PERFORM 1100-START-MENU-RETURN 
+              THRU END-1100-MENU-RETURN.
+
+           PERFORM 1200-START-SEARCH-VALIDATION
+              THRU END-1200-SEARCH-VALIDATION.
+
+           PERFORM 1300-START-ERROR-FIELDS 
+              THRU END-1300-ERROR-FIELDS.
+
+      *    [RD] Appel du BACK.
+           CALL 
+               'scback' 
+               USING BY REFERENCE
+               SCREEN-CUSTOMER, WS-CUSTOMER, WS-CODE-REQUEST-SQL,
+               WS-COUNT-CUSTOMER
+           END-CALL.
+
+           PERFORM 2000-START-CUSTOMER-NOT-FOUND 
+             THRU END-2000-CUSTOMER-NOT-FOUND.
+
+           PERFORM 3000-START-CUSTOMER-SEVERAL-FOUND 
+              THRU END-3000-CUSTOMER-SEVERAL-FOUND.
+
+      *    [RD] Appel le MENU D'ADHERENT.
+           CALL 
+               'menucust' 
+               USING BY REFERENCE 
+               WS-CUSTOMER
+           END-CALL.
+       END-1000-INITIALIZATION.
+           EXIT. 
 
       ******************************************************************
       *    [RD] Si l'utilisateur a saisi "O" sur "Retour au menu"      *
@@ -62,34 +127,40 @@
       *    Si l'utilisateur a effectué une saisie incorrecte redirige  *
       *    vers le début de ce programme avec un message d'erreur.     *
       ******************************************************************
-       1000-START-MENU-RETURN.
-           IF LK-MENU-RETURN EQUAL 'O'
-               GO TO END-0000-MAIN
+       1100-START-MENU-RETURN.
+           MOVE FUNCTION UPPER-CASE(WS-MENU-RETURN) TO WS-MENU-RETURN.
+
+           IF WS-MENU-RETURN EQUAL 'O' THEN
+               CALL 
+                   'manacust'
+               END-CALL
+           
+           ELSE IF WS-MENU-RETURN NOT EQUAL 'O' 
+               AND WS-MENU-RETURN NOT EQUAL SPACE THEN
+
+               MOVE 'Veuillez entrer "O" pour retourner au menu.' 
+               TO WS-ERROR-MESSAGE
+
+               GO TO 1000-START-INITIALIZATION
            END-IF.
-
-           IF LK-MENU-RETURN NOT EQUAL 'O' 
-              AND LK-MENU-RETURN NOT EQUAL SPACES 
-
-               MOVE 'ERREUR DE SAISIE, "O" POUR RETOURNER AU MENU' 
-               TO LK-ERROR-MESSAGE
-
-               GO TO 0000-START-MAIN
-           END-IF.
-       END-1000-MENU-RETURN.
+       END-1100-MENU-RETURN.
            EXIT.
 
       ******************************************************************
       *    [RD] Si l'utilisateur n'a pas saisi "O" sur "Rechercher"    *
       *    redirige vers le début de ce programme.                     *
       ******************************************************************
-       2000-START-SEARCH-VALIDATION.
-           IF LK-SEARCH-VALIDATION NOT EQUAL 'O'
-               MOVE 'ERREUR DE SAISIE, "O" POUR EFFECTUER LA RECHERCHE' 
-               TO LK-ERROR-MESSAGE
+       1200-START-SEARCH-VALIDATION.
+           MOVE FUNCTION UPPER-CASE(WS-SEARCH-VALIDATION) 
+           TO WS-SEARCH-VALIDATION.
 
-               GO TO 0000-START-MAIN
+           IF WS-SEARCH-VALIDATION NOT EQUAL 'O' THEN
+               MOVE 'Veuillez entrer "O" pour rechercher.' 
+               TO WS-ERROR-MESSAGE
+
+               GO TO 1000-START-INITIALIZATION
            END-IF.
-       END-2000-SEARCH-VALIDATION.
+       END-1200-SEARCH-VALIDATION.
            EXIT.
 
       ******************************************************************
@@ -99,42 +170,71 @@
       *    Si aucune des conditions n'est remplies redirige vers le    *
       *    début de ce programme avec le message d'erreur adéquat.     *
       ******************************************************************
-       3000-START-ERROR-FIELDS.
-           IF LK-CUS-CODE-SECU NOT EQUAL SPACES
-              AND LK-CUS-FIRSTNAME EQUAL SPACES
-              AND LK-CUS-LASTNAME  EQUAL SPACES
-              AND LK-CUB-DAYS EQUAL SPACES
-              AND LK-CUB-MONTH EQUAL SPACES
-              AND LK-CUB-YEAR EQUAL SPACES
+       1300-START-ERROR-FIELDS.
+           IF     SC-CODE-SECU IS NUMERIC
+              AND SC-FIRSTNAME     EQUAL SPACES
+              AND SC-LASTNAME      EQUAL SPACES
+              AND SCB-DAYS         EQUAL SPACES
+              AND SCB-MONTH        EQUAL SPACES
+              AND SCB-YEAR         EQUAL SPACES
+              THEN
       
-               SET LK-CODE-REQUEST-SQL TO 1
-               GO TO END-3000-ERROR-FIELDS
+               SET WS-CODE-REQUEST-SQL TO 1
+               GO TO END-1300-ERROR-FIELDS
            END-IF.
 
-           IF LK-CUS-CODE-SECU EQUAL SPACES
-              AND LK-CUS-FIRSTNAME NOT EQUAL SPACES
-              AND LK-CUS-LASTNAME  NOT EQUAL SPACES
-              AND LK-CUB-DAYS NOT EQUAL SPACES
-              AND LK-CUB-MONTH NOT EQUAL SPACES
-              AND LK-CUB-YEAR NOT EQUAL SPACES
+           IF     SC-CODE-SECU     EQUAL SPACES
+              AND SC-FIRSTNAME NOT EQUAL SPACES
+              AND SC-LASTNAME  NOT EQUAL SPACES
+              AND SCB-DAYS     IS NUMERIC
+              AND SCB-MONTH    IS NUMERIC
+              AND SCB-YEAR     IS NUMERIC
+              THEN
 
-               SET LK-CODE-REQUEST-SQL TO 2
-               GO TO END-3000-ERROR-FIELDS
+               SET WS-CODE-REQUEST-SQL TO 2
+               GO TO END-1300-ERROR-FIELDS
            END-IF.
 
-           IF LK-CUS-CODE-SECU NOT EQUAL SPACES
-              AND LK-CUS-FIRSTNAME NOT EQUAL SPACES
-              AND LK-CUS-LASTNAME  NOT EQUAL SPACES
-              AND LK-CUB-DAYS NOT EQUAL SPACES
-              AND LK-CUB-MONTH NOT EQUAL SPACES
-              AND LK-CUB-YEAR NOT EQUAL SPACES
+           IF     SC-CODE-SECU IS NUMERIC
+              AND SC-FIRSTNAME NOT EQUAL SPACES
+              AND SC-LASTNAME  NOT EQUAL SPACES
+              AND SCB-DAYS     IS NUMERIC
+              AND SCB-MONTH    IS NUMERIC
+              AND SCB-YEAR     IS NUMERIC
+              THEN
 
-               SET LK-CODE-REQUEST-SQL TO 3
-               GO TO END-3000-ERROR-FIELDS
+               SET WS-CODE-REQUEST-SQL TO 3
+               GO TO END-1300-ERROR-FIELDS
            END-IF.
 
-           MOVE 'ERREUR DE SAISIE SUR LES CHAMPS DE RECHERCHE.'
-           TO LK-ERROR-MESSAGE.
-           GO TO 0000-START-MAIN.
-       END-3000-ERROR-FIELDS.
+           MOVE "Erreur de saisie sur l'un des champs de la recherche."
+           TO WS-ERROR-MESSAGE.
+           GO TO 1000-START-INITIALIZATION.
+       END-1300-ERROR-FIELDS.
            EXIT.
+
+      ******************************************************************
+      *    [RD] Si la requête SQL du back n'a pas trouvé d'adhérent    *
+      *    redirige vers le paragraphe qui affiche l'écran de recherche*
+      *    avec le message d'erreur adéquat.                           *
+      ****************************************************************** 
+       2000-START-CUSTOMER-NOT-FOUND.
+           IF WS-COUNT-CUSTOMER EQUAL 0 THEN
+               MOVE "Aucun adherent trouve." TO WS-ERROR-MESSAGE
+               GO TO 1000-START-INITIALIZATION
+           END-IF.
+       END-2000-CUSTOMER-NOT-FOUND.
+           EXIT.
+
+      ******************************************************************
+      *    [RD] Si la requête SQL du back a trouvé plusieurs adhérents *
+      *    redirige vers le paragraphe qui affiche l'écran de recherche*
+      *    avec le message d'erreur adéquat.                           *
+      ****************************************************************** 
+       3000-START-CUSTOMER-SEVERAL-FOUND.
+           IF WS-COUNT-CUSTOMER GREATER THAN 1 THEN
+               MOVE "Plusieurs adherents trouves." TO WS-ERROR-MESSAGE
+               GO TO 1000-START-INITIALIZATION
+           END-IF.
+       END-3000-CUSTOMER-SEVERAL-FOUND.
+           EXIT. 
