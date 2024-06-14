@@ -1,34 +1,30 @@
       ******************************************************************
-      *    Ce programme gère la validation de la saisine des champs:
-      *    - code utilisateur
-      *    - mot de passe
+      *    [YM-AL] Ce programme gère la validation de la saisie des    *
+      *    champs :                                                    *
+      *    - Identifiant                                               * 
+      *    - Mot de passe                                              * 
       ****************************************************************** 
        IDENTIFICATION DIVISION.
        PROGRAM-ID. siback.
-       AUTHOR. Yves.
+       AUTHOR.       Yves.
+
       ******************************************************************
+
        DATA DIVISION.
-       
-
        WORKING-STORAGE SECTION.
+       01  WS-USER-ID  PIC X(08).
+       01  WS-USER-PWD PIC X(09).
 
-       01  WS-INPUT-DATAS.
-           05 WS-INPUT-USER-ID      PIC X(08).
-           05 WS-INPUT-USER-PASSWRD PIC X(09).
-           05 WS-ERROR-MESSAGE      PIC x(45).  
-           05 WS-PASS-CHECK         PIC X(05) VALUE 'FALSE'.
-
-OCESQL*    EXEC SQL BEGIN DECLARE SECTION END-EXEC.
-       01  DBNAME               PIC X(11) VALUE 'boboniortdb'.   
-       01  USERNAME             PIC X(05) VALUE 'cobol'.
-       01  PASSWRD              PIC X(05) VALUE 'cbl85'.
-  
-       01  SQL-USER.
-           03 SQL-USER-ID       PIC X(10).
-           03 SQL-USER-PWD      PIC X(30).       
-
-OCESQL*    EXEC SQL END DECLARE SECTION END-EXEC.
-OCESQL*    EXEC SQL INCLUDE SQLCA END-EXEC.
+OCESQL*EXEC SQL BEGIN DECLARE SECTION END-EXEC.
+       01  DBNAME          PIC X(11) VALUE 'boboniortdb'.   
+       01  USERNAME        PIC X(05) VALUE 'cobol'.
+       01  PASSWRD         PIC X(05) VALUE 'cbl85'.
+      
+       01  SQL-USER.    
+           03 SQL-USER-ID  PIC X(10).
+           03 SQL-USER-PWD PIC X(30).       
+OCESQL*EXEC SQL END DECLARE SECTION END-EXEC.
+OCESQL*EXEC SQL INCLUDE SQLCA END-EXEC.
 OCESQL     copy "sqlca.cbl".
            
 OCESQL*
@@ -37,26 +33,20 @@ OCESQL     02  FILLER PIC X(014) VALUE "DISCONNECT ALL".
 OCESQL     02  FILLER PIC X(1) VALUE X"00".
 OCESQL*
 OCESQL 01  SQ0002.
-OCESQL     02  FILLER PIC X(094) VALUE "SELECT user_identification, us"
+OCESQL     02  FILLER PIC X(125) VALUE "SELECT user_identification, us"
 OCESQL  &  "er_password FROM user_tab WHERE user_identification = trim"
-OCESQL  &  "( $1 )".
+OCESQL  &  "( $1 ) AND user_password = trim( $2 )".
 OCESQL     02  FILLER PIC X(1) VALUE X"00".
 OCESQL*
        LINKAGE SECTION.
-       
-       01  LK-INPUT-DATAS.
-           05 LK-INPUT-USER-ID      PIC X(08).
-           05 LK-INPUT-USER-PASSWRD PIC X(09).
-           05 LK-ERROR-MESSAGE      PIC x(45).  
-           05 LK-PASS-CHECK         PIC X(05) VALUE 'FALSE'.
+           01 LK-USER-ID   PIC X(08).
+           01 LK-USER-PWD  PIC X(09).
+           01 LK-PWD-CHECK PIC X(05) VALUE 'FALSE'.
 
       ******************************************************************
-       PROCEDURE DIVISION USING LK-INPUT-DATAS.
+       PROCEDURE DIVISION USING LK-USER-ID, LK-USER-PWD, LK-PWD-CHECK.
        
        0000-MAIN-START.
-
-           MOVE LK-INPUT-DATAS TO WS-INPUT-DATAS.
-
 OCESQL*    EXEC SQL
 OCESQL*       CONNECT :USERNAME IDENTIFIED BY :PASSWRD USING :DBNAME
 OCESQL*    END-EXEC.
@@ -70,13 +60,14 @@ OCESQL          BY REFERENCE DBNAME
 OCESQL          BY VALUE 11
 OCESQL     END-CALL.
 
-           IF SQLCODE NOT = ZERO 
+           MOVE LK-USER-ID  TO WS-USER-ID.
+           MOVE LK-USER-PWD TO WS-USER-PWD.
+
+           IF SQLCODE NOT EQUAL ZERO 
                PERFORM 1000-START-ERROR-RTN THRU END-1000-ERROR-RTN
            ELSE
-            PERFORM 2001-START-SQL-REQUEST
-               THRU END-2001-SQL-REQUEST
+               PERFORM 2000-START-SQL-REQUEST THRU END-2000-SQL-REQUEST
            END-IF.
-
        END-0000-MAIN.
 OCESQL*    EXEC SQL COMMIT WORK END-EXEC.
 OCESQL     CALL "OCESQLStartSQL"
@@ -92,12 +83,12 @@ OCESQL     CALL "OCESQLDisconnect" USING
 OCESQL          BY REFERENCE SQLCA
 OCESQL     END-CALL.
            GOBACK.
+
       ******************************************************************
-      *    Bloc de gestion des erreurs
+      *    [YM] Bloc de gestion des erreurs pour une valeur de SQLCODE *
+      *    différente de 0.                                            *
       ******************************************************************
        1000-START-ERROR-RTN.
-      *     DISPLAY "*** SQL ERROR ***".
-      *     DISPLAY "SQLCODE: " SQLCODE SPACE.
            EVALUATE SQLCODE
               WHEN  +100
                  DISPLAY "Record not found"
@@ -129,16 +120,19 @@ OCESQL     END-CALL
            EXIT.
 
       ******************************************************************
-      *    Requêtes SQL
+      *    [RD] Effectue une requête SQL qui récupère les informations *
+      *    d'un utilisateur si l'identifiant et le mot de passe        *
+      *    saisis à partir de la SCREEN SECTION sont corrects.         * 
+      *    S'ils sont corrects, attribu 'TRUE' à la LK-PWD-CHECK.      *        
       ******************************************************************
-       2001-START-SQL-REQUEST.
+       2000-START-SQL-REQUEST.
 
-      *    Récupère les informations d'un usser selon l'id saisie
 OCESQL*    EXEC SQL
-OCESQL*     DECLARE CRUSER CURSOR FOR
-OCESQL*     SELECT user_identification, user_password
-OCESQL*     FROM user_tab
-OCESQL*     WHERE user_identification = trim(:WS-INPUT-USER-ID)
+OCESQL*        DECLARE CRUSER CURSOR FOR
+OCESQL*        SELECT user_identification, user_password
+OCESQL*        FROM user_tab
+OCESQL*        WHERE user_identification = trim(:WS-USER-ID)
+OCESQL*        AND user_password = trim(:WS-USER-PWD)
 OCESQL*    END-EXEC.
 OCESQL     CALL "OCESQLStartSQL"
 OCESQL     END-CALL
@@ -146,13 +140,19 @@ OCESQL     CALL "OCESQLSetSQLParams" USING
 OCESQL          BY VALUE 16
 OCESQL          BY VALUE 8
 OCESQL          BY VALUE 0
-OCESQL          BY REFERENCE WS-INPUT-USER-ID
+OCESQL          BY REFERENCE WS-USER-ID
+OCESQL     END-CALL
+OCESQL     CALL "OCESQLSetSQLParams" USING
+OCESQL          BY VALUE 16
+OCESQL          BY VALUE 9
+OCESQL          BY VALUE 0
+OCESQL          BY REFERENCE WS-USER-PWD
 OCESQL     END-CALL
 OCESQL     CALL "OCESQLCursorDeclareParams" USING
 OCESQL          BY REFERENCE SQLCA
 OCESQL          BY REFERENCE "siback_CRUSER" & x"00"
 OCESQL          BY REFERENCE SQ0002
-OCESQL          BY VALUE 1
+OCESQL          BY VALUE 2
 OCESQL     END-CALL
 OCESQL     CALL "OCESQLEndSQL"
 OCESQL     END-CALL.
@@ -189,12 +189,10 @@ OCESQL     END-CALL
 OCESQL     CALL "OCESQLEndSQL"
 OCESQL     END-CALL.
 
-           IF SQLCODE = ZERO THEN
-               PERFORM 3000-TEST-PWD-START
-                  THRU END-3000-TEST-PWD
+           IF SQLCODE EQUAL ZERO
+               MOVE 'TRUE' TO LK-PWD-CHECK
            END-IF.
 
-           MOVE WS-PASS-CHECK TO LK-PASS-CHECK.
 OCESQL*    EXEC SQL
 OCESQL*       CLOSE CRUSER
 OCESQL*    END-EXEC.
@@ -203,19 +201,8 @@ OCESQL          BY REFERENCE SQLCA
 OCESQL          BY REFERENCE "siback_CRUSER" & x"00"
 OCESQL     END-CALL
 OCESQL    .
-
-       END-2001-SQL-REQUEST.
+       END-2000-SQL-REQUEST.
            EXIT.
 
-      ******************************************************************
-       3000-TEST-PWD-START.
 
-           IF SQL-USER-PWD =
-               FUNCTION TRIM(WS-INPUT-USER-PASSWRD) THEN
-                 MOVE 'TRUE' TO WS-PASS-CHECK
-           END-IF.
-       END-3000-TEST-PWD.
-           EXIT.
 
-      ******************************************************************
-    
