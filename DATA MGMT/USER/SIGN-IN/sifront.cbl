@@ -26,7 +26,7 @@
        01  WS-RETURN-CHOICE    PIC X(01).
 
        SCREEN SECTION.
-           COPY 'screen-sign-in.cpy'.
+           COPY 'screen-sign-in-data.cpy'.
 
       ******************************************************************
 
