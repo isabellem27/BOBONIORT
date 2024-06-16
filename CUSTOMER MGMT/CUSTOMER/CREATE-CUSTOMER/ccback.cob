@@ -31,7 +31,7 @@
            03 WS-CUS-CREATE-DATE PIC X(10).
            03 WS-CUS-UPDATE-DATE PIC X(08).
            03 WS-CUS-CLOSE-DATE  PIC X(10).
-           03 WS-CUS-ACTIVE	     PIC X(01) VALUE '1'. 
+           03 WS-CUS-ACTIVE	     PIC X(01). 
 
 OCESQL*EXEC SQL BEGIN DECLARE SECTION END-EXEC.
        01  DBNAME   PIC  X(11) VALUE 'boboniortdb'.
@@ -49,6 +49,11 @@ OCESQL     02  FILLER PIC X(014) VALUE "DISCONNECT ALL".
 OCESQL     02  FILLER PIC X(1) VALUE X"00".
 OCESQL*
 OCESQL 01  SQ0002.
+OCESQL     02  FILLER PIC X(064) VALUE "SELECT uuid_customer FROM cust"
+OCESQL  &  "omer WHERE customer_code_secu = $1".
+OCESQL     02  FILLER PIC X(1) VALUE X"00".
+OCESQL*
+OCESQL 01  SQ0003.
 OCESQL     02  FILLER PIC X(256) VALUE "INSERT INTO CUSTOMER ( CUSTOME"
 OCESQL  &  "R_GENDER, CUSTOMER_LASTNAME, CUSTOMER_FIRSTNAME, CUSTOMER_"
 OCESQL  &  "ADRESS1, CUSTOMER_ADRESS2, CUSTOMER_ZIPCODE, CUSTOMER_TOWN"
@@ -59,14 +64,12 @@ OCESQL  &  "CHILDREN, CUSTOMER_COUPLE, CUSTOMER_CREATE_DATE, CUSTOMER_"
 OCESQL  &  "ACTIVE ) VALUES ( TRIM( $1 ), TRIM( $2 ), TRIM( $3 ), TRIM"
 OCESQL  &  "( $4 ), TRIM( $5 ), TRIM( $6 ), TRIM( $7 ), TRIM( $8 ), TR"
 OCESQL  &  "IM( $9 ), TRIM( $10 ), $11, TRIM( $12 ), $13, TRIM( ".
-OCESQL     02  FILLER PIC X(027) VALUE "$14 ), $15, $16, $17, $18 )".
+OCESQL     02  FILLER PIC X(027) VALUE "$14 ), $15, $16, $17, '1' )".
 OCESQL     02  FILLER PIC X(1) VALUE X"00".
 OCESQL*
-OCESQL 01  SQ0003.
-OCESQL     02  FILLER PIC X(164) VALUE "SELECT uuid_customer FROM cust"
-OCESQL  &  "omer WHERE customer_code_secu = $1 AND customer_lastname ="
-OCESQL  &  " TRIM( $2 ) AND customer_firstname = TRIM( $3 ) AND custom"
-OCESQL  &  "er_birth_date = $4".
+OCESQL 01  SQ0004.
+OCESQL     02  FILLER PIC X(064) VALUE "SELECT uuid_customer FROM cust"
+OCESQL  &  "omer WHERE customer_code_secu = $1".
 OCESQL     02  FILLER PIC X(1) VALUE X"00".
 OCESQL*
        LINKAGE SECTION.
@@ -98,11 +101,13 @@ OCESQL*
            03 LK-CUS-CREATE-DATE PIC X(10).
            03 LK-CUS-UPDATE-DATE PIC X(10).
            03 LK-CUS-CLOSE-DATE  PIC X(10).
-           03 LK-CUS-ACTIVE	     PIC X(01) VALUE '1'. 
+           03 LK-CUS-ACTIVE	     PIC X(01). 
+
+       01  LK-COUNT-CUSTOMER     PIC 9(05).
 
       ******************************************************************
 
-       PROCEDURE DIVISION USING LK-CUSTOMER.
+       PROCEDURE DIVISION USING LK-CUSTOMER, LK-COUNT-CUSTOMER.
 
        0000-START-MAIN.
 OCESQL*    EXEC SQL
@@ -119,15 +124,20 @@ OCESQL          BY VALUE 11
 OCESQL     END-CALL.
            
            PERFORM 1000-START-INITIALIZATION 
-              THRU END-1000-INITIALIZATION.       
+              THRU END-1000-INITIALIZATION. 
 
-           PERFORM 2000-START-INSERT-DATA-DB
-              THRU END-2000-INSERT-DATA-DB.
+           PERFORM 2000-START-SELECT-EXISTING-CUSTOMER
+              THRU END-2000-SELECT-EXISTING-CUSTOMER.
 
-           PERFORM 3000-START-SELECT-CUSTOMER-CREATE
-              THRU END-3000-SELECT-CUSTOMER-CREATE.
-
-           MOVE WS-CUSTOMER TO LK-CUSTOMER.
+           IF LK-COUNT-CUSTOMER LESS THAN 1 THEN         
+               PERFORM 3000-START-INSERT-DATA-DB
+                  THRU END-3000-INSERT-DATA-DB
+       
+               PERFORM 4000-START-SELECT-CUSTOMER-CREATE
+                  THRU END-4000-SELECT-CUSTOMER-CREATE
+       
+               MOVE WS-CUSTOMER TO LK-CUSTOMER
+           END-IF.
        0000-END-MAIN.    
 OCESQL*    EXEC SQL COMMIT WORK END-EXEC.
 OCESQL     CALL "OCESQLStartSQL"
@@ -158,15 +168,95 @@ OCESQL     END-CALL.
       *    [MF] Déplace les données de la LINKAGE vers la WS. 
            MOVE LK-CUSTOMER TO WS-CUSTOMER.    
 
+      *    [RD] Initialise la date de création.   
            ACCEPT WS-CUS-CREATE-DATE FROM DATE YYYYMMDD.
        END-1000-INITIALIZATION.
            EXIT.
 
+      ******************************************************************
+      *    [RD] Récupère l'UUID de l'adhérent par rapport au numéro de *
+      *    sécurité sociale saisi dans le FRONT.                       *
       ****************************************************************** 
-      *    [MF] Si toute les saisies de l'utilisateur sont bonnes alors*
-      *    on insère les données dans la table CUSTOMER.               *
+       2000-START-SELECT-EXISTING-CUSTOMER.
+           INITIALIZE LK-COUNT-CUSTOMER.
+
+OCESQL*    EXEC SQL
+OCESQL*        DECLARE CRSEXIST CURSOR FOR
+OCESQL*        SELECT uuid_customer
+OCESQL*        FROM customer
+OCESQL*        WHERE customer_code_secu = :WS-CUS-CODE-SECU
+OCESQL*    END-EXEC.
+OCESQL     CALL "OCESQLStartSQL"
+OCESQL     END-CALL
+OCESQL     CALL "OCESQLSetSQLParams" USING
+OCESQL          BY VALUE 1
+OCESQL          BY VALUE 15
+OCESQL          BY VALUE 0
+OCESQL          BY REFERENCE WS-CUS-CODE-SECU
+OCESQL     END-CALL
+OCESQL     CALL "OCESQLCursorDeclareParams" USING
+OCESQL          BY REFERENCE SQLCA
+OCESQL          BY REFERENCE "ccback_CRSEXIST" & x"00"
+OCESQL          BY REFERENCE SQ0002
+OCESQL          BY VALUE 1
+OCESQL     END-CALL
+OCESQL     CALL "OCESQLEndSQL"
+OCESQL     END-CALL.
+
+OCESQL*    EXEC SQL  
+OCESQL*        OPEN CRSEXIST
+OCESQL*    END-EXEC.
+OCESQL     CALL "OCESQLCursorOpen" USING
+OCESQL          BY REFERENCE SQLCA
+OCESQL          BY REFERENCE "ccback_CRSEXIST" & x"00"
+OCESQL     END-CALL.
+
+           PERFORM UNTIL SQLCODE = 100
+OCESQL*        EXEC SQL
+OCESQL*            FETCH CRSEXIST
+OCESQL*            INTO :SQL-CUS-UUID
+OCESQL*        END-EXEC
+OCESQL     CALL "OCESQLStartSQL"
+OCESQL     END-CALL
+OCESQL     CALL "OCESQLSetResultParams" USING
+OCESQL          BY VALUE 16
+OCESQL          BY VALUE 36
+OCESQL          BY VALUE 0
+OCESQL          BY REFERENCE SQL-CUS-UUID
+OCESQL     END-CALL
+OCESQL     CALL "OCESQLCursorFetchOne" USING
+OCESQL          BY REFERENCE SQLCA
+OCESQL          BY REFERENCE "ccback_CRSEXIST" & x"00"
+OCESQL     END-CALL
+OCESQL     CALL "OCESQLEndSQL"
+OCESQL     END-CALL
+               
+               EVALUATE SQLCODE
+                   WHEN ZERO
+                       ADD 1 TO LK-COUNT-CUSTOMER
+                       MOVE SQL-CUS-UUID TO WS-CUS-UUID
+                   WHEN 100
+                       DISPLAY 'NO MORE ROWS IN CURSOR RESULT SET'
+                   WHEN OTHER
+                       DISPLAY 'ERROR FETCHING CURSOR CRSEXIST :'
+                       SPACE SQLCODE
+               END-EVALUATE
+           END-PERFORM.
+OCESQL*    EXEC SQL  
+OCESQL*        CLOSE CRSEXIST  
+OCESQL*    END-EXEC.
+OCESQL     CALL "OCESQLCursorClose"  USING
+OCESQL          BY REFERENCE SQLCA
+OCESQL          BY REFERENCE "ccback_CRSEXIST" & x"00"
+OCESQL     END-CALL
+OCESQL    .
+       END-2000-SELECT-EXISTING-CUSTOMER.
+           EXIT.
+
       ****************************************************************** 
-       2000-START-INSERT-DATA-DB.
+      *    [MF] Insère les données dans la table CUSTOMER.             *
+      ****************************************************************** 
+       3000-START-INSERT-DATA-DB.
 OCESQL*    EXEC SQL
 OCESQL*        INSERT INTO CUSTOMER (
 OCESQL*            CUSTOMER_GENDER, 
@@ -206,7 +296,7 @@ OCESQL*            TRIM(:WS-CUS-CODE-IBAN),
 OCESQL*            :WS-CUS-NBCHILDREN, 
 OCESQL*            :WS-CUS-COUPLE, 
 OCESQL*            :WS-CUS-CREATE-DATE,
-OCESQL*            :WS-CUS-ACTIVE
+OCESQL*            '1'
 OCESQL*       )
 OCESQL*    END-EXEC.
 OCESQL     CALL "OCESQLStartSQL"
@@ -313,20 +403,15 @@ OCESQL          BY VALUE 10
 OCESQL          BY VALUE 0
 OCESQL          BY REFERENCE WS-CUS-CREATE-DATE
 OCESQL     END-CALL
-OCESQL     CALL "OCESQLSetSQLParams" USING
-OCESQL          BY VALUE 16
-OCESQL          BY VALUE 1
-OCESQL          BY VALUE 0
-OCESQL          BY REFERENCE WS-CUS-ACTIVE
-OCESQL     END-CALL
 OCESQL     CALL "OCESQLExecParams" USING
 OCESQL          BY REFERENCE SQLCA
-OCESQL          BY REFERENCE SQ0002
-OCESQL          BY VALUE 18
+OCESQL          BY REFERENCE SQ0003
+OCESQL          BY VALUE 17
 OCESQL     END-CALL
 OCESQL     CALL "OCESQLEndSQL"
 OCESQL     END-CALL.
 
+      *    COMMIT l'insertion de l'adhérent. 
 OCESQL*    EXEC SQL COMMIT WORK END-EXEC.
 OCESQL     CALL "OCESQLStartSQL"
 OCESQL     END-CALL
@@ -336,20 +421,21 @@ OCESQL          BY REFERENCE "COMMIT" & x"00"
 OCESQL     END-CALL
 OCESQL     CALL "OCESQLEndSQL"
 OCESQL     END-CALL.
-       END-2000-INSERT-DATA-DB.
+       END-3000-INSERT-DATA-DB.
            EXIT.
 
       ******************************************************************
+      *    [RD] Récupère l'UUID de l'adhérent qui a été inséré dans la *
+      *    DB.                                                         *
       ****************************************************************** 
-       3000-START-SELECT-CUSTOMER-CREATE.
+       4000-START-SELECT-CUSTOMER-CREATE.
+           INITIALIZE LK-COUNT-CUSTOMER.
+
 OCESQL*    EXEC SQL
-OCESQL*        DECLARE CRS CURSOR FOR
+OCESQL*        DECLARE CRSCREATE CURSOR FOR
 OCESQL*        SELECT uuid_customer
 OCESQL*        FROM customer
 OCESQL*        WHERE customer_code_secu = :WS-CUS-CODE-SECU
-OCESQL*        AND customer_lastname = TRIM(:WS-CUS-LASTNAME)
-OCESQL*        AND customer_firstname = TRIM(:WS-CUS-FIRSTNAME)
-OCESQL*        AND customer_birth_date = :WS-CUS-BIRTH-DATE
 OCESQL*    END-EXEC.
 OCESQL     CALL "OCESQLStartSQL"
 OCESQL     END-CALL
@@ -359,44 +445,26 @@ OCESQL          BY VALUE 15
 OCESQL          BY VALUE 0
 OCESQL          BY REFERENCE WS-CUS-CODE-SECU
 OCESQL     END-CALL
-OCESQL     CALL "OCESQLSetSQLParams" USING
-OCESQL          BY VALUE 16
-OCESQL          BY VALUE 20
-OCESQL          BY VALUE 0
-OCESQL          BY REFERENCE WS-CUS-LASTNAME
-OCESQL     END-CALL
-OCESQL     CALL "OCESQLSetSQLParams" USING
-OCESQL          BY VALUE 16
-OCESQL          BY VALUE 20
-OCESQL          BY VALUE 0
-OCESQL          BY REFERENCE WS-CUS-FIRSTNAME
-OCESQL     END-CALL
-OCESQL     CALL "OCESQLSetSQLParams" USING
-OCESQL          BY VALUE 16
-OCESQL          BY VALUE 10
-OCESQL          BY VALUE 0
-OCESQL          BY REFERENCE WS-CUS-BIRTH-DATE
-OCESQL     END-CALL
 OCESQL     CALL "OCESQLCursorDeclareParams" USING
 OCESQL          BY REFERENCE SQLCA
-OCESQL          BY REFERENCE "ccback_CRS" & x"00"
-OCESQL          BY REFERENCE SQ0003
-OCESQL          BY VALUE 4
+OCESQL          BY REFERENCE "ccback_CRSCREATE" & x"00"
+OCESQL          BY REFERENCE SQ0004
+OCESQL          BY VALUE 1
 OCESQL     END-CALL
 OCESQL     CALL "OCESQLEndSQL"
 OCESQL     END-CALL.
 
 OCESQL*    EXEC SQL  
-OCESQL*        OPEN CRS
+OCESQL*        OPEN CRSCREATE
 OCESQL*    END-EXEC.
 OCESQL     CALL "OCESQLCursorOpen" USING
 OCESQL          BY REFERENCE SQLCA
-OCESQL          BY REFERENCE "ccback_CRS" & x"00"
+OCESQL          BY REFERENCE "ccback_CRSCREATE" & x"00"
 OCESQL     END-CALL.
 
            PERFORM UNTIL SQLCODE = 100
 OCESQL*        EXEC SQL
-OCESQL*            FETCH CRS
+OCESQL*            FETCH CRSCREATE
 OCESQL*            INTO :SQL-CUS-UUID
 OCESQL*        END-EXEC
 OCESQL     CALL "OCESQLStartSQL"
@@ -409,7 +477,7 @@ OCESQL          BY REFERENCE SQL-CUS-UUID
 OCESQL     END-CALL
 OCESQL     CALL "OCESQLCursorFetchOne" USING
 OCESQL          BY REFERENCE SQLCA
-OCESQL          BY REFERENCE "ccback_CRS" & x"00"
+OCESQL          BY REFERENCE "ccback_CRSCREATE" & x"00"
 OCESQL     END-CALL
 OCESQL     CALL "OCESQLEndSQL"
 OCESQL     END-CALL
@@ -420,19 +488,19 @@ OCESQL     END-CALL
                    WHEN 100
                        DISPLAY 'NO MORE ROWS IN CURSOR RESULT SET'
                    WHEN OTHER
-                       DISPLAY 'ERROR FETCHING CURSOR CRS :'
+                       DISPLAY 'ERROR FETCHING CURSOR CRSCREATE :'
                        SPACE SQLCODE
                END-EVALUATE
            END-PERFORM.
 OCESQL*    EXEC SQL  
-OCESQL*        CLOSE CRS  
+OCESQL*        CLOSE CRSCREATE  
 OCESQL*    END-EXEC.
 OCESQL     CALL "OCESQLCursorClose"  USING
 OCESQL          BY REFERENCE SQLCA
-OCESQL          BY REFERENCE "ccback_CRS" & x"00"
+OCESQL          BY REFERENCE "ccback_CRSCREATE" & x"00"
 OCESQL     END-CALL
 OCESQL    .
-       END-3000-SELECT-CUSTOMER-CREATE.
+       END-4000-SELECT-CUSTOMER-CREATE.
            EXIT.
            EXIT.
            EXIT.

@@ -21,7 +21,7 @@
            05 FILLER PIC X(03) VALUE 'Nom' 
            LINE 13 COL 45. 
 
-           05 FILLER PIC X(20) USING LK-CUS-LASTNAME 
+           05 FILLER PIC X(20) USING WS-CUS-LASTNAME 
            LINE 14 COL 45 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.
@@ -30,7 +30,7 @@
            05 FILLER PIC X(06) VALUE 'Prenom' 
            LINE 15 COL 45. 
 
-           05 FILLER PIC X(20) USING LK-CUS-FIRSTNAME 
+           05 FILLER PIC X(20) USING WS-CUS-FIRSTNAME 
            LINE 16 COL 45 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 
@@ -39,7 +39,7 @@
            05 FILLER PIC X(05) VALUE 'Genre' 
            LINE 17 COL 45. 
 
-           05 FILLER PIC X(10) USING LK-CUS-GENDER 
+           05 FILLER PIC X(10) USING WS-CUS-GENDER 
            LINE 18 COL 45 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.           
@@ -75,7 +75,7 @@
            05 FILLER PIC X(31) VALUE "Nombre d'enfants (0 par defaut)" 
            LINE 21 COL 45. 
 
-           05 FILLER PIC X(03) USING LK-CUS-NBCHILDREN 
+           05 FILLER PIC X(03) USING WS-CUS-NBCHILDREN 
            LINE 22 COL 45 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.
@@ -84,7 +84,7 @@
            05 FILLER PIC X(19) VALUE 'En couple (oui/non)' 
            LINE 23 COL 45. 
 
-           05 FILLER PIC X(03) USING LK-CUS-COUPLE 
+           05 FILLER PIC X(03) USING WS-CUS-COUPLE 
            LINE 24 COL 45 AUTO        
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.
@@ -93,7 +93,7 @@
            05 FILLER PIC X(09) VALUE 'Telephone' 
            LINE 25 COL 45. 
 
-           05 FILLER PIC X(10) USING LK-CUS-PHONE 
+           05 FILLER PIC X(10) USING WS-CUS-PHONE 
            LINE 26 COL 45 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.
@@ -102,7 +102,7 @@
            05 FILLER PIC X(04) VALUE 'IBAN' 
            LINE 27 COL 45. 
 
-           05 FILLER PIC X(34) USING LK-CUS-CODE-IBAN 
+           05 FILLER PIC X(34) USING WS-CUS-CODE-IBAN 
            LINE 28 COL 45 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.   
@@ -111,7 +111,7 @@
            05 FILLER PIC X(27) VALUE 'Numero de securite sociale' 
            LINE 13 COL 108.
 
-           05 FILLER PIC X(01) USING LK-SECU-1 
+           05 FILLER PIC X(01) USING WS-SECU-1 
            LINE 14 COL 108 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.
@@ -120,7 +120,7 @@
            LINE 14 COL 109 AUTO 
            FOREGROUND-COLOR IS 2.
 
-           05 FILLER PIC X(02) USING LK-SECU-2 
+           05 FILLER PIC X(02) USING WS-SECU-2 
            LINE 14 COL 110 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.
@@ -129,7 +129,7 @@
            LINE 14 COL 112 AUTO 
            FOREGROUND-COLOR IS 2.
 
-           05 FILLER PIC X(02) USING LK-SECU-3 
+           05 FILLER PIC X(02) USING WS-SECU-3 
            LINE 14 COL 113 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 
@@ -138,7 +138,7 @@
            LINE 14 COL 115 AUTO 
            FOREGROUND-COLOR IS 2.
 
-           05 FILLER PIC X(02) USING LK-SECU-4 
+           05 FILLER PIC X(02) USING WS-SECU-4 
            LINE 14 COL 116 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.
@@ -147,7 +147,7 @@
            LINE 14 COL 118 AUTO 
            FOREGROUND-COLOR IS 2.
 
-           05 FILLER PIC X(03) USING LK-SECU-5 
+           05 FILLER PIC X(03) USING WS-SECU-5 
            LINE 14 COL 119 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 
@@ -156,7 +156,7 @@
            LINE 14 COL 122 AUTO 
            FOREGROUND-COLOR IS 2.
 
-           05 FILLER PIC X(03) USING LK-SECU-6 
+           05 FILLER PIC X(03) USING WS-SECU-6 
            LINE 14 COL 123 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 
@@ -165,7 +165,7 @@
            LINE 14 COL 126 AUTO 
            FOREGROUND-COLOR IS 2.
 
-           05 FILLER PIC X(02) USING LK-SECU-7 
+           05 FILLER PIC X(02) USING WS-SECU-7 
            LINE 14 COL 127 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 
@@ -174,7 +174,7 @@
            05 FILLER PIC X(07) VALUE 'Docteur' 
            LINE 15 COL 108. 
 
-           05 FILLER PIC X(20) USING LK-CUS-DOCTOR 
+           05 FILLER PIC X(20) USING WS-CUS-DOCTOR 
            LINE 16 COL 108 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.   
@@ -183,7 +183,7 @@
            05 FILLER PIC X(04) VALUE 'Mail' 
            LINE 17 COL 108. 
 
-           05 FILLER PIC X(50) USING LK-CUS-MAIL 
+           05 FILLER PIC X(50) USING WS-CUS-MAIL 
            LINE 18 COL 108 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.  
@@ -192,13 +192,13 @@
            05 FILLER PIC X(07) VALUE 'Adresse' 
            LINE 19 COL 108. 
 
-           05 FILLER PIC X(50) USING LK-CUS-ADRESS1 
+           05 FILLER PIC X(50) USING WS-CUS-ADRESS1 
            LINE 20 COL 108 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 
 
       *    [RD] Champ de saisi pour l'adresse 2.
-           05 FILLER PIC X(50) USING LK-CUS-ADRESS2 
+           05 FILLER PIC X(50) USING WS-CUS-ADRESS2 
            LINE 21 COL 108 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 
@@ -207,7 +207,7 @@
            05 FILLER PIC X(05) VALUE 'Ville' 
            LINE 22 COL 108. 
 
-           05 FILLER PIC X(30) USING LK-CUS-TOWN 
+           05 FILLER PIC X(30) USING WS-CUS-TOWN 
            LINE 23 COL 108 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.
@@ -216,7 +216,7 @@
            05 FILLER PIC X(15) VALUE 'Code postal' 
            LINE 24 COL 108. 
 
-           05 FILLER PIC X(15) USING LK-CUS-ZIPCODE 
+           05 FILLER PIC X(15) USING WS-CUS-ZIPCODE 
            LINE 25 COL 108 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.
@@ -225,7 +225,7 @@
            05 FILLER PIC X(04) VALUE 'Pays' 
            LINE 26 COL 108. 
 
-           05 FILLER PIC X(20) USING LK-CUS-COUNTRY 
+           05 FILLER PIC X(20) USING WS-CUS-COUNTRY 
            LINE 27 COL 108 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.

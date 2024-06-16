@@ -73,9 +73,11 @@
            03 LK-CUS-CLOSE-DATE  PIC X(10).
            03 LK-CUS-ACTIVE	     PIC X(01). 
 
+       01  LK-COUNT-CUSTOMER     PIC 9(05).
+
       ******************************************************************
 
-       PROCEDURE DIVISION USING LK-CUSTOMER.
+       PROCEDURE DIVISION USING LK-CUSTOMER, LK-COUNT-CUSTOMER.
 
        0000-START-MAIN.
            EXEC SQL
@@ -83,15 +85,20 @@
            END-EXEC.
            
            PERFORM 1000-START-INITIALIZATION 
-              THRU END-1000-INITIALIZATION.       
+              THRU END-1000-INITIALIZATION. 
 
-           PERFORM 2000-START-INSERT-DATA-DB
-              THRU END-2000-INSERT-DATA-DB.
+           PERFORM 2000-START-SELECT-EXISTING-CUSTOMER
+              THRU END-2000-SELECT-EXISTING-CUSTOMER.
 
-           PERFORM 3000-START-SELECT-CUSTOMER-CREATE
-              THRU END-3000-SELECT-CUSTOMER-CREATE.
-
-           MOVE WS-CUSTOMER TO LK-CUSTOMER.
+           IF LK-COUNT-CUSTOMER LESS THAN 1 THEN         
+               PERFORM 3000-START-INSERT-DATA-DB
+                  THRU END-3000-INSERT-DATA-DB
+       
+               PERFORM 4000-START-SELECT-CUSTOMER-CREATE
+                  THRU END-4000-SELECT-CUSTOMER-CREATE
+       
+               MOVE WS-CUSTOMER TO LK-CUSTOMER
+           END-IF.
        0000-END-MAIN.    
            EXEC SQL COMMIT WORK END-EXEC.
            EXEC SQL DISCONNECT ALL END-EXEC.
@@ -111,15 +118,56 @@
       *    [MF] Déplace les données de la LINKAGE vers la WS. 
            MOVE LK-CUSTOMER TO WS-CUSTOMER.    
 
+      *    [RD] Initialise la date de création.   
            ACCEPT WS-CUS-CREATE-DATE FROM DATE YYYYMMDD.
        END-1000-INITIALIZATION.
            EXIT.
 
+      ******************************************************************
+      *    [RD] Récupère l'UUID de l'adhérent par rapport au numéro de *
+      *    sécurité sociale saisi dans le FRONT.                       *
       ****************************************************************** 
-      *    [MF] Si toute les saisies de l'utilisateur sont bonnes alors*
-      *    on insère les données dans la table CUSTOMER.               *
+       2000-START-SELECT-EXISTING-CUSTOMER.
+           INITIALIZE LK-COUNT-CUSTOMER.
+
+           EXEC SQL
+               DECLARE CRSEXIST CURSOR FOR
+               SELECT uuid_customer
+               FROM customer
+               WHERE customer_code_secu = :WS-CUS-CODE-SECU
+           END-EXEC.
+
+           EXEC SQL  
+               OPEN CRSEXIST
+           END-EXEC.
+
+           PERFORM UNTIL SQLCODE = 100
+               EXEC SQL
+                   FETCH CRSEXIST
+                   INTO :SQL-CUS-UUID
+               END-EXEC
+               
+               EVALUATE SQLCODE
+                   WHEN ZERO
+                       ADD 1 TO LK-COUNT-CUSTOMER
+                       MOVE SQL-CUS-UUID TO WS-CUS-UUID
+                   WHEN 100
+                       DISPLAY 'NO MORE ROWS IN CURSOR RESULT SET'
+                   WHEN OTHER
+                       DISPLAY 'ERROR FETCHING CURSOR CRSEXIST :'
+                       SPACE SQLCODE
+               END-EVALUATE
+           END-PERFORM.
+           EXEC SQL  
+               CLOSE CRSEXIST  
+           END-EXEC.
+       END-2000-SELECT-EXISTING-CUSTOMER.
+           EXIT.
+
       ****************************************************************** 
-       2000-START-INSERT-DATA-DB.
+      *    [MF] Insère les données dans la table CUSTOMER.             *
+      ****************************************************************** 
+       3000-START-INSERT-DATA-DB.
            EXEC SQL
                INSERT INTO CUSTOMER (
                    CUSTOMER_GENDER, 
@@ -163,30 +211,32 @@
               )
            END-EXEC.
 
+      *    COMMIT l'insertion de l'adhérent. 
            EXEC SQL COMMIT WORK END-EXEC.
-       END-2000-INSERT-DATA-DB.
+       END-3000-INSERT-DATA-DB.
            EXIT.
 
       ******************************************************************
+      *    [RD] Récupère l'UUID de l'adhérent qui a été inséré dans la *
+      *    DB.                                                         *
       ****************************************************************** 
-       3000-START-SELECT-CUSTOMER-CREATE.
+       4000-START-SELECT-CUSTOMER-CREATE.
+           INITIALIZE LK-COUNT-CUSTOMER.
+
            EXEC SQL
-               DECLARE CRS CURSOR FOR
+               DECLARE CRSCREATE CURSOR FOR
                SELECT uuid_customer
                FROM customer
                WHERE customer_code_secu = :WS-CUS-CODE-SECU
-               AND customer_lastname = TRIM(:WS-CUS-LASTNAME)
-               AND customer_firstname = TRIM(:WS-CUS-FIRSTNAME)
-               AND customer_birth_date = :WS-CUS-BIRTH-DATE
            END-EXEC.
 
            EXEC SQL  
-               OPEN CRS
+               OPEN CRSCREATE
            END-EXEC.
 
            PERFORM UNTIL SQLCODE = 100
                EXEC SQL
-                   FETCH CRS
+                   FETCH CRSCREATE
                    INTO :SQL-CUS-UUID
                END-EXEC
                
@@ -196,12 +246,12 @@
                    WHEN 100
                        DISPLAY 'NO MORE ROWS IN CURSOR RESULT SET'
                    WHEN OTHER
-                       DISPLAY 'ERROR FETCHING CURSOR CRS :'
+                       DISPLAY 'ERROR FETCHING CURSOR CRSCREATE :'
                        SPACE SQLCODE
                END-EVALUATE
            END-PERFORM.
            EXEC SQL  
-               CLOSE CRS  
+               CLOSE CRSCREATE  
            END-EXEC.
-       END-3000-SELECT-CUSTOMER-CREATE.
+       END-4000-SELECT-CUSTOMER-CREATE.
            EXIT.

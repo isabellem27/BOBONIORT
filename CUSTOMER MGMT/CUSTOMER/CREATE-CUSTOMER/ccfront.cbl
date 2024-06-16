@@ -1,7 +1,7 @@
       ******************************************************************
       *    [RD] Ce programme affiche le formulaire de creation         *
       *    d'un adhérent et appel le sous-programme "ccback" qui       *
-      *    effectue la creation dans la DB.                            *
+      *    effectue le INSERT dans la DB.                              *
       ****************************************************************** 
 
        IDENTIFICATION DIVISION.
@@ -12,13 +12,44 @@
 
        DATA DIVISION.
        WORKING-STORAGE SECTION.
-       01  WS-CUS-BIRTH-DATE.
+       01  WS-CUSTOMER.
+           03 WS-CUS-UUID        PIC X(36).
+           03 WS-CUS-GENDER      PIC X(10).
+           03 WS-CUS-LASTNAME    PIC X(20).
+           03 WS-CUS-FIRSTNAME   PIC X(20).
+           03 WS-CUS-ADRESS1	 PIC X(50).
+           03 WS-CUS-ADRESS2	 PIC X(50).
+           03 WS-CUS-ZIPCODE	 PIC X(15).
+           03 WS-CUS-TOWN	     PIC X(30).
+           03 WS-CUS-COUNTRY	 PIC X(20).
+           03 WS-CUS-PHONE	     PIC X(10).
+           03 WS-CUS-MAIL	     PIC X(50).
+           03 WS-CUS-BIRTH-DATE  PIC X(10).
+           03 WS-CUS-DOCTOR	     PIC X(20).
+           03 WS-CUS-CODE-SECU.
+               05 WS-SECU-1      PIC X(01).
+               05 WS-SECU-2      PIC X(02).
+               05 WS-SECU-3      PIC X(02).
+               05 WS-SECU-4      PIC X(02).
+               05 WS-SECU-5      PIC X(03).
+               05 WS-SECU-6      PIC X(03).
+               05 WS-SECU-7      PIC X(02).
+           03 WS-CUS-CODE-IBAN   PIC X(34).
+           03 WS-CUS-NBCHILDREN  PIC 9(03).
+           03 WS-CUS-COUPLE      PIC X(05).
+           03 WS-CUS-CREATE-DATE PIC X(10).
+           03 WS-CUS-UPDATE-DATE PIC X(10).
+           03 WS-CUS-CLOSE-DATE  PIC X(10).
+           03 WS-CUS-ACTIVE	     PIC X(01).
+
+       01  WS-CUS-BIRTH-DATE-FORMAT.
            03 WS-CUB-DAY         PIC X(02).
            03 FILLER             PIC X(01) VALUE '-'.
            03 WS-CUB-MONTH       PIC X(02).
            03 FILLER             PIC X(01) VALUE '-'.
            03 WS-CUB-YEAR        PIC X(04).
 
+       01  WS-COUNT-CUSTOMER     PIC 9(05).
        01  WS-ERROR-MESSAGE1     PIC X(140).
        01  WS-ERROR-MESSAGE2     PIC X(120).
        01  WS-ERROR-MESSAGE-POS  PIC 9(03).   
@@ -26,36 +57,6 @@
        01  WS-CREATE-VALIDATION  PIC X(01).
        01  WS-MENU-RETURN        PIC X(01).
        01  WS-COUNT-AROBASE      PIC 9(02).
-
-       01 LK-CUSTOMER.
-           03 LK-CUS-UUID        PIC X(36).
-           03 LK-CUS-GENDER      PIC X(10).
-           03 LK-CUS-LASTNAME    PIC X(20).
-           03 LK-CUS-FIRSTNAME   PIC X(20).
-           03 LK-CUS-ADRESS1	 PIC X(50).
-           03 LK-CUS-ADRESS2	 PIC X(50).
-           03 LK-CUS-ZIPCODE	 PIC X(15).
-           03 LK-CUS-TOWN	     PIC X(30).
-           03 LK-CUS-COUNTRY	 PIC X(20).
-           03 LK-CUS-PHONE	     PIC X(10).
-           03 LK-CUS-MAIL	     PIC X(50).
-           03 LK-CUS-BIRTH-DATE  PIC X(10).
-           03 LK-CUS-DOCTOR	     PIC X(20).
-           03 LK-CUS-CODE-SECU.
-               05 LK-SECU-1      PIC X(01).
-               05 LK-SECU-2      PIC X(02).
-               05 LK-SECU-3      PIC X(02).
-               05 LK-SECU-4      PIC X(02).
-               05 LK-SECU-5      PIC X(03).
-               05 LK-SECU-6      PIC X(03).
-               05 LK-SECU-7      PIC X(02).
-           03 LK-CUS-CODE-IBAN   PIC X(34).
-           03 LK-CUS-NBCHILDREN  PIC 9(03).
-           03 LK-CUS-COUPLE      PIC X(05).
-           03 LK-CUS-CREATE-DATE PIC X(10).
-           03 LK-CUS-UPDATE-DATE PIC X(10).
-           03 LK-CUS-CLOSE-DATE  PIC X(10).
-           03 LK-CUS-ACTIVE	     PIC X(01).
 
        SCREEN SECTION.
        COPY 'screen-create-customer.cpy'.
@@ -65,7 +66,7 @@
        PROCEDURE DIVISION.
 
        0000-START-MAIN.
-           INITIALIZE LK-CUSTOMER 
+           INITIALIZE WS-CUSTOMER 
                       WS-ERROR-MESSAGE1
                       WS-ERROR-MESSAGE2 
                       WS-CREATE-VALIDATION
@@ -82,6 +83,14 @@
       *    appel les sous-programmes BACK et menu d'un adhérent.       *
       ******************************************************************
        1000-START-INITIALIZATION.
+      *    [RD] Convertit le statut de couple en 'oui' ou 'non' pour 
+      *         la screen section. 
+           IF WS-CUS-COUPLE EQUAL 't'
+               MOVE 'oui' TO WS-CUS-COUPLE
+           ELSE IF WS-CUS-COUPLE EQUAL 'f'
+               MOVE 'non' TO WS-CUS-COUPLE
+           END-IF.
+
            ACCEPT SCREEN-CREATE-CUSTOMER.
 
            PERFORM 1100-START-MENU-RETURN 
@@ -97,20 +106,17 @@
            STRING 
                WS-CUB-YEAR '-' WS-CUB-MONTH '-' WS-CUB-DAY
                DELIMITED BY SIZE
-               INTO LK-CUS-BIRTH-DATE
+               INTO WS-CUS-BIRTH-DATE
            END-STRING.
 
            CALL
                'ccback'
                USING BY REFERENCE
-               LK-CUSTOMER
+               WS-CUSTOMER, WS-COUNT-CUSTOMER
            END-CALL.  
 
-           CALL
-               'mcfront'
-               USING BY REFERENCE
-               LK-CUS-UUID
-           END-CALL. 
+           PERFORM 1400-START-ALREADY-EXISTING
+              THRU END-1400-ALREADY-EXISTING.
        END-1000-INITIALIZATION.
            EXIT.
 
@@ -127,7 +133,7 @@
                CALL 
                    'manacust'
                    USING BY REFERENCE
-                   LK-CUSTOMER
+                   WS-CUSTOMER
                END-CALL
 
            ELSE IF WS-MENU-RETURN NOT EQUAL 'O' 
@@ -173,7 +179,7 @@
 
            MOVE 'Erreur de saisie :' TO WS-ERROR-MESSAGE1.
 
-           IF LK-CUS-LASTNAME EQUAL SPACES THEN
+           IF WS-CUS-LASTNAME EQUAL SPACES THEN
                MOVE 'Nom' 
                TO WS-ERROR-MESSAGE1(WS-ERROR-MESSAGE-POS:3)
 
@@ -182,7 +188,7 @@
                MOVE 'Y' TO WS-IS-ERROR
            END-IF.
 
-           IF LK-CUS-FIRSTNAME EQUAL SPACES THEN
+           IF WS-CUS-FIRSTNAME EQUAL SPACES THEN
                IF WS-ERROR-MESSAGE-POS LESS THAN 23 THEN
                    MOVE 'Prenom' 
                    TO WS-ERROR-MESSAGE1(WS-ERROR-MESSAGE-POS:6)
@@ -197,7 +203,7 @@
                    MOVE 'Y' TO WS-IS-ERROR
            END-IF.
 
-           IF LK-CUS-GENDER EQUAL SPACES THEN
+           IF WS-CUS-GENDER EQUAL SPACES THEN
                IF WS-ERROR-MESSAGE-POS LESS THAN 23 THEN
                    MOVE 'Genre' 
                    TO WS-ERROR-MESSAGE1(WS-ERROR-MESSAGE-POS:5)
@@ -212,7 +218,7 @@
                MOVE 'Y' TO WS-IS-ERROR
            END-IF.
 
-           IF LK-CUS-ADRESS1 EQUAL SPACES THEN
+           IF WS-CUS-ADRESS1 EQUAL SPACES THEN
                IF WS-ERROR-MESSAGE-POS LESS THAN 23 THEN
                    MOVE 'Adresse'
                    TO WS-ERROR-MESSAGE1(WS-ERROR-MESSAGE-POS:7)
@@ -227,7 +233,7 @@
                MOVE 'Y' TO WS-IS-ERROR
            END-IF.
 
-           IF LK-CUS-ZIPCODE EQUAL SPACES THEN
+           IF WS-CUS-ZIPCODE EQUAL SPACES THEN
                IF WS-ERROR-MESSAGE-POS LESS THAN 23 THEN
                    MOVE 'Code postal' 
                    TO WS-ERROR-MESSAGE1(WS-ERROR-MESSAGE-POS:11)
@@ -242,7 +248,7 @@
                MOVE 'Y' TO WS-IS-ERROR
            END-IF.
 
-           IF LK-CUS-TOWN EQUAL SPACES THEN
+           IF WS-CUS-TOWN EQUAL SPACES THEN
                IF WS-ERROR-MESSAGE-POS LESS THAN 23 THEN
                    MOVE 'Ville' 
                    TO WS-ERROR-MESSAGE1(WS-ERROR-MESSAGE-POS:5)
@@ -257,7 +263,7 @@
                MOVE 'Y' TO WS-IS-ERROR
            END-IF.
 
-           IF LK-CUS-COUNTRY EQUAL SPACES THEN
+           IF WS-CUS-COUNTRY EQUAL SPACES THEN
                IF WS-ERROR-MESSAGE-POS LESS THAN 23 THEN
                    MOVE 'Pays' 
                    TO WS-ERROR-MESSAGE1(WS-ERROR-MESSAGE-POS:4)
@@ -272,8 +278,8 @@
                MOVE 'Y' TO WS-IS-ERROR
            END-IF.
 
-           IF LK-CUS-PHONE EQUAL '0000000000' 
-           OR LK-CUS-PHONE IS NOT NUMERIC THEN
+           IF WS-CUS-PHONE EQUAL '0000000000' 
+           OR WS-CUS-PHONE IS NOT NUMERIC THEN
                IF WS-ERROR-MESSAGE-POS LESS THAN 23 THEN
                    MOVE 'Telephone'
                    TO WS-ERROR-MESSAGE1(WS-ERROR-MESSAGE-POS:9)
@@ -288,10 +294,11 @@
                MOVE 'Y' TO WS-IS-ERROR
            END-IF.
 
-           INSPECT LK-CUS-MAIL TALLYING WS-COUNT-AROBASE FOR ALL '@'.
+           INSPECT WS-CUS-MAIL TALLYING WS-COUNT-AROBASE FOR ALL '@'.
            
-           IF LK-CUS-MAIL EQUAL SPACES 
-           OR WS-COUNT-AROBASE GREATER THAN 1 THEN
+           IF WS-CUS-MAIL EQUAL SPACES 
+           OR WS-COUNT-AROBASE GREATER THAN 1 
+           OR WS-COUNT-AROBASE LESS THAN 1 THEN
                IF WS-ERROR-MESSAGE-POS LESS THAN 23 THEN
                    MOVE 'Mail'
                    TO WS-ERROR-MESSAGE1(WS-ERROR-MESSAGE-POS:4)
@@ -329,7 +336,7 @@
                MOVE 'Y' TO WS-IS-ERROR
            END-IF.
 
-           IF LK-CUS-CODE-SECU IS NOT NUMERIC THEN
+           IF WS-CUS-CODE-SECU IS NOT NUMERIC THEN
                IF WS-ERROR-MESSAGE-POS LESS THAN 23 THEN
                    MOVE 'Numero de securite sociale'
                    TO WS-ERROR-MESSAGE1(WS-ERROR-MESSAGE-POS:26)
@@ -344,7 +351,7 @@
                MOVE 'Y' TO WS-IS-ERROR
            END-IF.
 
-           IF LK-CUS-CODE-IBAN EQUAL SPACES THEN
+           IF WS-CUS-CODE-IBAN EQUAL SPACES THEN
                IF WS-ERROR-MESSAGE-POS LESS THAN 23 THEN
                    MOVE 'IBAN' 
                    TO WS-ERROR-MESSAGE1(WS-ERROR-MESSAGE-POS:4)
@@ -362,9 +369,9 @@
                MOVE 'Y' TO WS-IS-ERROR
            END-IF.
            
-           MOVE FUNCTION LOWER-CASE(LK-CUS-COUPLE) TO LK-CUS-COUPLE.
-           IF LK-CUS-COUPLE NOT EQUAL 'oui' 
-           AND LK-CUS-COUPLE NOT EQUAL 'non' THEN
+           MOVE FUNCTION LOWER-CASE(WS-CUS-COUPLE) TO WS-CUS-COUPLE.
+           IF WS-CUS-COUPLE NOT EQUAL 'oui' 
+           AND WS-CUS-COUPLE NOT EQUAL 'non' THEN
                
                IF WS-ERROR-MESSAGE-POS LESS THAN 23 THEN
                    MOVE 'En couple'
@@ -393,3 +400,34 @@
            END-IF.
        END-1300-ERROR-FIELDS.
            EXIT.    
+
+      ******************************************************************
+      *    [RD] Vérifie si WS-COUNT-CUSTOMER est supérieur à 0,        *
+      *    Si c'est le cas cela signifie qu'un adhérent existe déjà    *
+      *    dans DB avec le numéro de sécurité sociale saisi dans le    *
+      *    formulaire de création.                                     *
+      *    Donc redirige au début du programme avec le message d'erreur*
+      *    adéquat.                                                    * 
+      *    Sinon redirige vers menu de l'adhérent.                     *
+      ****************************************************************** 
+       1400-START-ALREADY-EXISTING.
+           IF WS-COUNT-CUSTOMER GREATER THAN 0 THEN
+               INITIALIZE WS-ERROR-MESSAGE1
+                          WS-ERROR-MESSAGE2
+
+               STRING 
+                   'Erreur de saisie : Numero de securite sociale'
+                   SPACE  'deja existant.' 
+                   DELIMITED BY SIZE
+                   INTO WS-ERROR-MESSAGE1
+               END-STRING
+               GO TO 1000-START-INITIALIZATION
+           ELSE
+               CALL
+                   'mcfront'
+                   USING BY REFERENCE
+                   WS-CUS-UUID
+               END-CALL
+           END-IF.
+       END-1400-ALREADY-EXISTING.
+           EXIT.
