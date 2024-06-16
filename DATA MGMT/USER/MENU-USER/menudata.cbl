@@ -90,10 +90,8 @@
        1100-END-CHECK-CHOICE.
            EXIT.   
       ******************************************************************       
-      * 
       *    SK- Gère l'affichage du message d'erreur en 
       *    cas d'erreur de saisie 
-      *
       ******************************************************************
        1200-START-ERROR-MESSAGE.
             MOVE WS-MESSAGE          
