@@ -19,13 +19,7 @@
        WORKING-STORAGE SECTION.
       *    gestion des erreurs de saisie
        01 WS-SELECT-OPTION         PIC X(05)   VALUE 'FALSE'     . 
-       01 WS-MESSAGE.
-           05 WS-MESSAGE1          PIC X(31)
-               VALUE 'ERREUR DE SAISIE, VEUILLEZ SELE'           .
-           05 WS-MESSAGE2          PIC X(31)
-               VALUE 'CTIONNER VOTRE CHOIX AVEC "O".'            .
-           05 WS-MESSAGE3          PIC X(45)
-               VALUE 'Y COMPRIS POUR VALIDER OU RETOURNER AU MENU.'.    
+       01 WS-ERROR-MESSAGE         PIC X(70)                     .    
        01  WS-CUSTOMER             PIC X(45)   VALUE SPACE       .
           
       *    gestion de la saisie
@@ -80,10 +74,11 @@
       *    de saisie de l'utilisateur                                  *
       ****************************************************************** 
        1000-SCREEN-LOOP-START.  
-      *    Le 14-06-2024 [IM] Gestion du LK-CUSTOMER complet
-      *    MOVE 'Jean' TO LK-CUS-FIRSTNAME.
-      *    MOVE 'Guarette' TO LK-CUS-LASTNAME .
-      *    SET LK-CUS-CODE-SECU TO 106786227618713.
+           INITIALIZE WS-LINK-CHOICE  
+                      WS-READ-CHOICE  
+                      WS-UPDATE-CHOICE
+                      WS-VALIDE-CHOICE
+                      WS-RETURN-CHOICE .
 
            PERFORM 1100-PREPARE-SCREEN-START 
                     THRU END-1100-PREPARE-SCREEN.
@@ -119,27 +114,22 @@
            IF FUNCTION UPPER-CASE(WS-RETURN-CHOICE)
            EQUAL 'O' THEN
                CALL 'mcfront' USING CONTENT LK-CUS-UUID
-           ELSE         
-              IF FUNCTION UPPER-CASE(WS-VALIDE-CHOICE) 
-              EQUAL 'O' THEN
-                 IF FUNCTION UPPER-CASE(WS-LINK-CHOICE)
-                 EQUAL 'O' THEN
-      *    Le 14-06-2024 [IM] Gestion du bon nom de programme           
-                    CALL 'clascont' USING CONTENT LK-CUSTOMER
-                 ELSE IF FUNCTION UPPER-CASE(WS-READ-CHOICE)
-                 EQUAL 'O' THEN
-                    CALL 'readcont' USING CONTENT LK-CUSTOMER
-                 ELSE IF FUNCTION UPPER-CASE(WS-UPDATE-CHOICE)
-                 EQUAL 'O' THEN
-                    CALL 'updacont' USING CONTENT LK-CUSTOMER 
-                 ELSE  
-                    PERFORM 9200-ERROR-MESSAGE-START 
-                    THRU END-9200-ERROR-MESSAGE
-                 END-IF   
-              ELSE  
-                 PERFORM 9200-ERROR-MESSAGE-START 
-                       THRU END-9200-ERROR-MESSAGE
-              END-IF    
+
+           ELSE IF FUNCTION UPPER-CASE(WS-LINK-CHOICE)
+                   EQUAL 'O' THEN         
+               CALL 'clascont' USING CONTENT LK-CUSTOMER
+
+           ELSE IF FUNCTION UPPER-CASE(WS-READ-CHOICE)
+                   EQUAL 'O' THEN
+               CALL 'readcont' USING CONTENT LK-CUSTOMER
+
+           ELSE IF FUNCTION UPPER-CASE(WS-UPDATE-CHOICE)
+                   EQUAL 'O' THEN
+               CALL 'updacont' USING CONTENT LK-CUSTOMER
+
+           ELSE  
+               PERFORM 9200-ERROR-MESSAGE-START 
+                  THRU END-9200-ERROR-MESSAGE
            END-IF.
        END-3000-WITCH-CHOICE.
            EXIT.
@@ -149,14 +139,15 @@
       *    J'envoie un message si erreur de saisie et efface la saisie *
       ****************************************************************** 
        9200-ERROR-MESSAGE-START. 
-            DISPLAY WS-MESSAGE
-            LINE 30 COL 50 FOREGROUND-COLOR IS 7.
             INITIALIZE 
                  WS-LINK-CHOICE
                  WS-READ-CHOICE
                  WS-UPDATE-CHOICE
                  WS-VALIDE-CHOICE
-                 WS-RETURN-CHOICE .                      
+                 WS-RETURN-CHOICE .  
+
+           MOVE 'Veuillez entrer "O" pour confirmer.' 
+           TO WS-ERROR-MESSAGE.                    
        END-9200-ERROR-MESSAGE.
            EXIT.
 
