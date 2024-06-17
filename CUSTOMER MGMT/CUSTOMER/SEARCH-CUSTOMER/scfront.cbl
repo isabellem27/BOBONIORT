@@ -164,9 +164,11 @@
            IF     SC-CODE-SECU     EQUAL SPACES
               AND SC-FIRSTNAME NOT EQUAL SPACES
               AND SC-LASTNAME  NOT EQUAL SPACES
-              AND SCB-DAYS     IS NUMERIC
-              AND SCB-MONTH    IS NUMERIC
-              AND SCB-YEAR     IS NUMERIC
+              AND SCB-DAYS GREATER THAN 00
+              AND SCB-DAYS LESS THAN 32
+              AND SCB-MONTH GREATER THAN 00
+              AND SCB-MONTH LESS THAN 13
+              AND SCB-YEAR GREATER THAN 0999
               THEN
 
                SET WS-CODE-REQUEST-SQL TO 2
@@ -176,9 +178,11 @@
            IF     SC-CODE-SECU IS NUMERIC
               AND SC-FIRSTNAME NOT EQUAL SPACES
               AND SC-LASTNAME  NOT EQUAL SPACES
-              AND SCB-DAYS     IS NUMERIC
-              AND SCB-MONTH    IS NUMERIC
-              AND SCB-YEAR     IS NUMERIC
+              AND SCB-DAYS GREATER THAN 00
+              AND SCB-DAYS LESS THAN 32
+              AND SCB-MONTH GREATER THAN 00
+              AND SCB-MONTH LESS THAN 13
+              AND SCB-YEAR GREATER THAN 0999
               THEN
 
                SET WS-CODE-REQUEST-SQL TO 3

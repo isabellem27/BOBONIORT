@@ -40,8 +40,8 @@
 
            05 FILLER PIC X(02) FROM WS-CUB-DAY
            LINE 20 COL 45 
-           BACKGROUND-COLOR IS 0
-           FOREGROUND-COLOR IS 3. 
+           BACKGROUND-COLOR IS 2
+           FOREGROUND-COLOR IS 0. 
 
            05 FILLER PIC X(1) VALUE '-'
            LINE 20 COL 47 
@@ -49,8 +49,8 @@
 
            05 FILLER PIC X(02) FROM WS-CUB-MONTH
            LINE 20 COL 48 
-           BACKGROUND-COLOR IS 0
-           FOREGROUND-COLOR IS 3.
+           BACKGROUND-COLOR IS 2
+           FOREGROUND-COLOR IS 0.
 
            05 FILLER PIC X(01) VALUE '-'
            LINE 20 COL 50 
@@ -58,8 +58,8 @@
 
            05 FILLER PIC X(04) FROM WS-CUB-YEAR
            LINE 20 COL 51 
-           BACKGROUND-COLOR IS 0
-           FOREGROUND-COLOR IS 3.
+           BACKGROUND-COLOR IS 2
+           FOREGROUND-COLOR IS 0.
 
       *    [RD-AL] Champ de saisi pour le nombre d'enfants.
            05 FILLER PIC X(16) VALUE "Nombre d'enfants" 

@@ -43,17 +43,18 @@ OCESQL  &  "'A'".
 OCESQL     02  FILLER PIC X(1) VALUE X"00".
 OCESQL*
 OCESQL 01  SQ0003.
-OCESQL     02  FILLER PIC X(163) VALUE "SELECT uuid_customer FROM cust"
-OCESQL  &  "omer WHERE customer_lastname = TRIM( $1 ) AND customer_fir"
-OCESQL  &  "stname = TRIM( $2 ) AND customer_birth_date = $3 AND custo"
-OCESQL  &  "mer_active != 'A'".
+OCESQL     02  FILLER PIC X(191) VALUE "SELECT uuid_customer FROM cust"
+OCESQL  &  "omer WHERE UPPER(customer_lastname) = UPPER(TRIM( $1 )) AN"
+OCESQL  &  "D UPPER(customer_firstname) = UPPER(TRIM( $2 )) AND custom"
+OCESQL  &  "er_birth_date = $3 AND customer_active != 'A'".
 OCESQL     02  FILLER PIC X(1) VALUE X"00".
 OCESQL*
 OCESQL 01  SQ0004.
-OCESQL     02  FILLER PIC X(191) VALUE "SELECT uuid_customer FROM cust"
-OCESQL  &  "omer WHERE customer_code_secu = $1 AND customer_lastname ="
-OCESQL  &  " TRIM( $2 ) AND customer_firstname = TRIM( $3 ) AND custom"
-OCESQL  &  "er_birth_date = $4 AND customer_active != 'A'".
+OCESQL     02  FILLER PIC X(219) VALUE "SELECT uuid_customer FROM cust"
+OCESQL  &  "omer WHERE customer_code_secu = $1 AND UPPER(customer_last"
+OCESQL  &  "name) = UPPER(TRIM( $2 )) AND UPPER(customer_firstname) = "
+OCESQL  &  "UPPER(TRIM( $3 )) AND customer_birth_date = $4 AND custome"
+OCESQL  &  "r_active != 'A'".
 OCESQL     02  FILLER PIC X(1) VALUE X"00".
 OCESQL*
        LINKAGE SECTION.
@@ -157,8 +158,10 @@ OCESQL*    EXEC SQL
 OCESQL*        DECLARE CRSNAMEDATE CURSOR FOR
 OCESQL*        SELECT uuid_customer
 OCESQL*        FROM customer
-OCESQL*        WHERE customer_lastname = TRIM(:WS-SC-LASTNAME)
-OCESQL*        AND customer_firstname = TRIM(:WS-SC-FIRSTNAME)
+OCESQL*        WHERE UPPER(customer_lastname) 
+OCESQL*            = UPPER(TRIM(:WS-SC-LASTNAME))
+OCESQL*        AND UPPER(customer_firstname) 
+OCESQL*          = UPPER(TRIM(:WS-SC-FIRSTNAME))
 OCESQL*        AND customer_birth_date = :WS-SC-BIRTHDATE
 OCESQL*        AND customer_active != 'A'
 OCESQL*    END-EXEC.
@@ -198,8 +201,10 @@ OCESQL*        DECLARE CRSALL CURSOR FOR
 OCESQL*        SELECT uuid_customer
 OCESQL*        FROM customer
 OCESQL*        WHERE customer_code_secu = :WS-SC-CODE-SECU
-OCESQL*        AND customer_lastname = TRIM(:WS-SC-LASTNAME)
-OCESQL*        AND customer_firstname = TRIM(:WS-SC-FIRSTNAME)
+OCESQL*        AND UPPER(customer_lastname) 
+OCESQL*          = UPPER(TRIM(:WS-SC-LASTNAME))
+OCESQL*        AND UPPER(customer_firstname) 
+OCESQL*          = UPPER(TRIM(:WS-SC-FIRSTNAME))
 OCESQL*        AND customer_birth_date = :WS-SC-BIRTHDATE
 OCESQL*        AND customer_active != 'A'
 OCESQL*    END-EXEC.
@@ -433,6 +438,4 @@ OCESQL    .
            ADD 1 TO LK-COUNT-CUSTOMER.
            MOVE SQL-CUS-UUID TO LK-CUS-UUID.
        END-4000-HANDLE.
-           EXIT.
-           EXIT.
-           EXIT.
+           EXIT.           EXIT.           EXIT.           EXIT.

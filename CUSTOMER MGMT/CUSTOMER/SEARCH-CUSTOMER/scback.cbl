@@ -95,8 +95,10 @@
                DECLARE CRSNAMEDATE CURSOR FOR
                SELECT uuid_customer
                FROM customer
-               WHERE customer_lastname = TRIM(:WS-SC-LASTNAME)
-               AND customer_firstname = TRIM(:WS-SC-FIRSTNAME)
+               WHERE UPPER(customer_lastname) 
+                   = UPPER(TRIM(:WS-SC-LASTNAME))
+               AND UPPER(customer_firstname) 
+                 = UPPER(TRIM(:WS-SC-FIRSTNAME))
                AND customer_birth_date = :WS-SC-BIRTHDATE
                AND customer_active != 'A'
            END-EXEC.
@@ -108,8 +110,10 @@
                SELECT uuid_customer
                FROM customer
                WHERE customer_code_secu = :WS-SC-CODE-SECU
-               AND customer_lastname = TRIM(:WS-SC-LASTNAME)
-               AND customer_firstname = TRIM(:WS-SC-FIRSTNAME)
+               AND UPPER(customer_lastname) 
+                 = UPPER(TRIM(:WS-SC-LASTNAME))
+               AND UPPER(customer_firstname) 
+                 = UPPER(TRIM(:WS-SC-FIRSTNAME))
                AND customer_birth_date = :WS-SC-BIRTHDATE
                AND customer_active != 'A'
            END-EXEC.
@@ -241,3 +245,4 @@
            MOVE SQL-CUS-UUID TO LK-CUS-UUID.
        END-4000-HANDLE.
            EXIT.
+           
