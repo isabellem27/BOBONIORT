@@ -89,7 +89,7 @@
            COPY 'READ-SCREEN.cpy'.
       
       ******************************************************************
-       PROCEDURE DIVISION. 
+       PROCEDURE DIVISION USING LK-CUSTOMER. 
            ACCEPT SCREEN-FRAME.
 
 
