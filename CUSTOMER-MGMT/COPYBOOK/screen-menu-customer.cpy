@@ -234,11 +234,11 @@
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 
 
-      *    [RD-AL] Bouton Rapport.
-           05 FILLER PIC X(07) VALUE "Rapport" 
+      *    [RD-AL] Bouton Facture.
+           05 FILLER PIC X(07) VALUE "Facture" 
            LINE 34 COL 110 
            FOREGROUND-COLOR IS 2. 
-           05 FILLER PIC X(01) USING WS-MENU-RAPPORT LINE 34 COL 119
+           05 FILLER PIC X(01) USING WS-MENU-FACTURE LINE 34 COL 119
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 
 
