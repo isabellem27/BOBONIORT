@@ -72,7 +72,7 @@
            ELSE IF FUNCTION UPPER-CASE(WS-CREATE-CHOICE) 
                    EQUAL 'O' THEN
                MOVE 'TRUE' TO WS-SELECT-OPTION  
-               CALL 'creacust'  
+               CALL 'ccfront'  
 
            ELSE IF FUNCTION UPPER-CASE(WS-SEARCH-CHOICE)
                    EQUAL 'O' THEN

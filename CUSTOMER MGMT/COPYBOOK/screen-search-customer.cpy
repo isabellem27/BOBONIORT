@@ -118,7 +118,7 @@
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 
 
-           05 FILLER PIC X(1) VALUE '-'
+           05 FILLER PIC X(01) VALUE '-'
            LINE 22 COL 127 AUTO 
            FOREGROUND-COLOR IS 2.
 
