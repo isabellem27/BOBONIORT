@@ -1,7 +1,8 @@
 INSERT INTO INSURANCE VALUES ('BOBONIORT', '21, Rue de la victoire et de la santé','','79000','NIORT','FRANCE');
-INSERT INTO USER_TAB (USER_IDENTIFICATION, USER_PASSWORD, USER_AUTHORIZATION) VALUES
-('UtilLECT', 'Lecture01', 'L'),
-('UtilMAJ', 'Majour01', '');
+INSERT INTO USER_TAB (USER_IDENTIFICATION, USER_PASSWORD) VALUES
+('UtilLECT', 'Lecture01'),
+('a', 'a'),
+('UtilMAJ', 'Majour01');
 
 /* chargement du niveau le plus bas en premier et rattachement au niveau du dessus, */
 /* dans le code_function_mother de l'enregistrement mère on met 2*/
