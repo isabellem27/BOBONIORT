@@ -124,7 +124,7 @@
 
            ELSE IF FUNCTION UPPER-CASE(WS-CONTRACT-LIST)
                    EQUAL 'O' THEN
-               CALL 'contcust' USING WS-CUSTOMER
+               CALL 'menucont' USING WS-CUSTOMER
 
            ELSE IF FUNCTION UPPER-CASE(WS-CUST-ARCHIVE)
                    EQUAL 'O' THEN           
