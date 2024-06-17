@@ -3,7 +3,7 @@
 
       * [AL] - Nom des contrats type
            05 FILLER PIC X(18) VALUE  'CONTRAT SPECIFIQUE' 
-           LINE 11 COL 85 
+           LINE 11 COL 90 
            FOREGROUND-COLOR IS 2. 
 
 
@@ -211,6 +211,9 @@
            05 FILLER PIC X(3) FROM WS-EXCELL-MOLAR
            COL 150
            FOREGROUND-COLOR IS 3.
+           05 FILLER PIC X(2) VALUE ' %'
+           COL 153
+           FOREGROUND-COLOR IS 3. 
 
       * [AL] - Boutons molaire 
            05 PIC X USING  SC-VALUE-MOLAR-1
@@ -245,6 +248,9 @@
            05 FILLER PIC X(3) FROM WS-EXCELL-NON-MOLAR
            COL 150
            FOREGROUND-COLOR IS 3.
+           05 FILLER PIC X(2) VALUE ' %'
+           COL 153
+           FOREGROUND-COLOR IS 3. 
 
       * [AL] - boutons non molaire
            05 PIC X USING  SC-VALUE-NON-MOLAR-1
@@ -311,8 +317,7 @@
 
       * [AL] - Gestion des boutons 
            05 FILLER PIC X(20) VALUE 'Valider mes choix :'
-           LINE 30
-           COL 85
+           LINE 30 COL 85
            FOREGROUND-COLOR IS 3.        
            05 PIC X(1) USING SC-BUTTON-CHOICE-VALIDATE
            COL 105
@@ -353,7 +358,7 @@
            05 FILLER PIC X(2) VALUE  '  ' COL  190
            BACKGROUND-COLOR IS 2.
            05 FILLER PIC X(30) VALUE  'CREATION DU CONTRAT SPECIFIQUE' 
-           COL 80 
+           COL 85 
            FOREGROUND-COLOR IS 2.            
 
            05 FILLER PIC X(2) VALUE  '  ' LINE 7 COL 10 

@@ -256,7 +256,8 @@ OCESQL*
       ****************************************************************** 
        0000-START-MAIN. 
            INITIALIZE SC-BUTTON 
-                      SC-BUTTON-VALUE .                      
+                      SC-BUTTON-VALUE
+                      SC-MESSAGE .                      
 
            PERFORM 1000-SCREEN-LOOP-START THRU END-1000-SCREEN-LOOP.
        END-0000-MAIN.
@@ -864,12 +865,11 @@ OCESQL     END-CALL
                     PERFORM 9210-ERROR-MESSAGE-START 
                                 THRU END-9210-ERROR-MESSAGE   
                  END-IF      
-              ELSE 
-      *          D'abord valider le choix avant d'aller plus loin                 
-                 PERFORM 9200-ERROR-MESSAGE-START 
-                             THRU END-9200-ERROR-MESSAGE
-              END-IF                
-           END-IF.                              
+           ELSE 
+      *       D'abord valider le choix avant d'aller plus loin                 
+              PERFORM 9200-ERROR-MESSAGE-START 
+                 THRU END-9200-ERROR-MESSAGE
+           END-IF.                          
        END-3000-WITCH-CHOICE.
            EXIT.
 
@@ -1284,38 +1284,35 @@ OCESQL     END-CALL
       *    J'envoie un message si erreur de saisie et efface la saisie *
       ****************************************************************** 
        9200-ERROR-MESSAGE-START.
+           INITIALIZE SC-MESSAGE.
            STRING
                'Erreur de saisie, veuillez valider votre choix en'
                SPACE 'premier.' 
                DELIMITED BY SIZE
                INTO SC-MESSAGE
-           END-STRING. 
-           PERFORM 8000-INITIALIZE-SCREEN-START
-              THRU END-8000-INITIALIZE-SCREEN.                                            
+           END-STRING.                                          
        END-9200-ERROR-MESSAGE.
            EXIT. 
 
        9210-ERROR-MESSAGE-START.
+           INITIALIZE SC-MESSAGE.
            STRING
                'Veuillez selectionner une valeur pour chaque'
                SPACE 'prestation.' 
                DELIMITED BY SIZE
                INTO SC-MESSAGE
-           END-STRING.  
-           PERFORM 8000-INITIALIZE-SCREEN-START
-              THRU END-8000-INITIALIZE-SCREEN.                                            
+           END-STRING.                                          
        END-9210-ERROR-MESSAGE.
            EXIT. 
 
        9220-ERROR-MESSAGE-START.
+           INITIALIZE SC-MESSAGE.
            STRING
                "Veuillez ne selectionner qu'une valeur pour chaque"
-               SPACE 'premier.' 
+               SPACE 'prestation.' 
                DELIMITED BY SIZE
                INTO SC-MESSAGE
-           END-STRING. 
-           PERFORM 8000-INITIALIZE-SCREEN-START
-              THRU END-8000-INITIALIZE-SCREEN.                                            
+           END-STRING.                                          
        END-9220-ERROR-MESSAGE.
            EXIT. 
 
