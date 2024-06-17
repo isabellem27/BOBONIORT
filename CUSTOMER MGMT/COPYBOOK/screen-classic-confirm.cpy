@@ -1,4 +1,4 @@
-       01 CLASSIC-CONFIRM-SCREEN FOREGROUND-COLOR IS 2.
+       01  SCREEN-CLASSIC-CONFIRM FOREGROUND-COLOR IS 2.
            05 BLANK SCREEN.         
       * [IM] - message de confirmation
            05 FILLER PIC X(35) 
@@ -7,6 +7,11 @@
            FOREGROUND-COLOR IS 2.  
            05 FILLER PIC X(10) FROM  WS-CONTRACT
            LINE 10 COL 123
+           FOREGROUND-COLOR IS 7. 
+
+      * [RD] - Zone de message d'erreur.
+           05 FILLER PIC X(70) FROM WS-ERROR-MESSAGE2
+           LINE 14 COL 88 
            FOREGROUND-COLOR IS 7. 
 
       * [IM] - boutons de confirmation
