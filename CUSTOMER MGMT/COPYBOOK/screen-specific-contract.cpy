@@ -1,4 +1,4 @@
-       01  SPECIFIC-CONTRACT-SCREEN FOREGROUND-COLOR IS 2.
+       01  SCREEN-SPECIFIC-CONTRACT FOREGROUND-COLOR IS 2.
            05 BLANK SCREEN.
 
       * [AL] - Nom des contrats type
@@ -315,28 +315,28 @@
            COL 85
            FOREGROUND-COLOR IS 3.        
            05 PIC X(1) USING SC-BUTTON-CHOICE-VALIDATE
-           COL 107
+           COL 105
            BACKGROUND-COLOR IS 3
            FOREGROUND-COLOR IS 0.  
            05 FILLER PIC X(23) VALUE 'Validation du contrat :'
            LINE 34 COL 38
            FOREGROUND-COLOR IS 3. 
            05 PIC X USING  SC-BUTTON-CONT-VALIDATE
-           COL 61 
+           COL 62 
            BACKGROUND-COLOR IS 3
            FOREGROUND-COLOR IS 0. 
-           05 FILLER PIC X(1) TO  SC-BUTTON-RETURN 
+           05 FILLER PIC X(1) USING  SC-BUTTON-RETURN 
            COL 170 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 
-           05 FILLER PIC X(6) VALUE  'Retour' 
+           05 FILLER PIC X(11) VALUE  'Retour menu' 
            COL 172 
            FOREGROUND-COLOR IS 2.
 
       * [AL] - Affichage message gestion d'erreur    
                  
-           05 PIC X(45) FROM SC-MESSAGE
-           LINE 32 COL 20 
+           05 PIC X(70) FROM SC-MESSAGE
+           LINE 32 COL 38 
            BACKGROUND-COLOR IS 0
            FOREGROUND-COLOR IS 7. 
 
