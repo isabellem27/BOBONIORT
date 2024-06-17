@@ -12,7 +12,7 @@
       *                        LK-CUSTOMER complet                     *      
       ****************************************************************** 
        IDENTIFICATION DIVISION.
-       PROGRAM-ID. menucont.
+       PROGRAM-ID. menucont RECURSIVE.
        AUTHOR. Isabelle.
       ******************************************************************
        DATA DIVISION.
@@ -35,7 +35,7 @@
        01  WS-VALIDE-CHOICE        PIC X(01)   VALUE SPACE       .
        01  WS-RETURN-CHOICE        PIC X(01)   VALUE SPACE       .
 
-      * LINKAGE SECTION.
+       LINKAGE SECTION.
        01 LK-CUSTOMER.
            03 LK-CUS-UUID          PIC X(36).
            03 LK-CUS-GENDER        PIC X(10).
@@ -60,11 +60,10 @@
            03 LK-CUS-ACTIVE	       PIC X(01).  
       ******************************************************************
        SCREEN SECTION.
-           COPY 'MENU-CONTRACT-SCREEN.cpy'.
+           COPY 'screen-menu-contract.cpy'.
       
       ******************************************************************
-       PROCEDURE DIVISION.
-      *    USING LK-CUSTOMER. 
+       PROCEDURE DIVISION USING LK-CUSTOMER. 
       ****************************************************************** 
       * [IM]- le 06-06-2024                                            *
       *    Le paragraphe affiche la screen, contrôle la saisie et      *
@@ -73,8 +72,7 @@
        0000-START-MAIN.          
            PERFORM 1000-SCREEN-LOOP-START THRU END-1000-SCREEN-LOOP.
        END-0000-MAIN.
-      *    EXIT PROGRAM.
-           STOP RUN.    
+           GOBACK.    
 
       ******************************************************************    
       *    [IM] - le 05-06-2024                                        *
@@ -83,16 +81,15 @@
       ****************************************************************** 
        1000-SCREEN-LOOP-START.  
       *    Le 14-06-2024 [IM] Gestion du LK-CUSTOMER complet
-           MOVE 'Jean' TO LK-CUS-FIRSTNAME.
-           MOVE 'Guarette' TO LK-CUS-LASTNAME .
-           SET LK-CUS-CODE-SECU TO 106786227618713.
+      *    MOVE 'Jean' TO LK-CUS-FIRSTNAME.
+      *    MOVE 'Guarette' TO LK-CUS-LASTNAME .
+      *    SET LK-CUS-CODE-SECU TO 106786227618713.
 
            PERFORM 1100-PREPARE-SCREEN-START 
                     THRU END-1100-PREPARE-SCREEN.
       
-
            PERFORM UNTIL WS-SELECT-OPTION = 'TRUE'            
-              ACCEPT MENU-CONTRACT-SCREEN  
+              ACCEPT screen-menu-contract  
               PERFORM 3000-WITCH-CHOICE-START
                     THRU END-3000-WITCH-CHOICE
            END-PERFORM.          
@@ -121,24 +118,24 @@
        3000-WITCH-CHOICE-START.
            IF FUNCTION UPPER-CASE(WS-RETURN-CHOICE)
            EQUAL 'O' THEN
-               CALL 'menucust' USING CONTENT LK-CUSTOMER
+               CALL 'mcfront' USING CONTENT LK-CUS-UUID
            ELSE         
               IF FUNCTION UPPER-CASE(WS-VALIDE-CHOICE) 
               EQUAL 'O' THEN
                  IF FUNCTION UPPER-CASE(WS-LINK-CHOICE)
                  EQUAL 'O' THEN
       *    Le 14-06-2024 [IM] Gestion du bon nom de programme           
-                       CALL 'clascont' USING CONTENT LK-CUSTOMER
-                    ELSE IF FUNCTION UPPER-CASE(WS-READ-CHOICE)
-                    EQUAL 'O' THEN
-                          CALL 'readcont' USING CONTENT LK-CUSTOMER
-                       ELSE IF FUNCTION UPPER-CASE(WS-UPDATE-CHOICE)
-                       EQUAL 'O' THEN
-                             CALL 'updacont' USING CONTENT LK-CUSTOMER 
-                          ELSE  
-                             PERFORM 9200-ERROR-MESSAGE-START 
-                             THRU END-9200-ERROR-MESSAGE
-                          END-IF   
+                    CALL 'clascont' USING CONTENT LK-CUSTOMER
+                 ELSE IF FUNCTION UPPER-CASE(WS-READ-CHOICE)
+                 EQUAL 'O' THEN
+                    CALL 'readcont' USING CONTENT LK-CUSTOMER
+                 ELSE IF FUNCTION UPPER-CASE(WS-UPDATE-CHOICE)
+                 EQUAL 'O' THEN
+                    CALL 'updacont' USING CONTENT LK-CUSTOMER 
+                 ELSE  
+                    PERFORM 9200-ERROR-MESSAGE-START 
+                    THRU END-9200-ERROR-MESSAGE
+                 END-IF   
               ELSE  
                  PERFORM 9200-ERROR-MESSAGE-START 
                        THRU END-9200-ERROR-MESSAGE
