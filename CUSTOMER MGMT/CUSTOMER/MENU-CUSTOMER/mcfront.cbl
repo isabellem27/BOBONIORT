@@ -15,7 +15,7 @@
            03 WS-CUSTOMER-MODIF     PIC X(01).
            03 WS-CUST-ARCHIVE       PIC X(01).
            03 WS-CONTRACT-LIST      PIC X(01). 
-           03 WS-MENU-RAPPORT       PIC X(01).  
+           03 WS-MENU-FACTURE       PIC X(01).  
            03 WS-MENU-REMBOURSEMENT PIC X(01).             
            03 WS-MENU-RETURN        PIC X(01).    
            03 WS-ERROR-MESSAGE      PIC X(62).    
@@ -130,7 +130,7 @@
                    EQUAL 'O' THEN           
                CALL 'archust' USING WS-CUSTOMER
 
-           ELSE IF FUNCTION UPPER-CASE(WS-MENU-RAPPORT)
+           ELSE IF FUNCTION UPPER-CASE(WS-MENU-FACTURE)
                    EQUAL 'O' THEN           
                CALL 'rptmenu' USING WS-CUSTOMER
 
