@@ -245,4 +245,3 @@
            MOVE SQL-CUS-UUID TO LK-CUS-UUID.
        END-4000-HANDLE.
            EXIT.
-           
