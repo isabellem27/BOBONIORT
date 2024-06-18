@@ -11,6 +11,9 @@
       * Date de création : le 12/06/2024                               *
       *                                                                *
       * MAJ [IM] le 14-06-2024 Gestion du LK-CUSTOMER complet          *     
+      * MAJV2 [IM] le 18-06-2024 1 client = 1 contrat                  *
+      *          gestion d'une alerte affichée en haut de l'écran      *
+      *        + conditionnement à l'existance du contrat pour charger *
       ******************************************************************        
        
        IDENTIFICATION DIVISION.
@@ -30,7 +33,16 @@
        01  WS-SELECT-OPTION        PIC X(05)   VALUE 'FALSE'     . 
        01  WS-ERROR-MESSAGE1       PIC X(35)                     .
        01  WS-ERROR-MESSAGE2       PIC X(35)                     .
-
+      
+      * MAJV2 [IM] le 18-06-2024 1 client = 1 contrat                  *
+       01  WS-CONTRACT-CUSTOMER    PIC 9(01)   VALUE ZERO        .
+       88  WS-FOUND-CONTRACT                   VALUE 1           .                      
+       01  SC-CONTRACT-CUSTOMER .
+           05 SC-CONTRACT-MESSAGE1   PIC X(48)
+           VALUE 'Ce client a deja un contrat - Retournez au menu'.
+           05  SC-CONTRACT-MESSAGE2    PIC X(23) 
+           VALUE ' et choisissez Modifier'.
+                                  
       *    gestion de l'affichage et de la saisie
        01  SC-BUTTON.
            05 SC-BUTTON-ALLEGE     PIC X       VALUE SPACE       .
@@ -134,7 +146,10 @@
            05 SQL-COUT-AGEMIN      PIC 9(02)   VALUE 0           .  
            05 SQL-COUT-AGEMAX      PIC 9(02)   VALUE 0           . 
            05 SQL-COUT-COST        PIC 9(03)   VALUE 0           .
-           05 SQL-COUT-CHILDREN    PIC 9(03)   VALUE 0           .           
+           05 SQL-COUT-CHILDREN    PIC 9(03)   VALUE 0           .  
+      
+      * MAJV2 [IM] le 18-06-2024 1 client = 1 contrat                  *         
+       01  SQL-CUSTOMER-UUID       PIC X(36)   VALUE SPACES      .   
 
       * VARIABLES POUR PREPARER L'INSERT
        01  SQL-MAX                 PIC X(10)   VALUE SPACES      .
@@ -196,6 +211,7 @@
       ******************************************************************
 
        PROCEDURE DIVISION USING LK-CUSTOMER.
+      * 
       ****************************************************************** 
       * [IM]- le 12-06-2024                                            *
       *    Le paragraphe affiche la screen, contrôle la saisie et      *
@@ -223,8 +239,16 @@
                     THRU END-1100-PREPARE-SCREEN.     
            PERFORM UNTIL WS-SELECT-OPTION = 'TRUE'            
               ACCEPT SCREEN-CLASSIC-CONTRACT  
-              PERFORM 3000-WITCH-CHOICE-START
+      * MAJV2 [IM] le 18-06-2024 1 client = 1 contrat                  *        
+      *    Si contrat trouvé on ne va pas plus loin et retour au menu  * 
+              IF NOT WS-FOUND-CONTRACT THEN
+                 PERFORM 3000-WITCH-CHOICE-START
                     THRU END-3000-WITCH-CHOICE
+              ELSE 
+                 MOVE 'True' TO WS-SELECT-OPTION 
+                 CALL 'menucont' USING CONTENT LK-CUSTOMER
+              END-IF      
+      * Fin MAJV2 [IM] le 18-06-2024 1 client = 1 contrat              *
            END-PERFORM.          
        END-1000-SCREEN-LOOP. 
            EXIT.   
@@ -246,7 +270,12 @@
            PERFORM 1400-PREPARE-CRS-CLASSIC-SCREEN-START
                  THRU END-1400-PREPARE-CRS-CLASSIC-SCREEN. 
            PERFORM 1450-PREPARE-CRS-COUT-SCREEN-START
-                 THRU END-1450-PREPARE-CRS-COUT-SCREEN.       
+                 THRU END-1450-PREPARE-CRS-COUT-SCREEN. 
+      * MAJV2 [IM] le 18-06-2024 1 client = 1 contrat                  *        
+      *    On vérifie s'il existe un contrat pour le client            *             
+           PERFORM 1560-CONTRACT-CUSTOMER-NUMBER-START
+                 THRU END-1560-CONTRACT-CUSTOMER-NUMBER.   
+      * Fin MAJV2 [IM] le 18-06-2024 1 client = 1 contrat              *                              
            PERFORM 1300-SQL-DISCONNECTION-START
                  THRU END-1300-SQL-DISCONNECTION.           
        END-1100-PREPARE-SCREEN.
@@ -431,6 +460,31 @@
            END-PERFORM.         
        END-1550-CRS-COUT-READ.
            EXIT.
+
+      * MAJV2 [IM] le 18-06-2024 1 client = 1 contrat                  *        
+      *    On vérifie s'il existe un contrat pour le client            * 
+       1560-CONTRACT-CUSTOMER-NUMBER-START.
+           MOVE LK-CUS-UUID TO SQL-CUSTOMER-UUID.
+           EXEC SQL 
+               SELECT count(*)
+               INTO :SQL-NBCHILDREN                   
+               FROM CUSTOMER_REIMBURSEMENT
+               WHERE UUID_CUSTOMER = :SQL-CUSTOMER-UUID
+           END-EXEC.
+           IF  (SQLCODE NOT = ZERO) AND (SQLCODE NOT EQUAL FIN) THEN  
+               MOVE 'RECHERCHE NB CONTRATS ' 
+                       TO WS-SQL-LIB                     
+               PERFORM 9020-SQL-ERROR-START THRU END-9020-SQL-ERROR                
+           END-IF.
+           IF (SQL-NBCHILDREN > 0) THEN
+               SET WS-CONTRACT-CUSTOMER TO 1 
+           ELSE  
+               INITIALIZE WS-CONTRACT-CUSTOMER SC-CONTRACT-CUSTOMER  
+           END-IF.
+           INITIALIZE SQL-NBCHILDREN.
+       END-1560-CONTRACT-CUSTOMER-NUMBER.
+           EXIT.
+      * Fin MAJV2 [IM] le 18-06-2024 1 client = 1 contrat              *     
 
        1600-CHARGE-CRS-CLASSIC-SCREEN-START.
            EVALUATE (FUNCTION UPPER-CASE(SQL-CLAS-LABEL))
