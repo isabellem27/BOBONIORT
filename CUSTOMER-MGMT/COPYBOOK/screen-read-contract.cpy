@@ -52,6 +52,10 @@
            LINE 14 COL 118 
            FOREGROUND-COLOR IS 3.
 
+           05 FILLER PIC X(05) VALUE 'euros'
+           LINE 14 COL 122
+           FOREGROUND-COLOR IS 3.
+
       * [AL] - Parties Soins courants
            05 FILLER PIC X(14) VALUE 'Soins Courants'
            LINE 16 COL 70 

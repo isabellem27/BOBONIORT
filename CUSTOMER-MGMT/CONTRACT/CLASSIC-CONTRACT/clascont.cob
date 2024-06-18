@@ -306,7 +306,7 @@ OCESQL*
       *    Si contrat trouvé on ne va pas plus loin et retour au menu  * 
               IF WS-FOUND-CONTRACT THEN
                  MOVE 'True' TO WS-SELECT-OPTION 
-                 MOVE 'Plusieurs contrats trouves pour cette adherent' 
+                 MOVE "Cette adherent a deja un contrat d'affecte." 
                  TO LK-ERROR-MESSAGE-MENU
                  CALL 'menucont' USING CONTENT LK-CUSTOMER
               END-IF   
