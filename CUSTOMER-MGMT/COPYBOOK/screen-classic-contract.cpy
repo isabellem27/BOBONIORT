@@ -12,15 +12,11 @@
            LINE 11 COL 148 
            FOREGROUND-COLOR IS 2. 
 
-      * MAJV2 [IM] le 18-06-2024 1 client = 1 contrat                  *
+      * [AL] Nom Prénom Numéro de sécu. 
            05 FILLER PIC X(60) FROM WS-CUSTOMER  
            COL 20
            BACKGROUND-COLOR IS 0
-           FOREGROUND-COLOR IS 7. 
-           05 FILLER PIC X(75) FROM SC-CONTRACT-CUSTOMER  
-           LINE 12 COL 20
-           BACKGROUND-COLOR IS 0
-           FOREGROUND-COLOR IS 7.             
+           FOREGROUND-COLOR IS 7.           
 
       * [AL] - Parties Soins courants
            05 FILLER PIC X(14) VALUE 'Soins Courants'

@@ -18,16 +18,15 @@
        DATA DIVISION.
        WORKING-STORAGE SECTION.
       *    gestion des erreurs de saisie
-       01 WS-SELECT-OPTION         PIC X(05)   VALUE 'FALSE'     . 
-       01 WS-ERROR-MESSAGE         PIC X(70)                     .    
-       01  WS-CUSTOMER             PIC X(45)   VALUE SPACE       .
+       01 WS-SELECT-OPTION         PIC X(05) VALUE 'FALSE'. 
+       01 WS-ERROR-MESSAGE         PIC X(70).    
+       01  WS-CUSTOMER             PIC X(45).
           
       *    gestion de la saisie
-       01  WS-LINK-CHOICE          PIC X(01)   VALUE SPACE       .
-       01  WS-READ-CHOICE          PIC X(01)   VALUE SPACE       .
-       01  WS-UPDATE-CHOICE        PIC X(01)   VALUE SPACE       .
-       01  WS-VALIDE-CHOICE        PIC X(01)   VALUE SPACE       .
-       01  WS-RETURN-CHOICE        PIC X(01)   VALUE SPACE       .
+       01  WS-LINK-CHOICE          PIC X(01).
+       01  WS-READ-CHOICE          PIC X(01).
+       01  WS-UPDATE-CHOICE        PIC X(01).
+       01  WS-RETURN-CHOICE        PIC X(01).
 
        LINKAGE SECTION.
        01 LK-CUSTOMER.
@@ -74,10 +73,10 @@
       *    de saisie de l'utilisateur                                  *
       ****************************************************************** 
        1000-SCREEN-LOOP-START.  
-           INITIALIZE WS-LINK-CHOICE  
+           INITIALIZE WS-SELECT-OPTION
+                      WS-LINK-CHOICE  
                       WS-READ-CHOICE  
                       WS-UPDATE-CHOICE
-                      WS-VALIDE-CHOICE
                       WS-RETURN-CHOICE .
 
            PERFORM 1100-PREPARE-SCREEN-START 
@@ -100,7 +99,13 @@
                   SPACE 
                   FUNCTION TRIM (LK-CUS-LASTNAME)
                   SPACE 
-                  LK-CUS-CODE-SECU 
+                  LK-CUS-CODE-SECU(1:1) '-' 
+                  LK-CUS-CODE-SECU(2:2) '-'
+                  LK-CUS-CODE-SECU(4:2) '-'
+                  LK-CUS-CODE-SECU(6:2) '-'
+                  LK-CUS-CODE-SECU(8:3) '-'
+                  LK-CUS-CODE-SECU(11:3) '-'
+                  LK-CUS-CODE-SECU(14:2) 
            DELIMITED BY SIZE 
            INTO WS-CUSTOMER.  
        END-1100-PREPARE-SCREEN.
@@ -117,11 +122,19 @@
 
            ELSE IF FUNCTION UPPER-CASE(WS-LINK-CHOICE)
                    EQUAL 'O' THEN         
-               CALL 'clascont' USING CONTENT LK-CUSTOMER
+               CALL 
+                   'clascont' 
+                   USING BY REFERENCE 
+                   LK-CUSTOMER, WS-ERROR-MESSAGE
+               END-CALL
 
            ELSE IF FUNCTION UPPER-CASE(WS-READ-CHOICE)
                    EQUAL 'O' THEN
-               CALL 'readcont' USING CONTENT LK-CUSTOMER
+               CALL 
+                   'readcont' 
+                   USING BY REFERENCE 
+                   LK-CUSTOMER, WS-ERROR-MESSAGE
+               END-CALL
 
            ELSE IF FUNCTION UPPER-CASE(WS-UPDATE-CHOICE)
                    EQUAL 'O' THEN
@@ -143,7 +156,6 @@
                  WS-LINK-CHOICE
                  WS-READ-CHOICE
                  WS-UPDATE-CHOICE
-                 WS-VALIDE-CHOICE
                  WS-RETURN-CHOICE .  
 
            MOVE 'Veuillez entrer "O" pour confirmer.' 
