@@ -173,7 +173,7 @@
        EXEC SQL END DECLARE SECTION END-EXEC                     . 
        EXEC SQL INCLUDE SQLCA END-EXEC                           .
       ******************************************************************
-      * LINKAGE SECTION.
+       LINKAGE SECTION.
        01 LK-CUSTOMER.
            03 LK-CUS-UUID             PIC X(36).
            03 LK-CUS-GENDER           PIC X(10).
@@ -210,8 +210,8 @@
 
       ******************************************************************
 
-       PROCEDURE DIVISION .
-      * USING LK-CUSTOMER.
+       PROCEDURE DIVISION USING LK-CUSTOMER.
+      * 
       ****************************************************************** 
       * [IM]- le 12-06-2024                                            *
       *    Le paragraphe affiche la screen, contrôle la saisie et      *
@@ -235,11 +235,6 @@
       *    de saisie de l'utilisateur                                  *
       ****************************************************************** 
        1000-SCREEN-LOOP-START.  
-           MOVE 'Jean' TO LK-CUS-FIRSTNAME.
-           MOVE 'Guarette' TO LK-CUS-LASTNAME .
-           SET LK-CUS-CODE-SECU TO 195063475290876.
-           MOVE '57a72881-7dff-4513-9898-b0ea2bcd332f' TO LK-CUS-UUID.
-
            PERFORM 1100-PREPARE-SCREEN-START 
                     THRU END-1100-PREPARE-SCREEN.     
            PERFORM UNTIL WS-SELECT-OPTION = 'TRUE'            
