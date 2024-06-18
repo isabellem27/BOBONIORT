@@ -1,4 +1,4 @@
-       01 CLASSIC-CONTRACT-SCREEN FOREGROUND-COLOR IS 2.
+       01  SCREEN-CLASSIC-CONTRACT FOREGROUND-COLOR IS 2.
            05 BLANK SCREEN.
 
       * [AL] - Nom des contrats type
@@ -11,6 +11,16 @@
            05 FILLER PIC X(10) FROM  WS-EXCELL-LABEL 
            LINE 11 COL 148 
            FOREGROUND-COLOR IS 2. 
+
+      * MAJV2 [IM] le 18-06-2024 1 client = 1 contrat                  *
+           05 FILLER PIC X(60) FROM WS-CUSTOMER  
+           COL 20
+           BACKGROUND-COLOR IS 0
+           FOREGROUND-COLOR IS 7. 
+           05 FILLER PIC X(75) FROM SC-CONTRACT-CUSTOMER  
+           LINE 12 COL 20
+           BACKGROUND-COLOR IS 0
+           FOREGROUND-COLOR IS 7.             
 
       * [AL] - Parties Soins courants
            05 FILLER PIC X(14) VALUE 'Soins Courants'
@@ -262,6 +272,11 @@
            COL 153
            FOREGROUND-COLOR IS 2. 
 
+      * [RD] - Zone de message d'erreur.
+           05 FILLER PIC X(35) FROM WS-ERROR-MESSAGE1
+           LINE 32 COL 35 
+           FOREGROUND-COLOR IS 7. 
+
       * [AL] - boutons de des 3 types cts 
            05 PIC X USING  SC-BUTTON-ALLEGE
            LINE 32 COL 92 
@@ -275,11 +290,6 @@
            LINE 32 COL 152 
            BACKGROUND-COLOR IS 3
            FOREGROUND-COLOR IS 0.          
-
-           05 PIC X(70) FROM SC-MESSAGE
-           COL 20 
-           BACKGROUND-COLOR IS 0
-           FOREGROUND-COLOR IS 7. 
 
       * [AL] - boutons vers pages contrats spe 
            05 FILLER PIC X(18) VALUE 'CONTRAT SPECIFIQUE'
@@ -296,12 +306,12 @@
            LINE 34 COL 170 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 
-           05 FILLER PIC X(6) VALUE  'Retour' 
+           05 FILLER PIC X(11) VALUE  'Retour menu' 
            COL 172 
            FOREGROUND-COLOR IS 2.
 
       * [AL] - boutons de validation du ct et fer
-           05 FILLER PIC X(1) TO  SC-BUTTON-CONFIRM 
+           05 FILLER PIC X(1) USING SC-BUTTON-CONFIRM 
            COL 107 
            BACKGROUND-COLOR IS 3
            FOREGROUND-COLOR IS 0. 

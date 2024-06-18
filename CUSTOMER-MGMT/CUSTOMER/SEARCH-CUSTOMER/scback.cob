@@ -438,4 +438,6 @@ OCESQL    .
            ADD 1 TO LK-COUNT-CUSTOMER.
            MOVE SQL-CUS-UUID TO LK-CUS-UUID.
        END-4000-HANDLE.
-           EXIT.           EXIT.           EXIT.           EXIT.
+           EXIT.
+           EXIT.
+           EXIT.

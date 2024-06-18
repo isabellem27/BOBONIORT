@@ -1,9 +1,9 @@
-       01  SPECIFIC-CONTRACT-SCREEN FOREGROUND-COLOR IS 2.
+       01  SCREEN-SPECIFIC-CONTRACT FOREGROUND-COLOR IS 2.
            05 BLANK SCREEN.
 
       * [AL] - Nom des contrats type
            05 FILLER PIC X(18) VALUE  'CONTRAT SPECIFIQUE' 
-           LINE 11 COL 85 
+           LINE 11 COL 90 
            FOREGROUND-COLOR IS 2. 
 
 
@@ -211,6 +211,9 @@
            05 FILLER PIC X(3) FROM WS-EXCELL-MOLAR
            COL 150
            FOREGROUND-COLOR IS 3.
+           05 FILLER PIC X(2) VALUE ' %'
+           COL 153
+           FOREGROUND-COLOR IS 3. 
 
       * [AL] - Boutons molaire 
            05 PIC X USING  SC-VALUE-MOLAR-1
@@ -245,6 +248,9 @@
            05 FILLER PIC X(3) FROM WS-EXCELL-NON-MOLAR
            COL 150
            FOREGROUND-COLOR IS 3.
+           05 FILLER PIC X(2) VALUE ' %'
+           COL 153
+           FOREGROUND-COLOR IS 3. 
 
       * [AL] - boutons non molaire
            05 PIC X USING  SC-VALUE-NON-MOLAR-1
@@ -311,32 +317,31 @@
 
       * [AL] - Gestion des boutons 
            05 FILLER PIC X(20) VALUE 'Valider mes choix :'
-           LINE 30
-           COL 85
+           LINE 30 COL 85
            FOREGROUND-COLOR IS 3.        
            05 PIC X(1) USING SC-BUTTON-CHOICE-VALIDATE
-           COL 107
+           COL 105
            BACKGROUND-COLOR IS 3
            FOREGROUND-COLOR IS 0.  
            05 FILLER PIC X(23) VALUE 'Validation du contrat :'
            LINE 34 COL 38
            FOREGROUND-COLOR IS 3. 
            05 PIC X USING  SC-BUTTON-CONT-VALIDATE
-           COL 61 
+           COL 62 
            BACKGROUND-COLOR IS 3
            FOREGROUND-COLOR IS 0. 
-           05 FILLER PIC X(1) TO  SC-BUTTON-RETURN 
+           05 FILLER PIC X(1) USING  SC-BUTTON-RETURN 
            COL 170 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 
-           05 FILLER PIC X(6) VALUE  'Retour' 
+           05 FILLER PIC X(11) VALUE  'Retour menu' 
            COL 172 
            FOREGROUND-COLOR IS 2.
 
       * [AL] - Affichage message gestion d'erreur    
                  
-           05 PIC X(45) FROM SC-MESSAGE
-           LINE 32 COL 20 
+           05 PIC X(70) FROM SC-MESSAGE
+           LINE 32 COL 38 
            BACKGROUND-COLOR IS 0
            FOREGROUND-COLOR IS 7. 
 
@@ -353,7 +358,7 @@
            05 FILLER PIC X(2) VALUE  '  ' COL  190
            BACKGROUND-COLOR IS 2.
            05 FILLER PIC X(30) VALUE  'CREATION DU CONTRAT SPECIFIQUE' 
-           COL 80 
+           COL 85 
            FOREGROUND-COLOR IS 2.            
 
            05 FILLER PIC X(2) VALUE  '  ' LINE 7 COL 10 
