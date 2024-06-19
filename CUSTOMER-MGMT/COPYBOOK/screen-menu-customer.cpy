@@ -92,8 +92,44 @@
            05 FILLER PIC X(09) VALUE 'Telephone' 
            LINE 25 COL 45. 
 
-           05 FILLER PIC X(10) FROM WS-CUS-PHONE 
+           05 FILLER PIC X(02) FROM WS-CUS-PHONE(1:2) 
            LINE 26 COL 45 
+           BACKGROUND-COLOR IS 2
+           FOREGROUND-COLOR IS 0.
+
+           05 FILLER PIC X(01) VALUE '-'
+           LINE 26 COL 47 
+           FOREGROUND-COLOR IS 3.
+
+           05 FILLER PIC X(02) FROM WS-CUS-PHONE(3:2) 
+           LINE 26 COL 48
+           BACKGROUND-COLOR IS 2
+           FOREGROUND-COLOR IS 0.
+
+           05 FILLER PIC X(01) VALUE '-'
+           LINE 26 COL 50 
+           FOREGROUND-COLOR IS 3.
+
+           05 FILLER PIC X(02) FROM WS-CUS-PHONE(5:2) 
+           LINE 26 COL 51 
+           BACKGROUND-COLOR IS 2
+           FOREGROUND-COLOR IS 0.
+
+           05 FILLER PIC X(01) VALUE '-'
+           LINE 26 COL 53 
+           FOREGROUND-COLOR IS 3.
+
+           05 FILLER PIC X(02) FROM WS-CUS-PHONE(7:2) 
+           LINE 26 COL 54 
+           BACKGROUND-COLOR IS 2
+           FOREGROUND-COLOR IS 0.
+
+           05 FILLER PIC X(01) VALUE '-'
+           LINE 26 COL 56 
+           FOREGROUND-COLOR IS 3.
+
+           05 FILLER PIC X(02) FROM WS-CUS-PHONE(9:2) 
+           LINE 26 COL 57 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.
 
