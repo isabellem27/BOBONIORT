@@ -34,7 +34,16 @@
                05 WS-SECU-5      PIC X(03).
                05 WS-SECU-6      PIC X(03).
                05 WS-SECU-7      PIC X(02).
-           03 WS-CUS-CODE-IBAN   PIC X(34).
+           03 WS-CUS-CODE-IBAN.
+               05 WS-IBAN-1      PIC X(04).
+               05 WS-IBAN-2      PIC X(04).
+               05 WS-IBAN-3      PIC X(04).
+               05 WS-IBAN-4      PIC X(04).
+               05 WS-IBAN-5      PIC X(04).
+               05 WS-IBAN-6      PIC X(04).
+               05 WS-IBAN-7      PIC X(04).
+               05 WS-IBAN-8      PIC X(04).
+               05 WS-IBAN-9      PIC X(02).
            03 WS-CUS-NBCHILDREN  PIC 9(03).
            03 WS-CUS-COUPLE      PIC X(05).
            03 WS-CUS-CREATE-DATE PIC X(10).
@@ -57,6 +66,7 @@
        01  WS-CREATE-VALIDATION  PIC X(01).
        01  WS-MENU-RETURN        PIC X(01).
        01  WS-COUNT-AROBASE      PIC 9(02).
+       01  WS-COUNT-IBAN-SPACE   PIC 9(02).
 
        SCREEN SECTION.
        COPY 'screen-create-customer.cpy'.
@@ -173,7 +183,8 @@
            INITIALIZE WS-ERROR-MESSAGE1
                       WS-ERROR-MESSAGE2
                       WS-IS-ERROR
-                      WS-COUNT-AROBASE.
+                      WS-COUNT-AROBASE
+                      WS-COUNT-IBAN-SPACE .
 
            SET WS-ERROR-MESSAGE-POS TO 20.
 
@@ -351,8 +362,13 @@
                MOVE 'Y' TO WS-IS-ERROR
            END-IF.
 
-           IF WS-CUS-CODE-IBAN EQUAL SPACES THEN
-               IF WS-ERROR-MESSAGE-POS LESS THAN 23 THEN
+           INSPECT FUNCTION TRIM(WS-CUS-CODE-IBAN) 
+           TALLYING WS-COUNT-IBAN-SPACE FOR ALL SPACE.
+
+           IF WS-CUS-CODE-IBAN EQUAL SPACES 
+           OR LENGTH OF FUNCTION TRIM(WS-CUS-CODE-IBAN) LESS THAN 14 
+           OR WS-COUNT-IBAN-SPACE NOT EQUAL ZERO THEN
+               IF WS-ERROR-MESSAGE-POS LESS THAN 14 THEN
                    MOVE 'IBAN' 
                    TO WS-ERROR-MESSAGE1(WS-ERROR-MESSAGE-POS:4)
        

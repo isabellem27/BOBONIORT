@@ -102,10 +102,82 @@
            05 FILLER PIC X(04) VALUE 'IBAN' 
            LINE 27 COL 45. 
 
-           05 FILLER PIC X(34) USING WS-CUS-CODE-IBAN 
-           LINE 28 COL 45 AUTO 
+           05 FILLER PIC X(04) USING WS-IBAN-1 
+           LINE 28 COL 45 AUTO
            BACKGROUND-COLOR IS 2
-           FOREGROUND-COLOR IS 0.   
+           FOREGROUND-COLOR IS 0.  
+
+           05 FILLER PIC X(01) VALUE '-'
+           LINE 28 COL 49 
+           FOREGROUND-COLOR IS 3. 
+
+           05 FILLER PIC X(04) USING WS-IBAN-2
+           LINE 28 COL 50 AUTO
+           BACKGROUND-COLOR IS 2
+           FOREGROUND-COLOR IS 0. 
+
+           05 FILLER PIC X(01) VALUE '-'
+           LINE 28 COL 54 
+           FOREGROUND-COLOR IS 3.
+
+           05 FILLER PIC X(04) USING WS-IBAN-3
+           LINE 28 COL 55 AUTO
+           BACKGROUND-COLOR IS 2
+           FOREGROUND-COLOR IS 0.
+
+           05 FILLER PIC X(01) VALUE '-'
+           LINE 28 COL 59 
+           FOREGROUND-COLOR IS 3. 
+
+           05 FILLER PIC X(04) USING WS-IBAN-4 
+           LINE 28 COL 60 AUTO
+           BACKGROUND-COLOR IS 2
+           FOREGROUND-COLOR IS 0. 
+
+           05 FILLER PIC X(01) VALUE '-'
+           LINE 28 COL 64 
+           FOREGROUND-COLOR IS 3.
+
+           05 FILLER PIC X(04) USING WS-IBAN-5
+           LINE 28 COL 65 AUTO
+           BACKGROUND-COLOR IS 2
+           FOREGROUND-COLOR IS 0. 
+
+           05 FILLER PIC X(01) VALUE '-'
+           LINE 28 COL 69 
+           FOREGROUND-COLOR IS 3.
+
+           05 FILLER PIC X(04) USING WS-IBAN-6
+           LINE 28 COL 70 AUTO
+           BACKGROUND-COLOR IS 2
+           FOREGROUND-COLOR IS 0. 
+
+           05 FILLER PIC X(01) VALUE '-'
+           LINE 28 COL 74 
+           FOREGROUND-COLOR IS 3.
+
+           05 FILLER PIC X(04) USING WS-IBAN-7
+           LINE 28 COL 75 AUTO
+           BACKGROUND-COLOR IS 2
+           FOREGROUND-COLOR IS 0. 
+
+           05 FILLER PIC X(01) VALUE '-'
+           LINE 28 COL 79 
+           FOREGROUND-COLOR IS 3.
+
+           05 FILLER PIC X(04) USING WS-IBAN-8
+           LINE 28 COL 80 AUTO
+           BACKGROUND-COLOR IS 2
+           FOREGROUND-COLOR IS 0. 
+
+           05 FILLER PIC X(01) VALUE '-'
+           LINE 28 COL 84 
+           FOREGROUND-COLOR IS 3.
+
+           05 FILLER PIC X(02) USING WS-IBAN-9
+           LINE 28 COL 85 AUTO
+           BACKGROUND-COLOR IS 2
+           FOREGROUND-COLOR IS 0.  
 
       *    [RD] Champ de saisi pour le num de securite sociale.
            05 FILLER PIC X(27) VALUE 'Numero de securite sociale' 
