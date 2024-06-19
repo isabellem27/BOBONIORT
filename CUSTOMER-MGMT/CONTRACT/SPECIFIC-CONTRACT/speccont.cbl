@@ -633,11 +633,11 @@
                SELECT MAX(REIMBURSEMENT_NUM) as MAX
                INTO :SQL-MAX                   
                FROM CUSTOMER_REIMBURSEMENT
-               WHERE REIMBURSEMENT_NUM LIKE 'ALL'||:SQL-CYEAR||
+               WHERE REIMBURSEMENT_NUM LIKE 'SPE'||:SQL-CYEAR||
                     :SQL-CMOUNTH||'%'
            END-EXEC.
            IF  (SQLCODE NOT = ZERO) AND (SQLCODE NOT EQUAL FIN) THEN  
-               MOVE 'RECHERCHE MAX REIMBURSEMENT_NUM - ALLEGE' 
+               MOVE 'RECHERCHE MAX REIMBURSEMENT_NUM - SPECIFIQUE' 
                        TO WS-SQL-LIB                     
                PERFORM 9020-SQL-ERROR-START THRU END-9020-SQL-ERROR                
            END-IF.
@@ -645,7 +645,7 @@
                MOVE FUNCTION NUMVAL(SQL-MAX(8:3)) TO WS-NUM
            END-IF.
            ADD 1 TO WS-NUM.
-           STRING 'ALL' SQL-CYEAR SQL-CMOUNTH WS-NUM DELIMITED BY SIZE
+           STRING 'SPE' SQL-CYEAR SQL-CMOUNTH WS-NUM DELIMITED BY SIZE
            INTO SQL-REIMBURSEMENT-NUM.      
        END-6120-PREPARE-SQL-VARIABLE.
            EXIT.   

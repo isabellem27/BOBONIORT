@@ -1,14 +1,7 @@
-      ******************************************************************
-      *    [RD] Ce programme récupère dans la DB le contrat qui est    *
-      *    affecté à l'adhérent et affiche les informations du contrat *
-      *    avec une SCREEN SECTION.                                    *
-      *    Gère les erreurs dans le cas où l'adhérent n'a pas de       *
-      *    contrat d'affecté ou au contraire si l'adhérent a plus d'un *
-      *    contrat d'affecté.                                          *
-      ******************************************************************
+      ****************************************************************** 
        IDENTIFICATION DIVISION.
        PROGRAM-ID. readcont RECURSIVE.
-       AUTHOR. Martial&Remi.
+       AUTHOR. Martial.
 
       ******************************************************************
 
@@ -62,7 +55,7 @@
            03 WS-CUS-CLOSE-DATE    PIC X(10).
            03 WS-CUS-ACTIVE	       PIC X(01).
 
-       EXEC SQL BEGIN DECLARE SECTION END-EXEC.
+OCESQL*EXEC SQL BEGIN DECLARE SECTION END-EXEC.
        01  DBNAME   PIC  X(11) VALUE 'boboniortdb'.
        01  USERNAME PIC  X(05) VALUE 'cobol'.
        01  PASSWD   PIC  X(10) VALUE 'cbl85'.
@@ -79,9 +72,26 @@
            03 SQL-MOLAR       PIC 9(03).   
            03 SQL-NON-MOLAR   PIC 9(03).
            03 SQL-DESCALINGS  PIC 9(03).
-       EXEC SQL END DECLARE SECTION END-EXEC.
-       EXEC SQL INCLUDE SQLCA END-EXEC. 
+OCESQL*EXEC SQL END DECLARE SECTION END-EXEC.
+OCESQL*EXEC SQL INCLUDE SQLCA END-EXEC. 
+OCESQL     copy "sqlca.cbl".
 
+OCESQL*
+OCESQL 01  SQ0001.
+OCESQL     02  FILLER PIC X(014) VALUE "DISCONNECT ALL".
+OCESQL     02  FILLER PIC X(1) VALUE X"00".
+OCESQL*
+OCESQL 01  SQ0002.
+OCESQL     02  FILLER PIC X(256) VALUE "SELECT REIMBURSEMENT_NUM, REIM"
+OCESQL  &  "BURSEMENT_CREATE_DATE, REIMBURSEMENT_COST, REIMBURSEMENT_D"
+OCESQL  &  "OCTOR, REIMBURSEMENT_PARMEDICAL, REIMBURSEMENT_HOSPITAL, R"
+OCESQL  &  "EIMBURSEMENT_SINGLE_GLASSES, REIMBURSEMENT_PROGRESSIVE_GLA"
+OCESQL  &  "SSES, REIMBURSEMENT_MOLAR_CROWNS, REIMBURSEMENT_NON_".
+OCESQL     02  FILLER PIC X(091) VALUE "MOLAR_CROWNS, REIMBURSEMENT_DE"
+OCESQL  &  "SCALINGS FROM CUSTOMER_REIMBURSEMENT WHERE UUID_CUSTOMER ="
+OCESQL  &  " $1".
+OCESQL     02  FILLER PIC X(1) VALUE X"00".
+OCESQL*
        LINKAGE SECTION.
        01  LK-CUSTOMER.
            03 LK-CUS-UUID          PIC X(36).
@@ -120,9 +130,18 @@
                       WS-MENU-RETURN 
                       WS-COUNT-CUS-REIM .
 
-           EXEC SQL
-               CONNECT :USERNAME IDENTIFIED BY :PASSWD USING :DBNAME 
-           END-EXEC.
+OCESQL*    EXEC SQL
+OCESQL*        CONNECT :USERNAME IDENTIFIED BY :PASSWD USING :DBNAME 
+OCESQL*    END-EXEC.
+OCESQL     CALL "OCESQLConnect" USING
+OCESQL          BY REFERENCE SQLCA
+OCESQL          BY REFERENCE USERNAME
+OCESQL          BY VALUE 5
+OCESQL          BY REFERENCE PASSWD
+OCESQL          BY VALUE 10
+OCESQL          BY REFERENCE DBNAME
+OCESQL          BY VALUE 11
+OCESQL     END-CALL.
 
            PERFORM 1000-PREPARE-SCREEN-START 
               THRU END-1000-PREPARE-SCREEN.
@@ -139,13 +158,24 @@
            PERFORM 5000-START-SCREEN
               THRU END-5000-SCREEN.
        0000-END-MAIN.  
-           EXEC SQL COMMIT WORK END-EXEC.
-           EXEC SQL DISCONNECT ALL END-EXEC.
+OCESQL*    EXEC SQL COMMIT WORK END-EXEC.
+OCESQL     CALL "OCESQLStartSQL"
+OCESQL     END-CALL
+OCESQL     CALL "OCESQLExec" USING
+OCESQL          BY REFERENCE SQLCA
+OCESQL          BY REFERENCE "COMMIT" & x"00"
+OCESQL     END-CALL
+OCESQL     CALL "OCESQLEndSQL"
+OCESQL     END-CALL.
+OCESQL*    EXEC SQL DISCONNECT ALL END-EXEC.
+OCESQL     CALL "OCESQLDisconnect" USING
+OCESQL          BY REFERENCE SQLCA
+OCESQL     END-CALL.
            GOBACK.
 
       ******************************************************************    
       *    [RD] Déplace le Customer de la linkage vers celui de la WS  *
-      *    et créer un STRING Nom Prénom NumSécu pour SCREEN SECTION.  *
+      *    et créer un STRIN Nom Prénom NumSécu pour SCREEN SECTION.   *
       ******************************************************************
        1000-PREPARE-SCREEN-START.
            MOVE LK-CUSTOMER TO WS-CUSTOMER.
@@ -171,22 +201,38 @@
       *    fonction de l'UUID de l'adhérent.                           *
       ****************************************************************** 
        2000-SELECT-CONTRACT.
-           EXEC SQL
-               DECLARE CRSUUID CURSOR FOR
-               SELECT REIMBURSEMENT_NUM,
-                      REIMBURSEMENT_CREATE_DATE, 
-                      REIMBURSEMENT_COST,
-                      REIMBURSEMENT_DOCTOR,
-                      REIMBURSEMENT_PARMEDICAL,
-                      REIMBURSEMENT_HOSPITAL,
-                      REIMBURSEMENT_SINGLE_GLASSES,
-                      REIMBURSEMENT_PROGRESSIVE_GLASSES,
-                      REIMBURSEMENT_MOLAR_CROWNS,
-                      REIMBURSEMENT_NON_MOLAR_CROWNS,
-                      REIMBURSEMENT_DESCALINGS
-               FROM CUSTOMER_REIMBURSEMENT
-               WHERE UUID_CUSTOMER = :WS-CUS-UUID
-           END-EXEC.
+OCESQL*    EXEC SQL
+OCESQL*        DECLARE CRSUUID CURSOR FOR
+OCESQL*        SELECT REIMBURSEMENT_NUM,
+OCESQL*               REIMBURSEMENT_CREATE_DATE, 
+OCESQL*               REIMBURSEMENT_COST,
+OCESQL*               REIMBURSEMENT_DOCTOR,
+OCESQL*               REIMBURSEMENT_PARMEDICAL,
+OCESQL*               REIMBURSEMENT_HOSPITAL,
+OCESQL*               REIMBURSEMENT_SINGLE_GLASSES,
+OCESQL*               REIMBURSEMENT_PROGRESSIVE_GLASSES,
+OCESQL*               REIMBURSEMENT_MOLAR_CROWNS,
+OCESQL*               REIMBURSEMENT_NON_MOLAR_CROWNS,
+OCESQL*               REIMBURSEMENT_DESCALINGS
+OCESQL*        FROM CUSTOMER_REIMBURSEMENT
+OCESQL*        WHERE UUID_CUSTOMER = :WS-CUS-UUID
+OCESQL*    END-EXEC.
+OCESQL     CALL "OCESQLStartSQL"
+OCESQL     END-CALL
+OCESQL     CALL "OCESQLSetSQLParams" USING
+OCESQL          BY VALUE 16
+OCESQL          BY VALUE 36
+OCESQL          BY VALUE 0
+OCESQL          BY REFERENCE WS-CUS-UUID
+OCESQL     END-CALL
+OCESQL     CALL "OCESQLCursorDeclareParams" USING
+OCESQL          BY REFERENCE SQLCA
+OCESQL          BY REFERENCE "readcont_CRSUUID" & x"00"
+OCESQL          BY REFERENCE SQ0002
+OCESQL          BY VALUE 1
+OCESQL     END-CALL
+OCESQL     CALL "OCESQLEndSQL"
+OCESQL     END-CALL.
        END-2000-SELECT-CONTRACT.
            EXIT.
 
@@ -196,25 +242,103 @@
       *    HANDLE.                                                     *
       ******************************************************************     
        3000-START-FETCH.
-           EXEC SQL  
-               OPEN CRSUUID  
-           END-EXEC.
+OCESQL*    EXEC SQL  
+OCESQL*        OPEN CRSUUID  
+OCESQL*    END-EXEC.
+OCESQL     CALL "OCESQLCursorOpen" USING
+OCESQL          BY REFERENCE SQLCA
+OCESQL          BY REFERENCE "readcont_CRSUUID" & x"00"
+OCESQL     END-CALL.
 
            PERFORM UNTIL SQLCODE = 100
-               EXEC SQL
-                   FETCH CRSUUID
-                   INTO :SQL-REIM-NUM, 
-                        :SQL-CREATE-DATE, 
-                        :SQL-COST,
-                        :SQL-DOCTOR, 
-                        :SQL-PARMEDICAL, 
-                        :SQL-HOSPITAL, 
-                        :SQL-S-GLASSES, 
-                        :SQL-P-GLASSES, 
-                        :SQL-MOLAR, 
-                        :SQL-NON-MOLAR, 
-                        :SQL-DESCALINGS
-               END-EXEC
+OCESQL*        EXEC SQL
+OCESQL*            FETCH CRSUUID
+OCESQL*            INTO :SQL-REIM-NUM, 
+OCESQL*                 :SQL-CREATE-DATE, 
+OCESQL*                 :SQL-COST,
+OCESQL*                 :SQL-DOCTOR, 
+OCESQL*                 :SQL-PARMEDICAL, 
+OCESQL*                 :SQL-HOSPITAL, 
+OCESQL*                 :SQL-S-GLASSES, 
+OCESQL*                 :SQL-P-GLASSES, 
+OCESQL*                 :SQL-MOLAR, 
+OCESQL*                 :SQL-NON-MOLAR, 
+OCESQL*                 :SQL-DESCALINGS
+OCESQL*        END-EXEC
+OCESQL     CALL "OCESQLStartSQL"
+OCESQL     END-CALL
+OCESQL     CALL "OCESQLSetResultParams" USING
+OCESQL          BY VALUE 16
+OCESQL          BY VALUE 10
+OCESQL          BY VALUE 0
+OCESQL          BY REFERENCE SQL-REIM-NUM
+OCESQL     END-CALL
+OCESQL     CALL "OCESQLSetResultParams" USING
+OCESQL          BY VALUE 16
+OCESQL          BY VALUE 10
+OCESQL          BY VALUE 0
+OCESQL          BY REFERENCE SQL-CREATE-DATE
+OCESQL     END-CALL
+OCESQL     CALL "OCESQLSetResultParams" USING
+OCESQL          BY VALUE 1
+OCESQL          BY VALUE 3
+OCESQL          BY VALUE 0
+OCESQL          BY REFERENCE SQL-COST
+OCESQL     END-CALL
+OCESQL     CALL "OCESQLSetResultParams" USING
+OCESQL          BY VALUE 1
+OCESQL          BY VALUE 3
+OCESQL          BY VALUE 0
+OCESQL          BY REFERENCE SQL-DOCTOR
+OCESQL     END-CALL
+OCESQL     CALL "OCESQLSetResultParams" USING
+OCESQL          BY VALUE 1
+OCESQL          BY VALUE 3
+OCESQL          BY VALUE 0
+OCESQL          BY REFERENCE SQL-PARMEDICAL
+OCESQL     END-CALL
+OCESQL     CALL "OCESQLSetResultParams" USING
+OCESQL          BY VALUE 1
+OCESQL          BY VALUE 3
+OCESQL          BY VALUE 0
+OCESQL          BY REFERENCE SQL-HOSPITAL
+OCESQL     END-CALL
+OCESQL     CALL "OCESQLSetResultParams" USING
+OCESQL          BY VALUE 1
+OCESQL          BY VALUE 3
+OCESQL          BY VALUE 0
+OCESQL          BY REFERENCE SQL-S-GLASSES
+OCESQL     END-CALL
+OCESQL     CALL "OCESQLSetResultParams" USING
+OCESQL          BY VALUE 1
+OCESQL          BY VALUE 3
+OCESQL          BY VALUE 0
+OCESQL          BY REFERENCE SQL-P-GLASSES
+OCESQL     END-CALL
+OCESQL     CALL "OCESQLSetResultParams" USING
+OCESQL          BY VALUE 1
+OCESQL          BY VALUE 3
+OCESQL          BY VALUE 0
+OCESQL          BY REFERENCE SQL-MOLAR
+OCESQL     END-CALL
+OCESQL     CALL "OCESQLSetResultParams" USING
+OCESQL          BY VALUE 1
+OCESQL          BY VALUE 3
+OCESQL          BY VALUE 0
+OCESQL          BY REFERENCE SQL-NON-MOLAR
+OCESQL     END-CALL
+OCESQL     CALL "OCESQLSetResultParams" USING
+OCESQL          BY VALUE 1
+OCESQL          BY VALUE 3
+OCESQL          BY VALUE 0
+OCESQL          BY REFERENCE SQL-DESCALINGS
+OCESQL     END-CALL
+OCESQL     CALL "OCESQLCursorFetchOne" USING
+OCESQL          BY REFERENCE SQLCA
+OCESQL          BY REFERENCE "readcont_CRSUUID" & x"00"
+OCESQL     END-CALL
+OCESQL     CALL "OCESQLEndSQL"
+OCESQL     END-CALL
 
                EVALUATE SQLCODE
                    WHEN ZERO
@@ -227,9 +351,14 @@
                END-EVALUATE
            END-PERFORM.
 
-           EXEC SQL  
-               CLOSE CRSUUID   
-           END-EXEC.
+OCESQL*    EXEC SQL  
+OCESQL*        CLOSE CRSUUID   
+OCESQL*    END-EXEC.
+OCESQL     CALL "OCESQLCursorClose"  USING
+OCESQL          BY REFERENCE SQLCA
+OCESQL          BY REFERENCE "readcont_CRSUUID" & x"00"
+OCESQL     END-CALL
+OCESQL    .
        END-3000-FETCH.
            EXIT.
 
@@ -274,11 +403,7 @@
            EXIT.
 
       ******************************************************************
-      *    [RD] Appel la SCREEN SECTION et gestion des erreurs si      *
-      *    l'adhérent n'a pas de contrat d'affecté ou si l'adhérent a  *
-      *    plus d'un contrat d'affecté.                                *
-      *    En cas d'erreur appel le sous programme 'menu contrat' avec *
-      *    le message d'erreur adéquat.                                *
+      *    [RD] Appel la SCREEN SECTION.                               *
       ****************************************************************** 
        5000-START-SCREEN.
            IF WS-COUNT-CUS-REIM GREATER THAN 1 THEN
@@ -331,4 +456,6 @@
                GO TO 5000-START-SCREEN
            END-IF.
        END-5100-MENU-RETURN.
+           EXIT. 
+           EXIT. 
            EXIT. 

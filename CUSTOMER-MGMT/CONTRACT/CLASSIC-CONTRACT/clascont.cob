@@ -11,6 +11,9 @@
       * Date de création : le 12/06/2024                               *
       *                                                                *
       * MAJ [IM] le 14-06-2024 Gestion du LK-CUSTOMER complet          *     
+      * MAJV2 [IM] le 18-06-2024 1 client = 1 contrat                  *
+      *          gestion d'une alerte affichée en haut de l'écran      *
+      *        + conditionnement à l'existance du contrat pour charger *
       ******************************************************************        
        
        IDENTIFICATION DIVISION.
@@ -30,7 +33,11 @@
        01  WS-SELECT-OPTION        PIC X(05)   VALUE 'FALSE'     . 
        01  WS-ERROR-MESSAGE1       PIC X(35)                     .
        01  WS-ERROR-MESSAGE2       PIC X(35)                     .
-
+      
+      * MAJV2 [IM] le 18-06-2024 1 client = 1 contrat                  *
+       01  WS-CONTRACT-CUSTOMER    PIC 9(01)   VALUE ZERO        .
+       88  WS-FOUND-CONTRACT                   VALUE 1           .
+                                  
       *    gestion de l'affichage et de la saisie
        01  SC-BUTTON.
            05 SC-BUTTON-ALLEGE     PIC X       VALUE SPACE       .
@@ -134,7 +141,10 @@ OCESQL*EXEC SQL BEGIN DECLARE SECTION END-EXEC                   .
            05 SQL-COUT-AGEMIN      PIC 9(02)   VALUE 0           .  
            05 SQL-COUT-AGEMAX      PIC 9(02)   VALUE 0           . 
            05 SQL-COUT-COST        PIC 9(03)   VALUE 0           .
-           05 SQL-COUT-CHILDREN    PIC 9(03)   VALUE 0           .           
+           05 SQL-COUT-CHILDREN    PIC 9(03)   VALUE 0           .  
+      
+      * MAJV2 [IM] le 18-06-2024 1 client = 1 contrat         
+       01  SQL-CUSTOMER-UUID       PIC X(36)   VALUE SPACES      .   
 
       * VARIABLES POUR PREPARER L'INSERT
        01  SQL-MAX                 PIC X(10)   VALUE SPACES      .
@@ -189,6 +199,11 @@ OCESQL  &  "ION_TYPE = '2' AND cc.COST_CONDITION_COUPLE = False".
 OCESQL     02  FILLER PIC X(1) VALUE X"00".
 OCESQL*
 OCESQL 01  SQ0004.
+OCESQL     02  FILLER PIC X(070) VALUE "SELECT count( * ) FROM CUSTOME"
+OCESQL  &  "R_REIMBURSEMENT WHERE UUID_CUSTOMER = $1".
+OCESQL     02  FILLER PIC X(1) VALUE X"00".
+OCESQL*
+OCESQL 01  SQ0005.
 OCESQL     02  FILLER PIC X(256) VALUE "INSERT INTO CUSTOMER_REIMBURSE"
 OCESQL  &  "MENT (UUID_CUSTOMER, REIMBURSEMENT_NUM, REIMBURSEMENT_CREA"
 OCESQL  &  "TE_DATE, REIMBURSEMENT_COST, REIMBURSEMENT_DOCTOR, REIMBUR"
@@ -201,19 +216,19 @@ OCESQL  &  "E_SECU = $1 ), $2, CURRENT_DATE, $3, $4, $5, $6, $7, $8, $"
 OCESQL  &  "9, $10, $11 )".
 OCESQL     02  FILLER PIC X(1) VALUE X"00".
 OCESQL*
-OCESQL 01  SQ0005.
+OCESQL 01  SQ0006.
 OCESQL     02  FILLER PIC X(118) VALUE "SELECT MAX(REIMBURSEMENT_NUM) "
 OCESQL  &  "as MAX FROM CUSTOMER_REIMBURSEMENT WHERE REIMBURSEMENT_NUM"
 OCESQL  &  " LIKE 'ALL' || $1 || $2 || '%'".
 OCESQL     02  FILLER PIC X(1) VALUE X"00".
 OCESQL*
-OCESQL 01  SQ0006.
+OCESQL 01  SQ0007.
 OCESQL     02  FILLER PIC X(118) VALUE "SELECT MAX(REIMBURSEMENT_NUM) "
 OCESQL  &  "as MAX FROM CUSTOMER_REIMBURSEMENT WHERE REIMBURSEMENT_NUM"
 OCESQL  &  " LIKE 'MOD' || $1 || $2 || '%'".
 OCESQL     02  FILLER PIC X(1) VALUE X"00".
 OCESQL*
-OCESQL 01  SQ0007.
+OCESQL 01  SQ0008.
 OCESQL     02  FILLER PIC X(118) VALUE "SELECT MAX(REIMBURSEMENT_NUM) "
 OCESQL  &  "as MAX FROM CUSTOMER_REIMBURSEMENT WHERE REIMBURSEMENT_NUM"
 OCESQL  &  " LIKE 'EXC' || $1 || $2 || '%'".
@@ -221,33 +236,35 @@ OCESQL     02  FILLER PIC X(1) VALUE X"00".
 OCESQL*
        LINKAGE SECTION.
        01 LK-CUSTOMER.
-           03 LK-CUS-UUID             PIC X(36).
-           03 LK-CUS-GENDER           PIC X(10).
-           03 LK-CUS-LASTNAME         PIC X(20).
-           03 LK-CUS-FIRSTNAME        PIC X(20).
-           03 LK-CUS-ADRESS1	        PIC X(50).
-           03 LK-CUS-ADRESS2	        PIC X(50).
-           03 LK-CUS-ZIPCODE	        PIC X(15).
-           03 LK-CUS-TOWN             PIC X(30).
-           03 LK-CUS-COUNTRY	        PIC X(20).
-           03 LK-CUS-PHONE	           PIC X(10).
-           03 LK-CUS-MAIL	           PIC X(50).
-           03 LK-CUS-BIRTH-DATE       PIC X(10).
-           03  WS-BIRTH REDEFINES LK-CUS-BIRTH-DATE              .
-              05 WS-YEAR              PIC 9(04)                  .
-              05 FILLER               PIC X(01)      VALUE '-'   .     
-              05 WS-MOUNTH            PIC 9(02)                  .
-              05 FILLER               PIC X(01)      VALUE '-'   .           
-              05 WS-DAY               PIC 9(02)                  .           
-           03 LK-CUS-DOCTOR	        PIC X(20).
-           03 LK-CUS-CODE-SECU        PIC 9(15).
-           03 LK-CUS-CODE-IBAN        PIC X(34).
-           03 LK-CUS-NBCHILDREN       PIC 9(03).
-           03 LK-CUS-COUPLE           PIC X(05).
-           03 LK-CUS-CREATE-DATE      PIC X(10).
-           03 LK-CUS-UPDATE-DATE      PIC X(10).
-           03 LK-CUS-CLOSE-DATE       PIC X(10).
-           03 LK-CUS-ACTIVE	        PIC X(01).
+           03 LK-CUS-UUID          PIC X(36)                     .
+           03 LK-CUS-GENDER        PIC X(10)                     .
+           03 LK-CUS-LASTNAME      PIC X(20)                     .
+           03 LK-CUS-FIRSTNAME     PIC X(20)                     .
+           03 LK-CUS-ADRESS1	   PIC X(50)                     .
+           03 LK-CUS-ADRESS2	   PIC X(50)                     .
+           03 LK-CUS-ZIPCODE	   PIC X(15)                     .
+           03 LK-CUS-TOWN          PIC X(30)                     .
+           03 LK-CUS-COUNTRY	   PIC X(20)                     .
+           03 LK-CUS-PHONE	       PIC X(10)                     .
+           03 LK-CUS-MAIL	       PIC X(50)                     .
+           03 LK-CUS-BIRTH-DATE    PIC X(10)                     .
+           03  WS-BIRTH REDEFINES LK-CUS-BIRTH-DATE.
+              05 WS-YEAR           PIC 9(04)                     .
+              05 FILLER            PIC X(01)      VALUE '-'      .     
+              05 WS-MOUNTH         PIC 9(02)                     .
+              05 FILLER            PIC X(01)      VALUE '-'      .           
+              05 WS-DAY            PIC 9(02)                     .           
+           03 LK-CUS-DOCTOR	       PIC X(20)                     .
+           03 LK-CUS-CODE-SECU     PIC 9(15)                     .
+           03 LK-CUS-CODE-IBAN     PIC X(34)                     .
+           03 LK-CUS-NBCHILDREN    PIC 9(03)                     .
+           03 LK-CUS-COUPLE        PIC X(05)                     .
+           03 LK-CUS-CREATE-DATE   PIC X(10)                     .
+           03 LK-CUS-UPDATE-DATE   PIC X(10)                     .
+           03 LK-CUS-CLOSE-DATE    PIC X(10)                     .
+           03 LK-CUS-ACTIVE	       PIC X(01)                     .
+
+       01  LK-ERROR-MESSAGE-MENU   PIC X(70)                     .
     
       ******************************************************************
        SCREEN SECTION.
@@ -256,7 +273,8 @@ OCESQL*
 
       ******************************************************************
 
-       PROCEDURE DIVISION USING LK-CUSTOMER.
+       PROCEDURE DIVISION USING LK-CUSTOMER, LK-ERROR-MESSAGE-MENU.
+      * 
       ****************************************************************** 
       * [IM]- le 12-06-2024                                            *
       *    Le paragraphe affiche la screen, contrôle la saisie et      *
@@ -282,10 +300,22 @@ OCESQL*
        1000-SCREEN-LOOP-START.  
            PERFORM 1100-PREPARE-SCREEN-START 
                     THRU END-1100-PREPARE-SCREEN.     
-           PERFORM UNTIL WS-SELECT-OPTION = 'TRUE'            
+           PERFORM UNTIL WS-SELECT-OPTION = 'TRUE'   
+
+      * MAJV2 [IM] le 18-06-2024 1 client = 1 contrat                  *        
+      *    Si contrat trouvé on ne va pas plus loin et retour au menu  * 
+              IF WS-FOUND-CONTRACT THEN
+                 MOVE 'True' TO WS-SELECT-OPTION 
+                 MOVE "Cette adherent a deja un contrat d'affecte." 
+                 TO LK-ERROR-MESSAGE-MENU
+                 CALL 'menucont' USING CONTENT LK-CUSTOMER
+              END-IF   
+      * Fin MAJV2 [IM] le 18-06-2024 1 client = 1 contrat              *
+
               ACCEPT SCREEN-CLASSIC-CONTRACT  
+
               PERFORM 3000-WITCH-CHOICE-START
-                    THRU END-3000-WITCH-CHOICE
+                 THRU END-3000-WITCH-CHOICE
            END-PERFORM.          
        END-1000-SCREEN-LOOP. 
            EXIT.   
@@ -299,7 +329,13 @@ OCESQL*
                   SPACE 
                   FUNCTION TRIM (LK-CUS-LASTNAME)
                   SPACE 
-                  LK-CUS-CODE-SECU 
+                  LK-CUS-CODE-SECU(1:1) '-' 
+                  LK-CUS-CODE-SECU(2:2) '-'
+                  LK-CUS-CODE-SECU(4:2) '-'
+                  LK-CUS-CODE-SECU(6:2) '-'
+                  LK-CUS-CODE-SECU(8:3) '-'
+                  LK-CUS-CODE-SECU(11:3) '-'
+                  LK-CUS-CODE-SECU(14:2) 
            DELIMITED BY SIZE 
            INTO WS-CUSTOMER.  
            PERFORM 1200-SQL-CONNECTION-START
@@ -307,7 +343,12 @@ OCESQL*
            PERFORM 1400-PREPARE-CRS-CLASSIC-SCREEN-START
                  THRU END-1400-PREPARE-CRS-CLASSIC-SCREEN. 
            PERFORM 1450-PREPARE-CRS-COUT-SCREEN-START
-                 THRU END-1450-PREPARE-CRS-COUT-SCREEN.       
+                 THRU END-1450-PREPARE-CRS-COUT-SCREEN. 
+      * MAJV2 [IM] le 18-06-2024 1 client = 1 contrat                  *        
+      *    On vérifie s'il existe un contrat pour le client            *             
+           PERFORM 1560-CONTRACT-CUSTOMER-NUMBER-START
+                 THRU END-1560-CONTRACT-CUSTOMER-NUMBER.   
+      * Fin MAJV2 [IM] le 18-06-2024 1 client = 1 contrat              *                              
            PERFORM 1300-SQL-DISCONNECTION-START
                  THRU END-1300-SQL-DISCONNECTION.           
        END-1100-PREPARE-SCREEN.
@@ -745,6 +786,53 @@ OCESQL     END-CALL
        END-1550-CRS-COUT-READ.
            EXIT.
 
+      * MAJV2 [IM] le 18-06-2024 1 client = 1 contrat                  *        
+      *    On vérifie s'il existe un contrat pour le client            * 
+       1560-CONTRACT-CUSTOMER-NUMBER-START.
+           MOVE LK-CUS-UUID TO SQL-CUSTOMER-UUID.
+OCESQL*    EXEC SQL 
+OCESQL*        SELECT count(*)
+OCESQL*        INTO :SQL-NBCHILDREN                   
+OCESQL*        FROM CUSTOMER_REIMBURSEMENT
+OCESQL*        WHERE UUID_CUSTOMER = :SQL-CUSTOMER-UUID
+OCESQL*    END-EXEC.
+OCESQL     CALL "OCESQLStartSQL"
+OCESQL     END-CALL
+OCESQL     CALL "OCESQLSetResultParams" USING
+OCESQL          BY VALUE 1
+OCESQL          BY VALUE 2
+OCESQL          BY VALUE 0
+OCESQL          BY REFERENCE SQL-NBCHILDREN
+OCESQL     END-CALL
+OCESQL     CALL "OCESQLSetSQLParams" USING
+OCESQL          BY VALUE 16
+OCESQL          BY VALUE 36
+OCESQL          BY VALUE 0
+OCESQL          BY REFERENCE SQL-CUSTOMER-UUID
+OCESQL     END-CALL
+OCESQL     CALL "OCESQLExecSelectIntoOne" USING
+OCESQL          BY REFERENCE SQLCA
+OCESQL          BY REFERENCE SQ0004
+OCESQL          BY VALUE 1
+OCESQL          BY VALUE 1
+OCESQL     END-CALL
+OCESQL     CALL "OCESQLEndSQL"
+OCESQL     END-CALL.
+           IF  (SQLCODE NOT = ZERO) AND (SQLCODE NOT EQUAL FIN) THEN  
+               MOVE 'RECHERCHE NB CONTRATS ' 
+                       TO WS-SQL-LIB                     
+               PERFORM 9020-SQL-ERROR-START THRU END-9020-SQL-ERROR                
+           END-IF.
+           IF (SQL-NBCHILDREN > 0) THEN
+               SET WS-CONTRACT-CUSTOMER TO 1 
+           ELSE  
+               INITIALIZE WS-CONTRACT-CUSTOMER LK-ERROR-MESSAGE-MENU
+           END-IF.
+           INITIALIZE SQL-NBCHILDREN.
+       END-1560-CONTRACT-CUSTOMER-NUMBER.
+           EXIT.
+      * Fin MAJV2 [IM] le 18-06-2024 1 client = 1 contrat              *     
+
        1600-CHARGE-CRS-CLASSIC-SCREEN-START.
            EVALUATE (FUNCTION UPPER-CASE(SQL-CLAS-LABEL))
               WHEN  'ALLEGE'
@@ -1004,7 +1092,7 @@ OCESQL          BY REFERENCE SQL-CLAS-NON-MOLAR
 OCESQL     END-CALL
 OCESQL     CALL "OCESQLExecParams" USING
 OCESQL          BY REFERENCE SQLCA
-OCESQL          BY REFERENCE SQ0004
+OCESQL          BY REFERENCE SQ0005
 OCESQL          BY VALUE 11
 OCESQL     END-CALL
 OCESQL     CALL "OCESQLEndSQL"
@@ -1068,7 +1156,7 @@ OCESQL          BY REFERENCE SQL-CMOUNTH
 OCESQL     END-CALL
 OCESQL     CALL "OCESQLExecSelectIntoOne" USING
 OCESQL          BY REFERENCE SQLCA
-OCESQL          BY REFERENCE SQ0005
+OCESQL          BY REFERENCE SQ0006
 OCESQL          BY VALUE 2
 OCESQL          BY VALUE 1
 OCESQL     END-CALL
@@ -1138,7 +1226,7 @@ OCESQL          BY REFERENCE SQL-CMOUNTH
 OCESQL     END-CALL
 OCESQL     CALL "OCESQLExecSelectIntoOne" USING
 OCESQL          BY REFERENCE SQLCA
-OCESQL          BY REFERENCE SQ0006
+OCESQL          BY REFERENCE SQ0007
 OCESQL          BY VALUE 2
 OCESQL          BY VALUE 1
 OCESQL     END-CALL
@@ -1207,7 +1295,7 @@ OCESQL          BY REFERENCE SQL-CMOUNTH
 OCESQL     END-CALL
 OCESQL     CALL "OCESQLExecSelectIntoOne" USING
 OCESQL          BY REFERENCE SQLCA
-OCESQL          BY REFERENCE SQ0007
+OCESQL          BY REFERENCE SQ0008
 OCESQL          BY VALUE 2
 OCESQL          BY VALUE 1
 OCESQL     END-CALL
