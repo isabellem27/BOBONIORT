@@ -26,13 +26,16 @@
        WORKING-STORAGE SECTION.
        01  WS-INVOICE-PATH.
            03 WS-INVOICE-FOLDER PIC X(20) VALUE './INVOICE-GENERATED/'.
-           03 WS-INVOICE-FILE   PIC X(07) VALUE 'Facture'.
+           03 WS-INVOICE-FILE   PIC X(11).
            03 WS-INVOICE-FORMAT PIC X(04) VALUE '.dat'.
 
-       01  WS-INVOICE-DATE-START       PIC 9(08).
-       01  WS-INVOICE-DATE-START-DAY   PIC X(02).
-       01  WS-INVOICE-DATE-START-MONTH PIC X(02).
-       01  WS-INVOICE-DATE-START-YEAR  PIC X(04).
+       01  WS-INVOICE-NUM              PIC 9(08).
+       01  WS-INVOICE-DATE             PIC 9(08).
+       01  WS-INVOICE-DATE-DAY         PIC 9(02).
+       01  WS-INVOICE-DATE-START-MONTH PIC 9(02).
+       01  WS-INVOICE-DATE-END-MONTH   PIC 9(02).
+       01  WS-INVOICE-DATE-YEAR        PIC 9(04).
+       01  WS-Z-TOTAL-AMOUNT           PIC Z(09)9.99.
 
        01  WS-REPORT.
            03 WS-R-SPACES-ALL        PIC X(80) VALUE SPACES.
@@ -65,6 +68,30 @@
            VALUE 'IBAN                       :'.
            03 WS-R-CUS-DETAILS-TITLE PIC X(24) 
            VALUE 'Détail des prestations'.
+           03 WS-R-ROUTINE-CARE            PIC X(16) 
+           VALUE 'Soins courants :'.
+           03 WS-R-MEDICAL-FEES            PIC X(22) 
+           VALUE '- Honoraires médecins'.
+           03 WS-R-PARAMEDICAL-REGULATIONS PIC X(27) 
+           VALUE '- Réglements paramédicaux'.
+           03 WS-R-HOSPITALIZATION         PIC X(17) 
+           VALUE 'Hospitalisation :'.
+           03 WS-R-OPTICS                  PIC X(09) 
+           VALUE 'Optique :'.
+           03 WS-R-SINGLE-LENSES           PIC X(16) 
+           VALUE '- Verres simples'.
+           03 WS-R-PROGRESSIVE-LENSES      PIC X(20) 
+           VALUE '- Verres progressifs'.
+           03 WS-R-DENTAL                  PIC X(10) 
+           VALUE 'Dentaire :'.
+           03 WS-R-MOLAR-CROWNS            PIC X(22) 
+           VALUE '- Couronnes (molaires)'.
+           03 WS-R-NON-MOLAR-CROWNS        PIC X(27) 
+           VALUE '- Couronnes (hors molaires)'.
+           03 WS-R-SCALING                 PIC X(13) 
+           VALUE '- Détartrage'.
+           03 WS-R-TOTAL-AMOUNT PIC X(16) 
+           VALUE 'Total à payer :'.
            03 WS-R-INFO-PAYMENT PIC X(24) 
            VALUE 'Informations de paiement'.
            03 WS-R-INFO-PAYMENT-MESSAGE PIC X(41) 
@@ -140,6 +167,8 @@ OCESQL     copy "sqlca.cbl".
            03 LK-CUS-CLOSE-DATE  PIC X(10).
            03 LK-CUS-ACTIVE	     PIC X(01).
 
+       01  LK-TOTAL-AMOUNT       PIC 9(10)V9(02) VALUE 180.99.
+
       ******************************************************************
 
 OCESQL*
@@ -148,6 +177,7 @@ OCESQL     02  FILLER PIC X(014) VALUE "DISCONNECT ALL".
 OCESQL     02  FILLER PIC X(1) VALUE X"00".
 OCESQL*
        PROCEDURE DIVISION.
+      *    USING LK-CUSTOMER, LK-TOTAL-AMOUNT.  
        0000-START-MAIN.
 OCESQL*    EXEC SQL
 OCESQL*        CONNECT :USERNAME IDENTIFIED BY :PASSWD USING :DBNAME 
@@ -184,20 +214,44 @@ OCESQL     END-CALL.
            GOBACK.
 
       ******************************************************************
+      *    [RD] 
       ****************************************************************** 
        1000-START-INITIALIZATION.
-           ACCEPT WS-INVOICE-DATE-START FROM DATE YYYYMMDD.
+      *    [RD] Initialise le nom du fichier généré.
+           STRING
+               LK-CUS-FIRSTNAME(1:1) LK-CUS-LASTNAME(1:1) '-'
+               WS-INVOICE-NUM
+               DELIMITED BY SIZE
+               INTO WS-INVOICE-FILE
+           END-STRING.
 
-           MOVE WS-INVOICE-DATE-START(1:4) 
-           TO WS-INVOICE-DATE-START-YEAR.
-           MOVE WS-INVOICE-DATE-START(5:2) 
+      *    [RD] Initialise la date de création de la facture.
+           ACCEPT WS-INVOICE-DATE FROM DATE YYYYMMDD.
+
+           MOVE WS-INVOICE-DATE(1:4) 
+           TO WS-INVOICE-DATE-YEAR.
+           MOVE WS-INVOICE-DATE(5:2) 
            TO WS-INVOICE-DATE-START-MONTH.
-           MOVE WS-INVOICE-DATE-START(7:2) 
-           TO WS-INVOICE-DATE-START-DAY.
+           MOVE WS-INVOICE-DATE(7:2) 
+           TO WS-INVOICE-DATE-DAY.
+
+      *    [RD] Calcul le mois d'écheance à partir du mois de la 
+      *         création de la facture. 
+           MOVE WS-INVOICE-DATE-START-MONTH 
+           TO WS-INVOICE-DATE-END-MONTH.
+
+           ADD 2 TO WS-INVOICE-DATE-END-MONTH.
+           
+           IF WS-INVOICE-DATE-END-MONTH GREATER THAN 12 THEN
+               SUBTRACT 12 FROM WS-INVOICE-DATE-END-MONTH
+           END-IF.
+
+           MOVE LK-TOTAL-AMOUNT TO WS-Z-TOTAL-AMOUNT.
        END-1000-INITIALIZATION.
            EXIT.    
           
       ******************************************************************
+      *    [RD] Ecris le rapport généré.                               *
       ******************************************************************    
        1000-START-WRITE.
            OPEN OUTPUT F-OUTPUT.
@@ -243,9 +297,9 @@ OCESQL     END-CALL.
            INITIALIZE R-OUTPUT.
            STRING 
                WS-R-INVOICE-DATE SPACE 
-               WS-INVOICE-DATE-START-DAY '/'
+               WS-INVOICE-DATE-DAY '/'
                WS-INVOICE-DATE-START-MONTH '/'
-               WS-INVOICE-DATE-START-YEAR
+               WS-INVOICE-DATE-YEAR
                DELIMITED BY SIZE
                INTO R-OUTPUT
            END-STRING.
@@ -331,8 +385,134 @@ OCESQL     END-CALL.
            WRITE R-OUTPUT FROM WS-R-CUS-DETAILS-TITLE.
 
            WRITE R-OUTPUT FROM WS-R-DASH.
+
+
+
+
+      *    [RD] 
+           INITIALIZE R-OUTPUT.
+           STRING 
+               WS-R-ROUTINE-CARE
+               DELIMITED BY SIZE
+               INTO R-OUTPUT
+           END-STRING.
+           WRITE R-OUTPUT. 
+
+      *    [RD] 
+           INITIALIZE R-OUTPUT.
+           STRING 
+               WS-R-MEDICAL-FEES
+               DELIMITED BY SIZE
+               INTO R-OUTPUT
+           END-STRING.
+           WRITE R-OUTPUT. 
+
+      *    [RD] 
+           INITIALIZE R-OUTPUT.
+           STRING 
+               WS-R-PARAMEDICAL-REGULATIONS
+               DELIMITED BY SIZE
+               INTO R-OUTPUT
+           END-STRING.
+           WRITE R-OUTPUT. 
+
            WRITE R-OUTPUT FROM WS-R-SPACES-ALL.
 
+      *    [RD] 
+           INITIALIZE R-OUTPUT.
+           STRING 
+               WS-R-HOSPITALIZATION
+               DELIMITED BY SIZE
+               INTO R-OUTPUT
+           END-STRING.
+           WRITE R-OUTPUT. 
+
+           WRITE R-OUTPUT FROM WS-R-SPACES-ALL.
+
+      *    [RD] 
+           INITIALIZE R-OUTPUT.
+           STRING 
+               WS-R-OPTICS
+               DELIMITED BY SIZE
+               INTO R-OUTPUT
+           END-STRING.
+           WRITE R-OUTPUT. 
+
+      *    [RD] 
+           INITIALIZE R-OUTPUT.
+           STRING 
+               WS-R-SINGLE-LENSES
+               DELIMITED BY SIZE
+               INTO R-OUTPUT
+           END-STRING.
+           WRITE R-OUTPUT. 
+
+      *    [RD] 
+           INITIALIZE R-OUTPUT.
+           STRING 
+               WS-R-PROGRESSIVE-LENSES
+               DELIMITED BY SIZE
+               INTO R-OUTPUT
+           END-STRING.
+           WRITE R-OUTPUT. 
+
+           WRITE R-OUTPUT FROM WS-R-SPACES-ALL.
+
+      *    [RD] 
+           INITIALIZE R-OUTPUT.
+           STRING 
+               WS-R-DENTAL
+               DELIMITED BY SIZE
+               INTO R-OUTPUT
+           END-STRING.
+           WRITE R-OUTPUT. 
+
+      *    [RD] 
+           INITIALIZE R-OUTPUT.
+           STRING 
+               WS-R-MOLAR-CROWNS
+               DELIMITED BY SIZE
+               INTO R-OUTPUT
+           END-STRING.
+           WRITE R-OUTPUT. 
+
+      *    [RD] 
+           INITIALIZE R-OUTPUT.
+           STRING 
+               WS-R-NON-MOLAR-CROWNS
+               DELIMITED BY SIZE
+               INTO R-OUTPUT
+           END-STRING.
+           WRITE R-OUTPUT. 
+
+      *    [RD] 
+           INITIALIZE R-OUTPUT.
+           STRING 
+               WS-R-SCALING
+               DELIMITED BY SIZE
+               INTO R-OUTPUT
+           END-STRING.
+           WRITE R-OUTPUT.       
+
+
+
+
+           WRITE R-OUTPUT FROM WS-R-SPACES-ALL.
+
+           WRITE R-OUTPUT FROM WS-R-DASH.
+
+      *    [RD] Total à payer
+           INITIALIZE R-OUTPUT.
+           STRING 
+               WS-R-TOTAL-AMOUNT SPACE 
+               FUNCTION TRIM(WS-Z-TOTAL-AMOUNT) SPACE 'euros'
+               DELIMITED BY SIZE
+               INTO R-OUTPUT
+           END-STRING.
+           WRITE R-OUTPUT. 
+
+           WRITE R-OUTPUT FROM WS-R-DASH.
+           WRITE R-OUTPUT FROM WS-R-SPACES-ALL.
            WRITE R-OUTPUT FROM WS-R-DASH.
 
       *    [RD] Informations de paiement
@@ -343,7 +523,15 @@ OCESQL     END-CALL.
 
       *    [RD] Informations de paiement message
            INITIALIZE R-OUTPUT.
-           WRITE R-OUTPUT FROM WS-R-INFO-PAYMENT-MESSAGE.
+           STRING 
+               WS-R-INFO-PAYMENT-MESSAGE SPACE
+               WS-INVOICE-DATE-DAY '/'
+               WS-INVOICE-DATE-END-MONTH '/'
+               WS-INVOICE-DATE-YEAR
+               DELIMITED BY SIZE
+               INTO R-OUTPUT
+           END-STRING.
+           WRITE R-OUTPUT.
 
            WRITE R-OUTPUT FROM WS-R-SPACES-ALL.
 
