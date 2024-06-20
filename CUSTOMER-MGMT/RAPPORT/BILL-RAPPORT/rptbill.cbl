@@ -42,9 +42,12 @@
        01  WS-INVOICE-DATE-START-MONTH PIC 9(02).
        01  WS-INVOICE-DATE-END-MONTH   PIC 9(02).
        01  WS-INVOICE-DATE-YEAR        PIC 9(04).
+       01  WS-TOTAL-AMOUNT             PIC 9(05)V9(02).
        01  WS-Z-TOTAL-AMOUNT           PIC Z(09)9.99.
+       01  WS-INVOICE-EXPECT           PIC 9(05)V9(02).
 
        01  WS-CUS-REIMBURSEMENT.
+           03 WS-REIM-UUID             PIC X(36).
            03 WS-REIM-NUM              PIC X(10).
            03 WS-CREATE-DATE           PIC X(10).
            03 WS-COST                  PIC ZZ9.
@@ -159,6 +162,7 @@
        01  PASSWD             PIC  X(10) VALUE 'cbl85'.
 
        01  SQL-CUS-REIMBURSEMENT.
+           03 SQL-REIM-UUID   PIC X(36).
            03 SQL-REIM-NUM    PIC X(10).
            03 SQL-CREATE-DATE PIC X(10).
            03 SQL-COST        PIC 9(03).
@@ -211,12 +215,13 @@
            03 LK-CUS-CLOSE-DATE  PIC X(10).
            03 LK-CUS-ACTIVE	     PIC X(01).
 
-       01  LK-TOTAL-AMOUNT       PIC 9(10)V9(02) VALUE 180.99.
+       01  LK-INVOICE-INCOME       PIC 9(05)V9(02) VALUE 180.99.
+       01  LK-INVOICE-EXPECT       PIC 9(05)V9(02) VALUE 800.
 
       ******************************************************************
 
        PROCEDURE DIVISION.
-      *    USING LK-CUSTOMER, LK-TOTAL-AMOUNT.  
+      *    USING LK-CUSTOMER, LK-INVOICE-INCOME.  
        0000-START-MAIN.
            EXEC SQL
                CONNECT :USERNAME IDENTIFIED BY :PASSWD USING :DBNAME 
@@ -229,10 +234,13 @@
               THRU END-2000-SELECT-CONTRACT.
 
            PERFORM 3000-START-HANDLE-REIMBURSEMENT 
-              THRU 3000-END-HANDLE-REIMBURSEMENT.   
+              THRU 3000-END-HANDLE-REIMBURSEMENT.  
+
+           PERFORM 4000-START-INSERT-INVOICE 
+              THRU END-4000-INSERT-INVOICE.    
        
-           PERFORM 1000-START-WRITE 
-              THRU END-1000-WRITE.
+           PERFORM 5000-START-WRITE 
+              THRU END-5000-WRITE.
        END-0000-MAIN.  
            EXEC SQL COMMIT WORK END-EXEC.
            EXEC SQL DISCONNECT ALL END-EXEC.
@@ -278,8 +286,10 @@
                SUBTRACT 12 FROM WS-INVOICE-DATE-END-MONTH
            END-IF.
 
-      *    [RD] Déplace le total à payé de LK vers WS qui masque les 0. 
-           MOVE LK-TOTAL-AMOUNT TO WS-Z-TOTAL-AMOUNT.
+      *    [RD] Déplace LK-INVOICE vers WS. 
+           MOVE LK-INVOICE-INCOME TO WS-TOTAL-AMOUNT.
+           MOVE LK-INVOICE-INCOME TO WS-Z-TOTAL-AMOUNT.
+           MOVE LK-INVOICE-EXPECT TO WS-INVOICE-EXPECT.
 
       *    [RD] Déplace l'UUID de LK vers celui de la WS. 
            MOVE LK-CUS-UUID TO WS-CUS-UUID.
@@ -292,7 +302,8 @@
       ****************************************************************** 
        2000-START-SELECT-CONTRACT.
            EXEC SQL
-               SELECT REIMBURSEMENT_NUM,
+               SELECT UUID_CUSTOMER_REIMBOURSEMENT,
+                      REIMBURSEMENT_NUM,
                       REIMBURSEMENT_CREATE_DATE,
                       REIMBURSEMENT_COST,
                       REIMBURSEMENT_DOCTOR,
@@ -303,7 +314,8 @@
                       REIMBURSEMENT_MOLAR_CROWNS,
                       REIMBURSEMENT_NON_MOLAR_CROWNS,
                       REIMBURSEMENT_DESCALINGS
-               INTO :SQL-REIM-NUM, 
+               INTO :SQL-REIM-UUID,
+                    :SQL-REIM-NUM, 
                     :SQL-CREATE-DATE, 
                     :SQL-COST,
                     :SQL-DOCTOR, 
@@ -322,9 +334,11 @@
            EXIT.
 
       ******************************************************************
-      *    [RD] 
+      *    [RD] Initialise les données qui concernent les informations *
+      *    du contrat de l'adhérent pour l'écriture de la factue.      *
       ****************************************************************** 
        3000-START-HANDLE-REIMBURSEMENT.
+           MOVE SQL-REIM-UUID   TO WS-REIM-UUID   . 
            MOVE SQL-REIM-NUM    TO WS-REIM-NUM    . 
            MOVE SQL-CREATE-DATE TO WS-CREATE-DATE .
            MOVE SQL-COST        TO WS-COST        .
@@ -349,12 +363,35 @@
                MOVE 'Inconnu' TO WS-REIM-TYPE  
            END-IF.
        3000-END-HANDLE-REIMBURSEMENT.
-           EXIT.    
+           EXIT.   
+
+      ******************************************************************
+      *    [RD] Insert dans la table INVOICE.                          *
+      ****************************************************************** 
+       4000-START-INSERT-INVOICE.
+           EXEC SQL
+               INSERT INTO INVOICE (
+                   UUID_CUSTOMER_REIMBOURSEMENT,
+                   UUID_CUSTOMER,               
+                   INVOICE_NUMBER,              
+                   INVOICE_INCOME,              
+                   INVOICE_EXPECT              
+               )
+               VALUES ( 
+                   :WS-REIM-UUID, 
+                   :WS-CUS-UUID, 
+                   :WS-INVOICE-NUM, 
+                   :WS-TOTAL-AMOUNT, 
+                   :WS-INVOICE-EXPECT
+              )
+           END-EXEC.
+       END-4000-INSERT-INVOICE.
+           EXIT. 
           
       ******************************************************************
       *    [RD] Ecris le rapport généré.                               *
       ******************************************************************    
-       1000-START-WRITE.
+       5000-START-WRITE.
            OPEN OUTPUT F-OUTPUT.
 
            WRITE R-OUTPUT FROM WS-R-DASH.
@@ -777,6 +814,6 @@
            WRITE R-OUTPUT FROM WS-R-DASH.
 
            CLOSE F-OUTPUT.
-       END-1000-WRITE.
+       END-5000-WRITE.
            EXIT.
            

@@ -42,9 +42,12 @@
        01  WS-INVOICE-DATE-START-MONTH PIC 9(02).
        01  WS-INVOICE-DATE-END-MONTH   PIC 9(02).
        01  WS-INVOICE-DATE-YEAR        PIC 9(04).
+       01  WS-TOTAL-AMOUNT             PIC 9(05)V9(02).
        01  WS-Z-TOTAL-AMOUNT           PIC Z(09)9.99.
+       01  WS-INVOICE-EXPECT           PIC 9(05)V9(02).
 
        01  WS-CUS-REIMBURSEMENT.
+           03 WS-REIM-UUID             PIC X(36).
            03 WS-REIM-NUM              PIC X(10).
            03 WS-CREATE-DATE           PIC X(10).
            03 WS-COST                  PIC ZZ9.
@@ -159,6 +162,7 @@ OCESQL*EXEC SQL BEGIN DECLARE SECTION END-EXEC.
        01  PASSWD             PIC  X(10) VALUE 'cbl85'.
 
        01  SQL-CUS-REIMBURSEMENT.
+           03 SQL-REIM-UUID   PIC X(36).
            03 SQL-REIM-NUM    PIC X(10).
            03 SQL-CREATE-DATE PIC X(10).
            03 SQL-COST        PIC 9(03).
@@ -212,7 +216,8 @@ OCESQL     copy "sqlca.cbl".
            03 LK-CUS-CLOSE-DATE  PIC X(10).
            03 LK-CUS-ACTIVE	     PIC X(01).
 
-       01  LK-TOTAL-AMOUNT       PIC 9(10)V9(02) VALUE 180.99.
+       01  LK-INVOICE-INCOME       PIC 9(05)V9(02) VALUE 180.99.
+       01  LK-INVOICE-EXPECT       PIC 9(05)V9(02) VALUE 800.
 
       ******************************************************************
 
@@ -222,18 +227,24 @@ OCESQL     02  FILLER PIC X(014) VALUE "DISCONNECT ALL".
 OCESQL     02  FILLER PIC X(1) VALUE X"00".
 OCESQL*
 OCESQL 01  SQ0002.
-OCESQL     02  FILLER PIC X(256) VALUE "SELECT REIMBURSEMENT_NUM, REIM"
-OCESQL  &  "BURSEMENT_CREATE_DATE, REIMBURSEMENT_COST, REIMBURSEMENT_D"
-OCESQL  &  "OCTOR, REIMBURSEMENT_PARMEDICAL, REIMBURSEMENT_HOSPITAL, R"
-OCESQL  &  "EIMBURSEMENT_SINGLE_GLASSES, REIMBURSEMENT_PROGRESSIVE_GLA"
-OCESQL  &  "SSES, REIMBURSEMENT_MOLAR_CROWNS, REIMBURSEMENT_NON_".
-OCESQL     02  FILLER PIC X(099) VALUE "MOLAR_CROWNS, REIMBURSEMENT_DE"
-OCESQL  &  "SCALINGS FROM CUSTOMER_REIMBURSEMENT WHERE UUID_CUSTOMER ="
-OCESQL  &  " $1 LIMIT 1".
+OCESQL     02  FILLER PIC X(256) VALUE "SELECT UUID_CUSTOMER_REIMBOURS"
+OCESQL  &  "EMENT, REIMBURSEMENT_NUM, REIMBURSEMENT_CREATE_DATE, REIMB"
+OCESQL  &  "URSEMENT_COST, REIMBURSEMENT_DOCTOR, REIMBURSEMENT_PARMEDI"
+OCESQL  &  "CAL, REIMBURSEMENT_HOSPITAL, REIMBURSEMENT_SINGLE_GLASSES,"
+OCESQL  &  " REIMBURSEMENT_PROGRESSIVE_GLASSES, REIMBURSEMENT_MO".
+OCESQL     02  FILLER PIC X(129) VALUE "LAR_CROWNS, REIMBURSEMENT_NON_"
+OCESQL  &  "MOLAR_CROWNS, REIMBURSEMENT_DESCALINGS FROM CUSTOMER_REIMB"
+OCESQL  &  "URSEMENT WHERE UUID_CUSTOMER = $1 LIMIT 1".
+OCESQL     02  FILLER PIC X(1) VALUE X"00".
+OCESQL*
+OCESQL 01  SQ0003.
+OCESQL     02  FILLER PIC X(145) VALUE "INSERT INTO INVOICE ( UUID_CUS"
+OCESQL  &  "TOMER_REIMBOURSEMENT, UUID_CUSTOMER, INVOICE_NUMBER, INVOI"
+OCESQL  &  "CE_INCOME, INVOICE_EXPECT ) VALUES ( $1, $2, $3, $4, $5 )".
 OCESQL     02  FILLER PIC X(1) VALUE X"00".
 OCESQL*
        PROCEDURE DIVISION.
-      *    USING LK-CUSTOMER, LK-TOTAL-AMOUNT.  
+      *    USING LK-CUSTOMER, LK-INVOICE-INCOME.  
        0000-START-MAIN.
 OCESQL*    EXEC SQL
 OCESQL*        CONNECT :USERNAME IDENTIFIED BY :PASSWD USING :DBNAME 
@@ -255,10 +266,13 @@ OCESQL     END-CALL.
               THRU END-2000-SELECT-CONTRACT.
 
            PERFORM 3000-START-HANDLE-REIMBURSEMENT 
-              THRU 3000-END-HANDLE-REIMBURSEMENT.   
+              THRU 3000-END-HANDLE-REIMBURSEMENT.  
+
+           PERFORM 4000-START-INSERT-INVOICE 
+              THRU END-4000-INSERT-INVOICE.    
        
-           PERFORM 1000-START-WRITE 
-              THRU END-1000-WRITE.
+           PERFORM 5000-START-WRITE 
+              THRU END-5000-WRITE.
        END-0000-MAIN.  
 OCESQL*    EXEC SQL COMMIT WORK END-EXEC.
 OCESQL     CALL "OCESQLStartSQL"
@@ -315,8 +329,10 @@ OCESQL     END-CALL.
                SUBTRACT 12 FROM WS-INVOICE-DATE-END-MONTH
            END-IF.
 
-      *    [RD] Déplace le total à payé de LK vers WS qui masque les 0. 
-           MOVE LK-TOTAL-AMOUNT TO WS-Z-TOTAL-AMOUNT.
+      *    [RD] Déplace LK-INVOICE vers WS. 
+           MOVE LK-INVOICE-INCOME TO WS-TOTAL-AMOUNT.
+           MOVE LK-INVOICE-INCOME TO WS-Z-TOTAL-AMOUNT.
+           MOVE LK-INVOICE-EXPECT TO WS-INVOICE-EXPECT.
 
       *    [RD] Déplace l'UUID de LK vers celui de la WS. 
            MOVE LK-CUS-UUID TO WS-CUS-UUID.
@@ -329,7 +345,8 @@ OCESQL     END-CALL.
       ****************************************************************** 
        2000-START-SELECT-CONTRACT.
 OCESQL*    EXEC SQL
-OCESQL*        SELECT REIMBURSEMENT_NUM,
+OCESQL*        SELECT UUID_CUSTOMER_REIMBOURSEMENT,
+OCESQL*               REIMBURSEMENT_NUM,
 OCESQL*               REIMBURSEMENT_CREATE_DATE,
 OCESQL*               REIMBURSEMENT_COST,
 OCESQL*               REIMBURSEMENT_DOCTOR,
@@ -340,7 +357,8 @@ OCESQL*               REIMBURSEMENT_PROGRESSIVE_GLASSES,
 OCESQL*               REIMBURSEMENT_MOLAR_CROWNS,
 OCESQL*               REIMBURSEMENT_NON_MOLAR_CROWNS,
 OCESQL*               REIMBURSEMENT_DESCALINGS
-OCESQL*        INTO :SQL-REIM-NUM, 
+OCESQL*        INTO :SQL-REIM-UUID,
+OCESQL*             :SQL-REIM-NUM, 
 OCESQL*             :SQL-CREATE-DATE, 
 OCESQL*             :SQL-COST,
 OCESQL*             :SQL-DOCTOR, 
@@ -356,6 +374,12 @@ OCESQL*    WHERE UUID_CUSTOMER = :WS-CUS-UUID
 OCESQL*    LIMIT 1
 OCESQL*    END-EXEC.
 OCESQL     CALL "OCESQLStartSQL"
+OCESQL     END-CALL
+OCESQL     CALL "OCESQLSetResultParams" USING
+OCESQL          BY VALUE 16
+OCESQL          BY VALUE 36
+OCESQL          BY VALUE 0
+OCESQL          BY REFERENCE SQL-REIM-UUID
 OCESQL     END-CALL
 OCESQL     CALL "OCESQLSetResultParams" USING
 OCESQL          BY VALUE 16
@@ -433,7 +457,7 @@ OCESQL     CALL "OCESQLExecSelectIntoOne" USING
 OCESQL          BY REFERENCE SQLCA
 OCESQL          BY REFERENCE SQ0002
 OCESQL          BY VALUE 1
-OCESQL          BY VALUE 11
+OCESQL          BY VALUE 12
 OCESQL     END-CALL
 OCESQL     CALL "OCESQLEndSQL"
 OCESQL     END-CALL.
@@ -441,9 +465,11 @@ OCESQL     END-CALL.
            EXIT.
 
       ******************************************************************
-      *    [RD] 
+      *    [RD] Initialise les données qui concernent les informations *
+      *    du contrat de l'adhérent pour l'écriture de la factue.      *
       ****************************************************************** 
        3000-START-HANDLE-REIMBURSEMENT.
+           MOVE SQL-REIM-UUID   TO WS-REIM-UUID   . 
            MOVE SQL-REIM-NUM    TO WS-REIM-NUM    . 
            MOVE SQL-CREATE-DATE TO WS-CREATE-DATE .
            MOVE SQL-COST        TO WS-COST        .
@@ -468,12 +494,74 @@ OCESQL     END-CALL.
                MOVE 'Inconnu' TO WS-REIM-TYPE  
            END-IF.
        3000-END-HANDLE-REIMBURSEMENT.
-           EXIT.    
+           EXIT.   
+
+      ******************************************************************
+      *    [RD] Insert dans la table INVOICE.                          *
+      ****************************************************************** 
+       4000-START-INSERT-INVOICE.
+OCESQL*    EXEC SQL
+OCESQL*        INSERT INTO INVOICE (
+OCESQL*            UUID_CUSTOMER_REIMBOURSEMENT,
+OCESQL*            UUID_CUSTOMER,               
+OCESQL*            INVOICE_NUMBER,              
+OCESQL*            INVOICE_INCOME,              
+OCESQL*            INVOICE_EXPECT              
+OCESQL*        )
+OCESQL*        VALUES ( 
+OCESQL*            :WS-REIM-UUID, 
+OCESQL*            :WS-CUS-UUID, 
+OCESQL*            :WS-INVOICE-NUM, 
+OCESQL*            :WS-TOTAL-AMOUNT, 
+OCESQL*            :WS-INVOICE-EXPECT
+OCESQL*       )
+OCESQL*    END-EXEC.
+OCESQL     CALL "OCESQLStartSQL"
+OCESQL     END-CALL
+OCESQL     CALL "OCESQLSetSQLParams" USING
+OCESQL          BY VALUE 16
+OCESQL          BY VALUE 36
+OCESQL          BY VALUE 0
+OCESQL          BY REFERENCE WS-REIM-UUID
+OCESQL     END-CALL
+OCESQL     CALL "OCESQLSetSQLParams" USING
+OCESQL          BY VALUE 16
+OCESQL          BY VALUE 36
+OCESQL          BY VALUE 0
+OCESQL          BY REFERENCE WS-CUS-UUID
+OCESQL     END-CALL
+OCESQL     CALL "OCESQLSetSQLParams" USING
+OCESQL          BY VALUE 1
+OCESQL          BY VALUE 8
+OCESQL          BY VALUE 0
+OCESQL          BY REFERENCE WS-INVOICE-NUM
+OCESQL     END-CALL
+OCESQL     CALL "OCESQLSetSQLParams" USING
+OCESQL          BY VALUE 1
+OCESQL          BY VALUE 7
+OCESQL          BY VALUE -2
+OCESQL          BY REFERENCE WS-TOTAL-AMOUNT
+OCESQL     END-CALL
+OCESQL     CALL "OCESQLSetSQLParams" USING
+OCESQL          BY VALUE 1
+OCESQL          BY VALUE 7
+OCESQL          BY VALUE -2
+OCESQL          BY REFERENCE WS-INVOICE-EXPECT
+OCESQL     END-CALL
+OCESQL     CALL "OCESQLExecParams" USING
+OCESQL          BY REFERENCE SQLCA
+OCESQL          BY REFERENCE SQ0003
+OCESQL          BY VALUE 5
+OCESQL     END-CALL
+OCESQL     CALL "OCESQLEndSQL"
+OCESQL     END-CALL.
+       END-4000-INSERT-INVOICE.
+           EXIT. 
           
       ******************************************************************
       *    [RD] Ecris le rapport généré.                               *
       ******************************************************************    
-       1000-START-WRITE.
+       5000-START-WRITE.
            OPEN OUTPUT F-OUTPUT.
 
            WRITE R-OUTPUT FROM WS-R-DASH.
@@ -896,6 +984,6 @@ OCESQL     END-CALL.
            WRITE R-OUTPUT FROM WS-R-DASH.
 
            CLOSE F-OUTPUT.
-       END-1000-WRITE.
+       END-5000-WRITE.
            EXIT.
                                             
