@@ -10,6 +10,9 @@
 
        WORKING-STORAGE SECTION.
 
+      * [SK] Variables de travail pour accepter les entrées 
+      * utilisateur et gérer l'archivage.
+
        01  WS-CUS-NAME           PIC X(41).  
        01  WS-ACCEPT             PIC X(01).
        01  WS-CUS-UUID           PIC X(36).
@@ -18,6 +21,9 @@
        01  LK-RETURN-CHOICE      PIC X(01)   VALUE SPACE.
        01  WS-ERROR-MESSAGE      PIC X(35).
 
+      * [SK] Messages affichés à l'utilisateur pour confirmation 
+      * et succès de l'archivage./
+
        01  WS-ARCHIVE-MESSAGE      PIC X(35)
            VALUE 'Veuillez entrer "O" pour confirmer.'.
        01  WS-ARCHIVE-SUCCES      PIC X(18)
@@ -25,6 +31,9 @@
 
 
        EXEC SQL BEGIN DECLARE SECTION END-EXEC.
+
+      * [SK] Informations de connexion à la base de données.
+
        01  DBNAME   PIC  X(11) VALUE 'boboniortdb'.
        01  USERNAME PIC  X(05) VALUE 'cobol'.
        01  PASSWD   PIC  X(10) VALUE 'cbl85'.
@@ -32,6 +41,9 @@
        EXEC SQL INCLUDE SQLCA END-EXEC.   
            
        LINKAGE SECTION.
+
+      * [SK] Structure de données pour les informations client.
+
        01  LK-CUSTOMER.
            03 LK-CUS-UUID        PIC X(36).
            03 LK-CUS-GENDER      PIC X(10).
@@ -64,6 +76,9 @@
 
       ******************************************************************
        SCREEN SECTION.
+
+      * [SK] Inclusion de la section d'écran pour l'archivage du client.
+
            COPY 'screen-archive-customer.cpy'.
 
       ******************************************************************
@@ -73,10 +88,14 @@
            PERFORM 1000-SCREEN-LOOP-START THRU END-1000-SCREEN-LOOP.
        END-0000-MAIN.
            GOBACK. 
-
+      ******************************************************************     
+      * [SK] Boucle principale pour afficher l'écran jusqu'à ce qu'une 
+      * option valide soit sélectionnée.
       ****************************************************************** 
        1000-SCREEN-LOOP-START. 
            MOVE 'FALSE' TO WS-SELECT-OPTION.
+
+      * [SK] Initialisation de la variable d'option de sélection.
 
            STRING 
                FUNCTION TRIM(LK-CUS-FIRSTNAME) SPACE 
@@ -94,6 +113,8 @@
        END-1000-SCREEN-LOOP. 
            EXIT.   
 
+      ******************************************************************     
+      * [SK] Vérification de l'option choisie par l'utilisateur.
       ******************************************************************      
        3000-WITCH-CHOICE-START.
            IF FUNCTION UPPER-CASE(WS-ACCEPT) EQUAL 'O' THEN
@@ -112,6 +133,10 @@
        END-3000-WITCH-CHOICE.
            EXIT. 
 
+      ******************************************************************    
+      *  [SK]Insertion des informations du client dans la table 
+      *  d'archivage et Suppression des informations du client 
+      *  de la table principale.
       ******************************************************************
        3210-SQL-START.
 	       EXEC SQL
@@ -173,7 +198,12 @@
                WHERE UUID_CUSTOMER = :WS-CUS-UUID
            END-EXEC.
 
+      ******************************************************************
+      * [SK] Affichage du message de succès.
+
            MOVE WS-ARCHIVE-SUCCES TO WS-ERROR-MESSAGE.
+      * [SK] Validation des transactions et déconnexion 
+      *     de la base de données.
 
            EXEC SQL COMMIT WORK END-EXEC.
            EXEC SQL DISCONNECT ALL END-EXEC.
