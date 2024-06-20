@@ -1,17 +1,16 @@
       ****************************************************************** 
-      * Gestion du menu des fonctionnalités non liées à un adhérent.   *
-      *    Programme précédent: écran de connexion de l'utilisateur    *
-      *                         (sifront.cbl)                          *
-      *    Programme suivant : dépend du choix de l'utilisateur        *
-      *    Le menu affiche les options : Statistiques,                 *
-      *                                  chargement d'un fichier csv,  *
+      * Chargement d'un fichier client csv.                            *
+      *    Programme précédent: menu des fonctionnalités annexes       *
+      *                         (menudata.cbl)                         *
+      *    Programme suivant : cfback.cbl puis menudata.cbl            *
+      *    L'écran affiche le nom du fichier à charger                 *
       *                                                                *
-      *    un bouton valider et un bouton sortir                       *
+      *    un bouton valider et un bouton retour au menu               *
       * Auteur: Isabelle                                               *     
       * Date de création : le 18/06/2024                               * 
       ****************************************************************** 
        IDENTIFICATION DIVISION.
-       PROGRAM-ID. menudata.
+       PROGRAM-ID. cffront.
        AUTHOR. Isabelle.
 
       ******************************************************************
@@ -20,12 +19,11 @@
       ******************************************************************
        DATA DIVISION.
        WORKING-STORAGE SECTION. 
-       01  WS-BUTTONS-MENU-DATA.
-           05 WS-STAT              PIC X(01)                     .
-           05 WS-FILE              PIC X(01)                     .   
-           05 WS-VALIDATE          PIC X(01)                     .
-           05 WS-EXIT              PIC X(01)                     .
-       01  SC-MESSAGE              PIC X(70)                     .                     
+       01  WS-BUTTONS-SCREEN.
+           05 SC-FILE              PIC X(100)                    .
+           05 WS-VALIDATE          PIC X(01)                     .   
+           05 WS-RETURN            PIC X(01)                     .
+       01  SC-MESSAGE              PIC X(70)      VALUE SPACES   .                    
        
        01 WS-MESSAGE.
            05 WS-MESSAGE1          PIC X(31)
@@ -37,15 +35,17 @@
  
       ******************************************************************
        SCREEN SECTION.      
-       COPY 'screen-menu-data.cpy'.   
+       COPY 'screen-charge-file.cpy'.   
 
       ******************************************************************
        PROCEDURE DIVISION.      
        0000-START-MAIN.
+           MOVE 'C:\BOBONIORT\INPUT\individus.csv' TO SC-FILE.
            PERFORM 1000-CONTROL-IMPUT-START 
-                    THRU END-1000-CONTROL-IMPUT.
+           THRU END-1000-CONTROL-IMPUT.
        END-0000-MAIN.
            STOP RUN.
+      *    GOBACK.
 
       ******************************************************************      
       *    SK- Boucle d'affichage de la gestion du menu en cas d'erreur   
@@ -53,7 +53,7 @@
       ******************************************************************
        1000-CONTROL-IMPUT-START.
            PERFORM UNTIL WS-SELECT-OPTION = 'TRUE'               
-              ACCEPT SCREEN-MENU-DATA 
+              ACCEPT SCREEN-CHARGE-FILE 
               PERFORM 1100-CHECK-CHOICE-START 
               THRU END-1100-CHECK-CHOICE
            END-PERFORM.
@@ -62,25 +62,18 @@
 
       ******************************************************************      
       *     SK - Vérifie la saisine utilisateur : 'O' dans l'input
-      *     et appelle le sous programme necessaire.
+      *     et appelle le programme correspondant.
       ******************************************************************
-       1100-CHECK-CHOICE-START.  
-           IF FUNCTION UPPER-CASE(WS-EXIT) EQUAL 'O' THEN               
-                 PERFORM END-0000-MAIN
-
-           ELSE  IF FUNCTION UPPER-CASE(WS-VALIDATE) EQUAL 'O' THEN            
-                    IF FUNCTION UPPER-CASE(WS-STAT) EQUAL 'O' THEN            
-                          CALL 'stfront'      
-                    ELSE  IF FUNCTION UPPER-CASE(WS-FILE) EQUAL 'O' THEN        
-                             CALL 'cffront'                   
-                          ELSE  
-                                PERFORM 9200-ERROR-MESSAGE-START 
-                                THRU END-9200-ERROR-MESSAGE
-                    END-IF
-                 ELSE
+       1100-CHECK-CHOICE-START.      
+            IF FUNCTION UPPER-CASE(WS-VALIDATE) 
+            EQUAL 'O' THEN
+               CALL 'cfback'      
+            ELSE IF FUNCTION UPPER-CASE(WS-RETURN)
+                 EQUAL 'O' THEN
+                    CALL 'menudata'                   
+                 ELSE  
                     PERFORM 9200-ERROR-MESSAGE-START 
-                    THRU END-9200-ERROR-MESSAGE 
-                 END-IF  
+                    THRU END-9200-ERROR-MESSAGE
             END-IF.          
        END-1100-CHECK-CHOICE.
            EXIT.   
@@ -101,7 +94,6 @@
            END-STRING.        
        END-9200-ERROR-MESSAGE.
            EXIT.
-
 
       ******************************************************************       
        
