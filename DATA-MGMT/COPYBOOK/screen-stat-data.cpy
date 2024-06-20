@@ -215,7 +215,7 @@
            COL 84 
            FOREGROUND-COLOR IS 3.
            05 FILLER PIC X(60) VALUE 
-           '  <30 ans 30-39 ans 40-49 ans 50-59 ans 60-69 ans 70 et +'           
+           '  <30 ans 30-39 ans 40-49 ans 50-59 ans 60-69 ans 70 et +'          
            COL 88 
            FOREGROUND-COLOR IS 3.
       * Répartition Par age et genre lignes et zone d'affichage des calculs     
@@ -356,7 +356,7 @@
            COL 75 
            FOREGROUND-COLOR IS 3.
            05 FILLER PIC X(60) VALUE 
-           '  <30 ans 30-39 ans 40-49 ans 50-59 ans 60-69 ans 70 et +'           
+           '  <30 ans 30-39 ans 40-49 ans 50-59 ans 60-69 ans 70 et +'          
            COL 88 
            FOREGROUND-COLOR IS 3.     
       *    Lignes du tableau et zones d'affichage des calculs          
@@ -366,91 +366,91 @@
            05 FILLER PIC X(19) VALUE 'Honoraire medecin'  
            LINE 25 COL 27 
            FOREGROUND-COLOR IS 3.
-           05 FILLER PIC X(07) FROM SC-STAT-MED-TOT  
+           05 FILLER PIC X(07) VALUE '  255  '  
            COL 54 
            FOREGROUND-COLOR IS 7.   
-           05 FILLER PIC X(05) FROM SC-STAT-MED-POURCENT  
+           05 FILLER PIC X(05) VALUE ' 1.49  '  
            COL 67 
            FOREGROUND-COLOR IS 7.   
-           05 FILLER PIC X(07) FROM SC-STAT-MED-MOYEN  
+           05 FILLER PIC X(07) VALUE ' 31.8 '  
            COL 78 
            FOREGROUND-COLOR IS 7. 
-           05 FILLER PIC X(05) FROM SC-MED-30-POURCENT  
+           05 FILLER PIC X(05) VALUE ' 10.98 '  
            COL 90 
            FOREGROUND-COLOR IS 7.  
-           05 FILLER PIC X(05) FROM SC-MED-30-39-POURCENT  
+           05 FILLER PIC X(05) VALUE ' 13.73 '  
            COL 100 
            FOREGROUND-COLOR IS 7. 
-           05 FILLER PIC X(05) FROM SC-MED-40-49-POURCENT  
+           05 FILLER PIC X(05) VALUE ' 15.65 '  
            COL 110 
            FOREGROUND-COLOR IS 7.              
-           05 FILLER PIC X(05) FROM SC-MED-50-59-POURCENT  
+           05 FILLER PIC X(05) VALUE ' 17.65 '  
            COL 120 
            FOREGROUND-COLOR IS 7. 
-           05 FILLER PIC X(05) FROM SC-MED-60-69-POURCENT  
+           05 FILLER PIC X(05) VALUE ' 0.00  '  
            COL 130 
            FOREGROUND-COLOR IS 7.  
-           05 FILLER PIC X(05) FROM SC-MED-70-POURCENT  
+           05 FILLER PIC X(05) VALUE ' 0.00  '
            COL 140 
-           FOREGROUND-COLOR IS 7.                                                                
+           FOREGROUND-COLOR IS 7.                                               
            05 FILLER PIC X(23) VALUE 'Paramedical' 
            LINE 26 COL 27 
            FOREGROUND-COLOR IS 3.  
-           05 FILLER PIC X(07) FROM SC-STAT-PAR-TOT  
+           05 FILLER PIC X(07) VALUE '  196  '  
            COL 54 
            FOREGROUND-COLOR IS 7.   
-           05 FILLER PIC X(05) FROM SC-STAT-PAR-POURCENT  
+           05 FILLER PIC X(05) VALUE '  1.15 ' 
            COL 67 
            FOREGROUND-COLOR IS 7.   
-           05 FILLER PIC X(07) FROM SC-STAT-PAR-MOYEN  
+           05 FILLER PIC X(07) VALUE '  24.5 '  
            COL 78 
            FOREGROUND-COLOR IS 7. 
-           05 FILLER PIC X(05) FROM SC-PAR-30-POURCENT  
+           05 FILLER PIC X(05) VALUE ' 10.20 '  
            COL 90 
            FOREGROUND-COLOR IS 7.  
-           05 FILLER PIC X(05) FROM SC-PAR-30-39-POURCENT  
+           05 FILLER PIC X(05) VALUE ' 12.76 '  
            COL 100 
            FOREGROUND-COLOR IS 7. 
-           05 FILLER PIC X(05) FROM SC-PAR-40-49-POURCENT  
+           05 FILLER PIC X(05) VALUE ' 15.31 '  
            COL 110 
            FOREGROUND-COLOR IS 7.              
-           05 FILLER PIC X(05) FROM SC-PAR-50-59-POURCENT  
+           05 FILLER PIC X(05) VALUE ' 17.86 '  
            COL 120 
            FOREGROUND-COLOR IS 7. 
-           05 FILLER PIC X(05) FROM SC-PAR-60-69-POURCENT  
+           05 FILLER PIC X(05)  VALUE ' 0.00 '  
            COL 130 
            FOREGROUND-COLOR IS 7.  
-           05 FILLER PIC X(05) FROM SC-PAR-70-POURCENT  
+           05 FILLER PIC X(05) VALUE ' 0.00 '  
            COL 140 
            FOREGROUND-COLOR IS 7.               
            05 FILLER PIC X(15) VALUE 'Hospitalisation' 
            LINE 27 COL 27 
            FOREGROUND-COLOR IS 3. 
-           05 FILLER PIC X(07) FROM SC-STAT-HOS-TOT  
+           05 FILLER PIC X(07) VALUE ' 12000 '  
            COL 54 
            FOREGROUND-COLOR IS 7.   
-           05 FILLER PIC X(05) FROM SC-STAT-HOS-POURCENT  
+           05 FILLER PIC X(05) VALUE ' 70.34 ' 
            COL 67 
            FOREGROUND-COLOR IS 7.   
-           05 FILLER PIC X(07) FROM SC-STAT-HOS-MOYEN  
+           05 FILLER PIC X(07) VALUE ' 1500 '  
            COL 78 
            FOREGROUND-COLOR IS 7. 
-           05 FILLER PIC X(05) FROM SC-HOS-30-POURCENT  
+           05 FILLER PIC X(05) VALUE ' 7.50  '  
            COL 90 
            FOREGROUND-COLOR IS 7.  
-           05 FILLER PIC X(05) FROM SC-HOS-30-39-POURCENT  
+           05 FILLER PIC X(05) VALUE ' 8.33 '  
            COL 100 
            FOREGROUND-COLOR IS 7. 
-           05 FILLER PIC X(05) FROM SC-HOS-40-49-POURCENT  
+           05 FILLER PIC X(05) VALUE ' 9.17 '  
            COL 110 
            FOREGROUND-COLOR IS 7.              
-           05 FILLER PIC X(05) FROM SC-HOS-50-59-POURCENT  
+           05 FILLER PIC X(05) VALUE ' 10.00 '  
            COL 120 
            FOREGROUND-COLOR IS 7. 
-           05 FILLER PIC X(05) FROM SC-HOS-60-69-POURCENT  
+           05 FILLER PIC X(05) VALUE '  0.00 '  
            COL 130 
            FOREGROUND-COLOR IS 7.  
-           05 FILLER PIC X(05) FROM SC-HOS-70-POURCENT  
+           05 FILLER PIC X(05) VALUE '  0.00 '  
            COL 140 
            FOREGROUND-COLOR IS 7.           
            05 FILLER PIC X(7) VALUE 'Optique'
@@ -459,61 +459,61 @@
            05 FILLER PIC X(14) VALUE 'Verres simples'  
            LINE 29 COL 27 
            FOREGROUND-COLOR IS 3.               
-           05 FILLER PIC X(07) FROM SC-STAT-SGL-TOT  
+           05 FILLER PIC X(07) VALUE '  784 '  
            COL 54 
            FOREGROUND-COLOR IS 7.   
-           05 FILLER PIC X(05) FROM SC-STAT-SGL-POURCENT  
+           05 FILLER PIC X(05) VALUE ' 4.60 '  
            COL 67 
            FOREGROUND-COLOR IS 7.   
-           05 FILLER PIC X(07) FROM SC-STAT-SGL-MOYEN  
+           05 FILLER PIC X(07) VALUE '  98  '  
            COL 78 
            FOREGROUND-COLOR IS 7. 
-           05 FILLER PIC X(05) FROM SC-SGL-30-POURCENT  
+           05 FILLER PIC X(05) VALUE ' 6.38 '  
            COL 90 
            FOREGROUND-COLOR IS 7.  
-           05 FILLER PIC X(05) FROM SC-SGL-30-39-POURCENT  
+           05 FILLER PIC X(05) VALUE ' 7.02 ' 
            COL 100 
            FOREGROUND-COLOR IS 7. 
-           05 FILLER PIC X(05) FROM SC-SGL-40-49-POURCENT  
+           05 FILLER PIC X(05) VALUE ' 7.65 '  
            COL 110 
            FOREGROUND-COLOR IS 7.              
-           05 FILLER PIC X(05) FROM SC-SGL-50-59-POURCENT  
+           05 FILLER PIC X(05) VALUE ' 8.29 '  
            COL 120 
            FOREGROUND-COLOR IS 7. 
-           05 FILLER PIC X(05) FROM SC-SGL-60-69-POURCENT  
+           05 FILLER PIC X(05) VALUE ' 0.00 '  
            COL 130 
            FOREGROUND-COLOR IS 7.  
-           05 FILLER PIC X(05) FROM SC-SGL-70-POURCENT  
+           05 FILLER PIC X(05) VALUE ' 0.00 '  
            COL 140 
            FOREGROUND-COLOR IS 7.
            05 FILLER PIC X(18) VALUE 'Verres progressifs'  
            LINE 30 COL 27 
            FOREGROUND-COLOR IS 3.  
-           05 FILLER PIC X(07) FROM SC-STAT-PGL-TOT  
+           05 FILLER PIC X(07) VALUE ' 1584 '  
            COL 54 
            FOREGROUND-COLOR IS 7.   
-           05 FILLER PIC X(05) FROM SC-STAT-PGL-POURCENT  
+           05 FILLER PIC X(05) VALUE ' 9.29 '  
            COL 67 
            FOREGROUND-COLOR IS 7.   
-           05 FILLER PIC X(07) FROM SC-STAT-PGL-MOYEN  
+           05 FILLER PIC X(07) VALUE '  198 '  
            COL 78 
            FOREGROUND-COLOR IS 7. 
-           05 FILLER PIC X(05) FROM SC-PGL-30-POURCENT  
+           05 FILLER PIC X(05) VALUE '  5.68 '  
            COL 90 
            FOREGROUND-COLOR IS 7.  
-           05 FILLER PIC X(05) FROM SC-PGL-30-39-POURCENT  
+           05 FILLER PIC X(05) VALUE '  6.00 '  
            COL 100 
            FOREGROUND-COLOR IS 7. 
-           05 FILLER PIC X(05) FROM SC-PGL-40-49-POURCENT  
+           05 FILLER PIC X(05)  VALUE '  6.31 '  
            COL 110 
            FOREGROUND-COLOR IS 7.              
-           05 FILLER PIC X(05) FROM SC-PGL-50-59-POURCENT  
+           05 FILLER PIC X(05) VALUE '  6.36 '  
            COL 120 
            FOREGROUND-COLOR IS 7. 
-           05 FILLER PIC X(05) FROM SC-PGL-60-69-POURCENT  
+           05 FILLER PIC X(05) VALUE '  0.00 ' 
            COL 130 
            FOREGROUND-COLOR IS 7.  
-           05 FILLER PIC X(05) FROM SC-PGL-70-POURCENT  
+           05 FILLER PIC X(05) VALUE '  0.00 ' 
            COL 140 
            FOREGROUND-COLOR IS 7.
            05 FILLER PIC X(8) VALUE 'Dentaire'
@@ -522,91 +522,91 @@
            05 FILLER PIC X(20) VALUE 'Couronnes (molaires)' 
            LINE 32 COL 27 
            FOREGROUND-COLOR IS 3.           
-           05 FILLER PIC X(1907) FROM SC-STAT-MOL-TOT  
+           05 FILLER PIC X(1907) VALUE ' 640  '  
            COL 54 
            FOREGROUND-COLOR IS 7.   
-           05 FILLER PIC X(05) FROM SC-STAT-MOL-POURCENT  
+           05 FILLER PIC X(05) VALUE ' 3.75  '  
            COL 67 
            FOREGROUND-COLOR IS 7.   
-           05 FILLER PIC X(07) FROM SC-STAT-MOL-MOYEN  
+           05 FILLER PIC X(07) VALUE ' 27.50 ' 
            COL 78 
            FOREGROUND-COLOR IS 7. 
-           05 FILLER PIC X(05) FROM SC-MOL-30-POURCENT  
+           05 FILLER PIC X(05) VALUE '  3.13 '  
            COL 90 
            FOREGROUND-COLOR IS 7.  
-           05 FILLER PIC X(05) FROM SC-MOL-30-39-POURCENT  
+           05 FILLER PIC X(05) VALUE ' 3.91 '  
            COL 100 
            FOREGROUND-COLOR IS 7. 
-           05 FILLER PIC X(05) FROM SC-MOL-40-49-POURCENT  
+           05 FILLER PIC X(05) VALUE '  4.69 ' 
            COL 110 
            FOREGROUND-COLOR IS 7.              
-           05 FILLER PIC X(05) FROM SC-MOL-50-59-POURCENT  
+           05 FILLER PIC X(05) VALUE '  5.47 '  
            COL 120 
            FOREGROUND-COLOR IS 7. 
-           05 FILLER PIC X(05) FROM SC-MOL-60-69-POURCENT  
+           05 FILLER PIC X(05) VALUE '  0.00 '  
            COL 130 
            FOREGROUND-COLOR IS 7.  
-           05 FILLER PIC X(05) FROM SC-MOL-70-POURCENT  
+           05 FILLER PIC X(05) VALUE '  0.00 '
            COL 140 
            FOREGROUND-COLOR IS 7.
            05 FILLER PIC X(25) VALUE 'Couronnes (hors molaires)'  
             LINE 33 COL 27 
            FOREGROUND-COLOR IS 3.  
-           05 FILLER PIC X(07) FROM SC-STAT-NMOL-TOT  
+           05 FILLER PIC X(07) VALUE '  800  '  
            COL 54 
            FOREGROUND-COLOR IS 7.   
-           05 FILLER PIC X(05) FROM SC-STAT-NMOL-POURCENT  
+           05 FILLER PIC X(05) VALUE '  4.69 '  
            COL 67 
            FOREGROUND-COLOR IS 7.   
-           05 FILLER PIC X(07) FROM SC-STAT-NMOL-MOYEN  
+           05 FILLER PIC X(07) VALUE '  100 '
            COL 78 
            FOREGROUND-COLOR IS 7. 
-           05 FILLER PIC X(05) FROM SC-NMOL-30-POURCENT  
+           05 FILLER PIC X(05) VALUE '  5.00 ' 
            COL 90 
            FOREGROUND-COLOR IS 7.  
-           05 FILLER PIC X(05) FROM SC-NMOL-30-39-POURCENT  
+           05 FILLER PIC X(05) VALUE '  5.63 '  
            COL 100 
            FOREGROUND-COLOR IS 7. 
-           05 FILLER PIC X(05) FROM SC-NMOL-40-49-POURCENT  
+           05 FILLER PIC X(05) VALUE '  6.25 ' 
            COL 110 
            FOREGROUND-COLOR IS 7.              
-           05 FILLER PIC X(05) FROM SC-NMOL-50-59-POURCENT  
+           05 FILLER PIC X(05) VALUE '  6.88 '  
            COL 120 
            FOREGROUND-COLOR IS 7. 
-           05 FILLER PIC X(05) FROM SC-NMOL-60-69-POURCENT  
+           05 FILLER PIC X(05) VALUE '  0.00 '  
            COL 130 
            FOREGROUND-COLOR IS 7.  
-           05 FILLER PIC X(05) FROM SC-NMOL-70-POURCENT  
+           05 FILLER PIC X(05) VALUE '  0.00 ' 
            COL 140 
            FOREGROUND-COLOR IS 7.
            05 FILLER PIC X(10) VALUE 'Detartrage'
            LINE 34 COL 27 
            FOREGROUND-COLOR IS 3.             
-           05 FILLER PIC X(07) FROM SC-STAT-DES-TOT  
+           05 FILLER PIC X(07) VALUE '  800 ' 
            COL 54 
            FOREGROUND-COLOR IS 7.   
-           05 FILLER PIC X(05) FROM SC-STAT-DES-POURCENT  
+           05 FILLER PIC X(05) VALUE '  4.69 ' 
            COL 67 
            FOREGROUND-COLOR IS 7.   
-           05 FILLER PIC X(07) FROM SC-STAT-DES-MOYEN  
+           05 FILLER PIC X(07) VALUE '  35.71 '  
            COL 78 
            FOREGROUND-COLOR IS 7. 
-           05 FILLER PIC X(05) FROM SC-DES-30-POURCENT  
+           05 FILLER PIC X(05) VALUE '  5.00 '  
            COL 90 
            FOREGROUND-COLOR IS 7.  
-           05 FILLER PIC X(05) FROM SC-DES-30-39-POURCENT  
+           05 FILLER PIC X(05) VALUE '  5.63 ' 
            COL 100 
            FOREGROUND-COLOR IS 7. 
-           05 FILLER PIC X(05) FROM SC-DES-40-49-POURCENT  
+           05 FILLER PIC X(05) VALUE '  6.25 '  
            COL 110 
            FOREGROUND-COLOR IS 7.              
-           05 FILLER PIC X(05) FROM SC-DES-50-59-POURCENT  
+           05 FILLER PIC X(05) VALUE '  6.88 '  
            COL 120 
            FOREGROUND-COLOR IS 7. 
-           05 FILLER PIC X(05) FROM SC-DES-60-69-POURCENT  
+           05 FILLER PIC X(05) VALUE '  0.00 ' 
            COL 130 
            FOREGROUND-COLOR IS 7.  
-           05 FILLER PIC X(05) FROM SC-DES-70-POURCENT  
+           05 FILLER PIC X(05) VALUE '  0.00 '  
            COL 140 
            FOREGROUND-COLOR IS 7.
 
