@@ -28,6 +28,22 @@ VALUES
 ;
 SELECT COUNT(*) FROM CLASSIC_REIMBURSEMENT;
 
+CREATE TABLE CUSTOMER_REIMBOURSEMENT_ARCHIVE (
+    UUID_CUSTOMER_REIMBOURSEMENT_ARCHIVE UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    UUID_CUSTOMER_ARCHIVE                UUID,
+    ARCHIVE_NUM                          VARCHAR (10),
+    ARCHIVE_CREATE_DATE                  date,
+    ARCHIVE_COST                         decimal default 0,
+    ARCHIVE_DOC                         numeric(3) default 0,
+    ARCHIVE_PARMEDICAL                  numeric(3) default 0,
+    ARCHIVE_HOSPITAL                    numeric(3) default 0,
+    ARCHIVE_SINGLE_GLASSES              numeric(3) default 0,
+    ARCHIVE_PROGRESSIVE_GLASSES         numeric(3) default 0,
+    ARCHIVE_MOLAR_CROWNS                numeric(3) default 0,
+    ARCHIVE_NON_MOLAR_CROWNS            numeric(3) default 0,
+    ARCHIVE_DESCALINGS                  numeric(3) default 0
+);
+
 CREATE TABLE CUSTOMER_REIMBURSEMENT (
     UUID_CUSTOMER_REIMBOURSEMENT UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     UUID_CUSTOMER                      UUID,
@@ -43,6 +59,7 @@ CREATE TABLE CUSTOMER_REIMBURSEMENT (
     REIMBURSEMENT_NON_MOLAR_CROWNS    numeric(3) default 0,
     REIMBURSEMENT_DESCALINGS          numeric(3) default 0  
 );
+
 INSERT INTO CUSTOMER_REIMBURSEMENT (UUID_CUSTOMER, REIMBURSEMENT_NUM,  
 REIMBURSEMENT_CREATE_DATE, REIMBURSEMENT_COST, REIMBURSEMENT_DOCTOR, 
 REIMBURSEMENT_PARMEDICAL, REIMBURSEMENT_HOSPITAL, REIMBURSEMENT_SINGLE_GLASSES, 
