@@ -10,22 +10,17 @@
        WORKING-STORAGE SECTION.
        01  WS-CUSTOMER-NAME      PIC X(55).
        01  WS-ERROR-MESSAGE      PIC X(70).
-       01  WS-UPDATE-VALIDATION  PIC X(01).
-       01  WS-MENU-RETURN        PIC X(01).
+       01  WS-RETURN-CHOICE      PIC X(01).
        01  WS-GENERATE-CHOICE    PIC X.
-       01  WS-MAIL-AROBASE       PIC 9(01) VALUE 0.
-       01  WS-RETURN-CHOICE      PIC X.
-       01  WS-PAID-EXPECT        PIC 9(7)V99.
-       01  WS-PAID-INCOME-INPUT  PIC 9(7)V99.
+       01  WS-PAID-EXPECT        PIC 9(05).
+       01  WS-PAID-INCOME-INPUT  PIC 9(05)V99.
        01  WS-PAID-INCOME-BUTTON PIC X.
-       01  WS-TOTAL-INCOME       PIC 9(7)V99.
-       01  WS-TOTAL-REST         PIC 9(7)V99.
-      
-       01  WS-RAW-COST           PIC 9(7)V99.
+       01  WS-TOTAL-INCOME       PIC 9(05)V99.
+       01  WS-TOTAL-REST         PIC 9(05)V99.
 
-       01  DISPLAY-INVOICE-INCOME     PIC ZZZZZZ9.99.
-       01  DISPLAY-INVOICE-EXPECT     PIC ZZZZZZ9.99.
-       01  DISPLAY-RESULT             PIC ZZZZZZ9.99. 
+       01  DISPLAY-INVOICE-INCOME     PIC 9(05)V99.
+       01  DISPLAY-INVOICE-EXPECT     PIC 9(05)V99.
+       01  DISPLAY-RESULT             PIC 9(05)V99. 
 
        01 WS-CUSTOMER.
            03 WS-CUS-UUID        PIC X(36).
@@ -111,6 +106,12 @@
       ******************************************************************
 
        PROCEDURE DIVISION USING LK-CUSTOMER.
+           INITIALIZE WS-ERROR-MESSAGE     
+                      WS-RETURN-CHOICE     
+                      WS-GENERATE-CHOICE       
+                      WS-PAID-INCOME-INPUT 
+                      WS-PAID-INCOME-BUTTON .
+
            STRING FUNCTION TRIM (LK-CUS-FIRSTNAME)
                   SPACE 
                   FUNCTION TRIM (LK-CUS-LASTNAME)
@@ -129,21 +130,21 @@
                CONNECT :USERNAME IDENTIFIED BY :PASSWD USING :DBNAME
            END-EXEC.
 
+           MOVE LK-CUSTOMER TO WS-CUSTOMER.
+
            EXEC SQL
                SELECT
-                   REIMBURSEMENT_COST * 3,
-                   REIMBURSEMENT_COST * 3,
                    REIMBURSEMENT_COST * 3
                INTO
-                   :WS-PAID-EXPECT,
-                   :WS-TOTAL-REST,
-                   :DISPLAY-RESULT
+                   :WS-PAID-EXPECT
                FROM CUSTOMER_REIMBURSEMENT
                WHERE UUID_CUSTOMER = :WS-CUS-UUID
            END-EXEC.
-
+           
+           MOVE WS-PAID-EXPECT TO WS-TOTAL-REST.
+           MOVE WS-PAID-EXPECT TO DISPLAY-RESULT.
         1000-MAIN.    
-           MOVE LK-CUSTOMER TO WS-CUSTOMER.
+           MOVE WS-PAID-EXPECT TO DISPLAY-INVOICE-EXPECT.
 
            EXEC SQL
                SELECT INVOICE_INCOME
@@ -152,7 +153,6 @@
                WHERE UUID_CUSTOMER_REIMBOURSEMENT = :WS-CUS-UUID
            END-EXEC.
 
-           MOVE WS-PAID-EXPECT TO DISPLAY-INVOICE-EXPECT.
            ACCEPT SCREEN-INVOICE.
 
            MOVE FUNCTION UPPER-CASE(WS-PAID-INCOME-BUTTON) TO
@@ -161,16 +161,44 @@
            MOVE FUNCTION UPPER-CASE(WS-GENERATE-CHOICE) TO
            WS-GENERATE-CHOICE.
 
-            MOVE FUNCTION UPPER-CASE(WS-MENU-RETURN) TO
-           WS-MENU-RETURN.
+           MOVE FUNCTION UPPER-CASE(WS-RETURN-CHOICE) TO
+           WS-RETURN-CHOICE.
 
-           IF WS-PAID-INCOME-BUTTON = "O" AND WS-PAID-INCOME-INPUT 
-            < WS-TOTAL-REST
+           IF WS-RETURN-CHOICE EQUAL 'O'
+               EXEC SQL COMMIT WORK END-EXEC
+               EXEC SQL DISCONNECT ALL END-EXEC
+               
+               CALL
+                   'mcfront'
+                   USING BY CONTENT
+                   WS-CUS-UUID
+               END-CALL 
+           END-IF.
+
+           IF WS-GENERATE-CHOICE = "O" 
+           MOVE WS-TOTAL-REST TO WS-TOTAL-REST
+               CALL
+                   'geneinvo'
+                   USING BY CONTENT
+                   LK-CUSTOMER, WS-TOTAL-REST, WS-TOTAL-INCOME
+               END-CALL
+               MOVE "Facture genere avec succes" TO WS-ERROR-MESSAGE
+               INITIALIZE WS-GENERATE-CHOICE  
+                          WS-PAID-INCOME-BUTTON 
+               GO TO 1000-MAIN
+           END-IF.
+
+           IF WS-PAID-INCOME-BUTTON = "O" 
+           AND WS-PAID-INCOME-INPUT < WS-TOTAL-REST
+           OR WS-PAID-INCOME-INPUT = WS-TOTAL-REST
 
                ADD WS-PAID-INCOME-INPUT TO WS-TOTAL-INCOME
+
                MOVE WS-TOTAL-INCOME TO DISPLAY-INVOICE-INCOME
+
                SUBTRACT WS-TOTAL-REST FROM WS-PAID-INCOME-INPUT 
                GIVING WS-TOTAL-REST
+
                MOVE WS-TOTAL-REST TO DISPLAY-RESULT
 
                EXEC SQL
@@ -196,23 +224,6 @@
                    TO WS-ERROR-MESSAGE
                    GO TO 1000-MAIN
                END-IF
-           END-IF.
-
-           IF WS-GENERATE-CHOICE = "O" 
-           MOVE WS-TOTAL-REST TO WS-TOTAL-REST
-               CALL
-                   'rptbill'
-                   USING BY CONTENT
-                   LK-CUSTOMER, WS-TOTAL-REST
-               END-CALL
-               MOVE "Facture genere avec succes" TO WS-ERROR-MESSAGE
-               GO TO 1000-MAIN
-           END-IF.
-
-           IF WS-MENU-RETURN = "O"
-               EXEC SQL COMMIT WORK END-EXEC
-               EXEC SQL DISCONNECT ALL END-EXEC
-               GOBACK
            END-IF.
 
            GO TO 1000-MAIN.
