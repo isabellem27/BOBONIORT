@@ -375,14 +375,16 @@
                    UUID_CUSTOMER,               
                    INVOICE_NUMBER,              
                    INVOICE_INCOME,              
-                   INVOICE_EXPECT              
+                   INVOICE_EXPECT,
+                   INVOICE_CREATE_DATE              
                )
                VALUES ( 
                    :WS-REIM-UUID, 
                    :WS-CUS-UUID, 
                    :WS-INVOICE-NUM, 
                    :WS-TOTAL-AMOUNT, 
-                   :WS-INVOICE-EXPECT
+                   :WS-INVOICE-EXPECT,
+                   :WS-CREATE-DATE
               )
            END-EXEC.
        END-4000-INSERT-INVOICE.
