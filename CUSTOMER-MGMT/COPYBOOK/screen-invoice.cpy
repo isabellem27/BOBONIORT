@@ -17,59 +17,64 @@
       *    [MF] CHAMPS DE SAISIS.                                   *
       ******************************************************************
 
-           05 FILLER PIC X(20) FROM WS-CUS-FIRSTNAME 
-           LINE 14 COL 45
+      *    [RD] Nom Prénom Numéro de sécu. 
+           05 FILLER PIC X(80) FROM WS-CUSTOMER-NAME  
+           LINE 11 COL 20
            BACKGROUND-COLOR IS 0
            FOREGROUND-COLOR IS 7. 
-           05 FILLER PIC X(20) FROM WS-CUS-LASTNAME 
-           LINE 15 COL 45
-           BACKGROUND-COLOR IS 0
-           FOREGROUND-COLOR IS 7.
+
             05 FILLER PIC X(17) VALUE 'Suivi de paiement' 
            LINE 15 COL 95 
            FOREGROUND-COLOR IS 2.
+
             05 FILLER PIC X(16) VALUE 'Montant initial' 
            LINE 18 COL 60 
            FOREGROUND-COLOR IS 2.
+
            05 FILLER PIC X(17) FROM DISPLAY-INVOICE-EXPECT 
            LINE 18 COL 97
            BACKGROUND-COLOR IS 0
            FOREGROUND-COLOR IS 7.
+
            05 FILLER PIC X(17) VALUE 'Montant effectue' 
            LINE 20 COL 60 
            FOREGROUND-COLOR IS 2.
+
            05 FILLER PIC X(17) FROM DISPLAY-INVOICE-INCOME 
            LINE 20 COL 97
            BACKGROUND-COLOR IS 0
            FOREGROUND-COLOR IS 7.
+
            05 FILLER PIC X(7) VALUE 'Restant' 
            LINE 22 COL 60 
            FOREGROUND-COLOR IS 2.
+
            05 FILLER PIC X(17) FROM DISPLAY-RESULT 
            LINE 22 COL 97
            BACKGROUND-COLOR IS 0
            FOREGROUND-COLOR IS 7.
+
        05 FILLER PIC X(28) VALUE 'Ajouter un paiement' 
            LINE 24 COL 60 
            FOREGROUND-COLOR IS 2.
+
            05 FILLER PIC 9(5).99 TO WS-PAID-INCOME-INPUT
            LINE 24 COL 97 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.
+
            05 FILLER PIC X(1) TO WS-PAID-INCOME-BUTTON
            LINE 24 COL 110  
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.
+
             05 FILLER PIC X(28) VALUE 'Accepter' 
            LINE 24 COL 112 
            FOREGROUND-COLOR IS 2.
+
            05 FILLER PIC X(70) FROM WS-ERROR-MESSAGE
            LINE 27 COL 50 
            FOREGROUND-COLOR IS 8.
-          
-         
-
-
 
            05 FILLER PIC X(11) VALUE 'Retour menu' 
            LINE 34 COL 172 
@@ -88,3 +93,4 @@
            LINE 34 COL 18 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 
+           

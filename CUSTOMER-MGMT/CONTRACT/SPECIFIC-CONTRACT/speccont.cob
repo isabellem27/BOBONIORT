@@ -289,7 +289,13 @@ OCESQL*
                   SPACE 
                   FUNCTION TRIM (LK-CUS-LASTNAME)
                   SPACE 
-                  LK-CUS-CODE-SECU 
+                  LK-CUS-CODE-SECU(1:1) '-' 
+                  LK-CUS-CODE-SECU(2:2) '-'
+                  LK-CUS-CODE-SECU(4:2) '-'
+                  LK-CUS-CODE-SECU(6:2) '-'
+                  LK-CUS-CODE-SECU(8:3) '-'
+                  LK-CUS-CODE-SECU(11:3) '-'
+                  LK-CUS-CODE-SECU(14:2)  
            DELIMITED BY SIZE 
            INTO WS-CUSTOMER.  
            PERFORM 1200-SQL-CONNECTION-START

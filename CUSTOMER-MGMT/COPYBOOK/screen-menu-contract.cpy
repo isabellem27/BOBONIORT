@@ -49,17 +49,17 @@
            FOREGROUND-COLOR IS 0.
 
       *    [RD] Modification.
-           05 FILLER PIC X(31) VALUE 'Modification' 
-           LINE 26 COL 70 
-           FOREGROUND-COLOR IS 2. 
+      *     05 FILLER PIC X(31) VALUE 'Modification' 
+      *    LINE 26 COL 70 
+      *    FOREGROUND-COLOR IS 2. 
 
-           05 FILLER PIC X(01) VALUE ':' 
-           LINE 26 COL 100.  
+      *    05 FILLER PIC X(01) VALUE ':' 
+      *    LINE 26 COL 100.  
 
-           05 PIC X(01) USING  WS-UPDATE-CHOICE  
-           LINE 26 COL 132 
-           BACKGROUND-COLOR IS 2
-           FOREGROUND-COLOR IS 0. 
+      *    05 PIC X(01) USING  WS-UPDATE-CHOICE  
+      *    LINE 26 COL 132 
+      *    BACKGROUND-COLOR IS 2
+      *    FOREGROUND-COLOR IS 0. 
 
       *    [RD] Zone de message d'erreur.
            05 FILLER PIC X(70) FROM WS-ERROR-MESSAGE

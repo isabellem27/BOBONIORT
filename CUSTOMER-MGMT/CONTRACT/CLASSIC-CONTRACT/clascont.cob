@@ -1397,8 +1397,11 @@ OCESQL     END-CALL
       ****************************************************************** 
        9200-ERROR-MESSAGE-START. 
            MOVE 'Veuillez entrer "O" pour confirmer.' 
-           TO WS-ERROR-MESSAGE1.             
-           INITIALIZE SC-BUTTON.                      
+           TO WS-ERROR-MESSAGE1.  
+
+           INITIALIZE SC-BUTTON-PERSO
+                      SC-BUTTON-CONFIRM                      
+                      SC-BUTTON-RETURN .                   
        END-9200-ERROR-MESSAGE.
            EXIT.
        

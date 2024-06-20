@@ -118,6 +118,7 @@
        3000-WITCH-CHOICE-START.
            IF FUNCTION UPPER-CASE(WS-RETURN-CHOICE)
            EQUAL 'O' THEN
+               INITIALIZE WS-ERROR-MESSAGE
                CALL 'mcfront' USING CONTENT LK-CUS-UUID
 
            ELSE IF FUNCTION UPPER-CASE(WS-LINK-CHOICE)
@@ -136,9 +137,9 @@
                    LK-CUSTOMER, WS-ERROR-MESSAGE
                END-CALL
 
-           ELSE IF FUNCTION UPPER-CASE(WS-UPDATE-CHOICE)
-                   EQUAL 'O' THEN
-               CALL 'updacont' USING CONTENT LK-CUSTOMER
+      *    ELSE IF FUNCTION UPPER-CASE(WS-UPDATE-CHOICE)
+      *            EQUAL 'O' THEN
+      *        CALL 'updacont' USING CONTENT LK-CUSTOMER
 
            ELSE  
                PERFORM 9200-ERROR-MESSAGE-START 

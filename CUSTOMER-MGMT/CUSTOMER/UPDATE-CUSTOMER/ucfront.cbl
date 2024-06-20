@@ -26,6 +26,8 @@
        01  WS-UPDATE-VALIDATION  PIC X(01).
        01  WS-MENU-RETURN        PIC X(01).
        01  WS-COUNT-AROBASE      PIC 9(02).
+       01  WS-COUNT-IBAN-SPACE   PIC 9(02).
+       01  WS-LENGTH-IBAN        PIC 9(02).
 
        LINKAGE SECTION.
        01 LK-CUSTOMER.
@@ -50,7 +52,16 @@
                05 LK-SECU-5      PIC X(03).
                05 LK-SECU-6      PIC X(03).
                05 LK-SECU-7      PIC X(02).
-           03 LK-CUS-CODE-IBAN   PIC X(34).
+           03 LK-CUS-CODE-IBAN.
+               05 LK-IBAN-1      PIC X(04).
+               05 LK-IBAN-2      PIC X(04).
+               05 LK-IBAN-3      PIC X(04).
+               05 LK-IBAN-4      PIC X(04).
+               05 LK-IBAN-5      PIC X(04).
+               05 LK-IBAN-6      PIC X(04).
+               05 LK-IBAN-7      PIC X(04).
+               05 LK-IBAN-8      PIC X(04).
+               05 LK-IBAN-9      PIC X(02).
            03 LK-CUS-NBCHILDREN  PIC 9(03).
            03 LK-CUS-COUPLE      PIC X(05).
            03 LK-CUS-CREATE-DATE PIC X(10).
@@ -183,12 +194,18 @@
            INITIALIZE WS-ERROR-MESSAGE1
                       WS-ERROR-MESSAGE2
                       WS-IS-ERROR
-                      WS-COUNT-AROBASE.
+                      WS-COUNT-AROBASE
+                      WS-COUNT-IBAN-SPACE
+                      WS-LENGTH-IBAN      .
 
            SET WS-ERROR-MESSAGE-POS TO 20.
 
            MOVE 'Erreur de saisie :' TO WS-ERROR-MESSAGE1.
 
+      *    [RD] Liste des conditions qui retourne un message d'erreur
+      *         si la condition est true.
+
+      *    [RD] Nom = vide 
            IF LK-CUS-LASTNAME EQUAL SPACES THEN
                MOVE 'Nom' 
                TO WS-ERROR-MESSAGE1(WS-ERROR-MESSAGE-POS:3)
@@ -198,6 +215,7 @@
                MOVE 'Y' TO WS-IS-ERROR
            END-IF.
 
+      *    [RD] Prénom = vide 
            IF LK-CUS-FIRSTNAME EQUAL SPACES THEN
                IF WS-ERROR-MESSAGE-POS LESS THAN 23 THEN
                    MOVE 'Prenom' 
@@ -213,6 +231,7 @@
                    MOVE 'Y' TO WS-IS-ERROR
            END-IF.
 
+      *    [RD] Genre = vide  
            IF LK-CUS-GENDER EQUAL SPACES THEN
                IF WS-ERROR-MESSAGE-POS LESS THAN 23 THEN
                    MOVE 'Genre' 
@@ -228,6 +247,7 @@
                MOVE 'Y' TO WS-IS-ERROR
            END-IF.
 
+      *    [RD] Adresse 1 = vide 
            IF LK-CUS-ADRESS1 EQUAL SPACES THEN
                IF WS-ERROR-MESSAGE-POS LESS THAN 23 THEN
                    MOVE 'Adresse'
@@ -243,6 +263,7 @@
                MOVE 'Y' TO WS-IS-ERROR
            END-IF.
 
+      *    [RD] Code postal = vide  
            IF LK-CUS-ZIPCODE EQUAL SPACES THEN
                IF WS-ERROR-MESSAGE-POS LESS THAN 23 THEN
                    MOVE 'Code postal' 
@@ -258,6 +279,7 @@
                MOVE 'Y' TO WS-IS-ERROR
            END-IF.
 
+      *    [RD] Ville = vide
            IF LK-CUS-TOWN EQUAL SPACES THEN
                IF WS-ERROR-MESSAGE-POS LESS THAN 23 THEN
                    MOVE 'Ville' 
@@ -273,6 +295,7 @@
                MOVE 'Y' TO WS-IS-ERROR
            END-IF.
 
+      *    [RD] Pays = vide 
            IF LK-CUS-COUNTRY EQUAL SPACES THEN
                IF WS-ERROR-MESSAGE-POS LESS THAN 23 THEN
                    MOVE 'Pays' 
@@ -288,6 +311,8 @@
                MOVE 'Y' TO WS-IS-ERROR
            END-IF.
 
+      *    [RD] Téléphone != chiffre 
+      *         OU contient que des zéros
            IF LK-CUS-PHONE EQUAL '0000000000' 
            OR LK-CUS-PHONE IS NOT NUMERIC THEN
                IF WS-ERROR-MESSAGE-POS LESS THAN 23 THEN
@@ -304,6 +329,9 @@
                MOVE 'Y' TO WS-IS-ERROR
            END-IF.
 
+      *    [RD] Mail = vide
+      *         OU nombre d'arobase dans le mail > 1
+      *         OU < 1  
            INSPECT LK-CUS-MAIL TALLYING WS-COUNT-AROBASE FOR ALL '@'.
            
            IF LK-CUS-MAIL EQUAL SPACES 
@@ -323,6 +351,10 @@
                MOVE 'Y' TO WS-IS-ERROR
            END-IF.
 
+      *    [RD] Date de naissance != chiffre
+      *         OU JOUR < 1 OU JOUR > 31
+      *         OU MOIS < 1 OU MOIS > 12
+      *         OU ANNEE < 1000
            IF WS-CUB-DAY   IS NOT NUMERIC 
            OR WS-CUB-MONTH IS NOT NUMERIC
            OR WS-CUB-YEAR  IS NOT NUMERIC 
@@ -346,6 +378,7 @@
                MOVE 'Y' TO WS-IS-ERROR
            END-IF.
 
+      *    [RD] Code de sécu != chiffre 
            IF LK-CUS-CODE-SECU IS NOT NUMERIC THEN
                IF WS-ERROR-MESSAGE-POS LESS THAN 23 THEN
                    MOVE 'Numero de securite sociale'
@@ -361,8 +394,21 @@
                MOVE 'Y' TO WS-IS-ERROR
            END-IF.
 
-           IF LK-CUS-CODE-IBAN EQUAL SPACES THEN
-               IF WS-ERROR-MESSAGE-POS LESS THAN 23 THEN
+      *    [RD] IBAN 2 premières caractères != lettre
+      *         OU reste de l'IBAN != chiffre 
+      *         OU longueur de l'IBAN < 14
+      *         OU dans l'IBAN il y a 1 ou plus d'espace
+           INSPECT FUNCTION TRIM(LK-CUS-CODE-IBAN) 
+           TALLYING WS-COUNT-IBAN-SPACE FOR ALL SPACE.
+
+           MOVE LENGTH OF FUNCTION TRIM(LK-CUS-CODE-IBAN)
+           TO WS-LENGTH-IBAN.
+
+           IF LK-CUS-CODE-IBAN(1:2) IS NOT ALPHABETIC
+           OR LK-CUS-CODE-IBAN(3:(WS-LENGTH-IBAN - 2)) IS NOT NUMERIC 
+           OR WS-LENGTH-IBAN LESS THAN 14 
+           OR WS-COUNT-IBAN-SPACE NOT EQUAL ZERO THEN
+               IF WS-ERROR-MESSAGE-POS LESS THAN 14 THEN
                    MOVE 'IBAN' 
                    TO WS-ERROR-MESSAGE1(WS-ERROR-MESSAGE-POS:4)
        
@@ -379,6 +425,7 @@
                MOVE 'Y' TO WS-IS-ERROR
            END-IF.
            
+      *    [RD] En couple != 'oui ET != 'non'
            MOVE FUNCTION LOWER-CASE(LK-CUS-COUPLE) TO LK-CUS-COUPLE.
            IF LK-CUS-COUPLE NOT EQUAL 'oui' 
            AND LK-CUS-COUPLE NOT EQUAL 'non' THEN
