@@ -132,7 +132,7 @@
 
            ELSE IF FUNCTION UPPER-CASE(WS-MENU-FACTURE)
                    EQUAL 'O' THEN           
-               CALL 'rptmenu' USING WS-CUSTOMER
+               CALL 'menuinvo' USING WS-CUSTOMER
 
            ELSE IF FUNCTION UPPER-CASE(WS-MENU-REMBOURSEMENT)
                    EQUAL 'O' THEN           

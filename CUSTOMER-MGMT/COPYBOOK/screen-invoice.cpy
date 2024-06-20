@@ -31,7 +31,7 @@
            LINE 18 COL 60 
            FOREGROUND-COLOR IS 2.
 
-           05 FILLER PIC X(17) FROM DISPLAY-INVOICE-EXPECT 
+           05 FILLER PIC Z(05)9.99 FROM DISPLAY-INVOICE-EXPECT 
            LINE 18 COL 97
            BACKGROUND-COLOR IS 0
            FOREGROUND-COLOR IS 7.
@@ -40,7 +40,7 @@
            LINE 20 COL 60 
            FOREGROUND-COLOR IS 2.
 
-           05 FILLER PIC X(17) FROM DISPLAY-INVOICE-INCOME 
+           05 FILLER PIC Z(05)9.99 FROM DISPLAY-INVOICE-INCOME 
            LINE 20 COL 97
            BACKGROUND-COLOR IS 0
            FOREGROUND-COLOR IS 7.
@@ -49,7 +49,7 @@
            LINE 22 COL 60 
            FOREGROUND-COLOR IS 2.
 
-           05 FILLER PIC X(17) FROM DISPLAY-RESULT 
+           05 FILLER PIC Z(05)9.99 FROM DISPLAY-RESULT 
            LINE 22 COL 97
            BACKGROUND-COLOR IS 0
            FOREGROUND-COLOR IS 7.
@@ -58,8 +58,8 @@
            LINE 24 COL 60 
            FOREGROUND-COLOR IS 2.
 
-           05 FILLER PIC 9(5).99 TO WS-PAID-INCOME-INPUT
-           LINE 24 COL 97 AUTO 
+           05 FILLER PIC 9(5).99 USING WS-PAID-INCOME-INPUT
+           LINE 24 COL 98 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.
 
@@ -72,8 +72,17 @@
            LINE 24 COL 112 
            FOREGROUND-COLOR IS 2.
 
+           05 FILLER PIC X(15) VALUE 'Generer facture' 
+           LINE 26 COL 60 
+           FOREGROUND-COLOR IS 2.
+
+           05 PIC X(01) USING WS-GENERATE-CHOICE  
+           LINE 26 COL 77 
+           BACKGROUND-COLOR IS 2
+           FOREGROUND-COLOR IS 0. 
+
            05 FILLER PIC X(70) FROM WS-ERROR-MESSAGE
-           LINE 27 COL 50 
+           LINE 28 COL 50 
            FOREGROUND-COLOR IS 8.
 
            05 FILLER PIC X(11) VALUE 'Retour menu' 
@@ -84,13 +93,4 @@
            LINE 34 COL 170 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.
-           
-           05 FILLER PIC X(15) VALUE 'Generer facture' 
-           LINE 34 COL 20 
-           FOREGROUND-COLOR IS 2.
-
-           05 PIC X(01) USING WS-GENERATE-CHOICE  
-           LINE 34 COL 18 
-           BACKGROUND-COLOR IS 2
-           FOREGROUND-COLOR IS 0. 
            
