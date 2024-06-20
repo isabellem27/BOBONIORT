@@ -35,6 +35,7 @@
            03 WS-INVOICE-FILE   PIC X(11).
            03 WS-INVOICE-FORMAT PIC X(04) VALUE '.dat'.
 
+       01  WS-CUS-UUID                 PIC X(36).
        01  WS-INVOICE-NUM              PIC 9(08).
        01  WS-INVOICE-DATE             PIC 9(08).
        01  WS-INVOICE-DATE-DAY         PIC 9(02).
@@ -43,59 +44,84 @@
        01  WS-INVOICE-DATE-YEAR        PIC 9(04).
        01  WS-Z-TOTAL-AMOUNT           PIC Z(09)9.99.
 
+       01  WS-CUS-REIMBURSEMENT.
+           03 WS-REIM-NUM              PIC X(10).
+           03 WS-CREATE-DATE           PIC X(10).
+           03 WS-COST                  PIC ZZ9.
+           03 WS-DOCTOR                PIC ZZ9.
+           03 WS-PARMEDICAL            PIC ZZ9.
+           03 WS-HOSPITAL              PIC ZZ9.
+           03 WS-S-GLASSES             PIC ZZ9.
+           03 WS-P-GLASSES             PIC ZZ9.
+           03 WS-MOLAR                 PIC ZZ9.   
+           03 WS-NON-MOLAR             PIC ZZ9.
+           03 WS-DESCALINGS            PIC ZZ9.
+
+       01  WS-REIM-TYPE                PIC X(15).
+
        01  WS-REPORT.
-           03 WS-R-SPACES-ALL        PIC X(80) VALUE SPACES.
-           03 WS-R-SPACES-25         PIC X(25) VALUE ALL SPACES.
-           03 WS-R-SPACES-30         PIC X(30) VALUE ALL SPACES.
-           03 WS-R-DASH              PIC X(80) VALUE ALL '-'.
-           03 WS-R-INVOICE-TITLE PIC X(26) 
+           03 WS-R-SPACES-ALL          PIC X(80) VALUE SPACES.
+           03 WS-R-SPACES-25           PIC X(25) VALUE ALL SPACES.
+           03 WS-R-SPACES-30           PIC X(30) VALUE ALL SPACES.
+           03 WS-R-DASH                PIC X(80) VALUE ALL '-'.
+           03 WS-R-INVOICE-TITLE       PIC X(26) 
            VALUE 'FACTURE MUTUELLE BOBONIORT'.
-           03 WS-R-INSURANCE-NAME PIC X(18) 
+           03 WS-R-INSURANCE-NAME      PIC X(18) 
            VALUE 'MUTUELLE BOBONIORT'.
-           03 WS-R-INSURANCE-ADRESS-1 PIC X(16) 
+           03 WS-R-INSURANCE-ADRESS-1  PIC X(16) 
            VALUE '12 rue des Bobos'.
-           03 WS-R-INSURANCE-ADRESS-2 PIC X(22) 
+           03 WS-R-INSURANCE-ADRESS-2  PIC X(22) 
            VALUE '75007 Boboland, France'.
-           03 WS-R-INVOICE-NUM PIC X(21)
+           03 WS-R-INVOICE-NUM         PIC X(21)
            VALUE 'Numéro de facture  :'.
-           03 WS-R-INVOICE-DATE PIC X(20)
+           03 WS-R-INVOICE-DATE        PIC X(20)
            VALUE 'Date de la facture :'.
-           03 WS-R-CUS-INFO PIC X(29)
-           VALUE 'Vos informations personnelles'.
-           03 WS-R-CUS-NAME PIC X(28) 
+           03 WS-R-CUS-INFO            PIC X(25)
+           VALUE 'Informations personnelles'.
+           03 WS-R-CUS-NAME            PIC X(28) 
            VALUE 'Nom complet                :'.
-           03 WS-R-CUS-BIRTH-DATE PIC X(28) 
+           03 WS-R-CUS-BIRTH-DATE      PIC X(28) 
            VALUE 'Date de naissance          :'.
-           03 WS-R-CUS-ADRESS PIC X(28) 
+           03 WS-R-CUS-ADRESS          PIC X(28) 
            VALUE 'Adresse                    :'.
-           03 WS-R-CUS-CODE-SECU PIC X(31) 
+           03 WS-R-CUS-TOWN            PIC X(28) 
+           VALUE 'Ville                      :'.
+           03 WS-R-CUS-COUNTRY         PIC X(28) 
+           VALUE 'Pays                       :'.
+           03 WS-R-CUS-CODE-SECU       PIC X(31) 
            VALUE 'Numéro de sécurité sociale :'.
-           03 WS-R-CUS-IBAN PIC X(28) 
+           03 WS-R-CUS-IBAN            PIC X(28) 
            VALUE 'IBAN                       :'.
-           03 WS-R-CUS-DETAILS-TITLE PIC X(24) 
-           VALUE 'Détail des prestations'.
-           03 WS-R-ROUTINE-CARE            PIC X(16) 
+           03 WS-R-CUS-DETAILS-TITLE   PIC X(29) 
+           VALUE 'Informations de votre contrat'.
+           03 WS-R-REIM-NUM            PIC X(20) 
+           VALUE 'Numéro de contrat :'.
+           03 WS-R-REIM-TYPE           PIC X(19) 
+           VALUE 'Type de contrat   :'.
+           03 WS-R-ROUTINE-CARE        PIC X(16) 
            VALUE 'Soins courants :'.
-           03 WS-R-MEDICAL-FEES            PIC X(22) 
-           VALUE '- Honoraires médecins'.
-           03 WS-R-PARAMEDICAL-REGULATIONS PIC X(27) 
-           VALUE '- Réglements paramédicaux'.
-           03 WS-R-HOSPITALIZATION         PIC X(17) 
-           VALUE 'Hospitalisation :'.
-           03 WS-R-OPTICS                  PIC X(09) 
+           03 WS-R-MEDICAL-FEES        PIC X(28) 
+           VALUE '- Honoraires médecins      '.
+           03 WS-R-PARAMEDICAL-REGULATIONS PIC X(29) 
+           VALUE '- Réglements paramédicaux  '.
+           03 WS-R-HOSPITALIZATION     PIC X(27) 
+           VALUE 'Hospitalisation :          '.
+           03 WS-R-OPTICS              PIC X(09) 
            VALUE 'Optique :'.
-           03 WS-R-SINGLE-LENSES           PIC X(16) 
-           VALUE '- Verres simples'.
-           03 WS-R-PROGRESSIVE-LENSES      PIC X(20) 
-           VALUE '- Verres progressifs'.
-           03 WS-R-DENTAL                  PIC X(10) 
+           03 WS-R-SINGLE-LENSES       PIC X(27) 
+           VALUE '- Verres simples           '.
+           03 WS-R-PROGRESSIVE-LENSES  PIC X(27) 
+           VALUE '- Verres progressifs       '.
+           03 WS-R-DENTAL              PIC X(10) 
            VALUE 'Dentaire :'.
-           03 WS-R-MOLAR-CROWNS            PIC X(22) 
-           VALUE '- Couronnes (molaires)'.
-           03 WS-R-NON-MOLAR-CROWNS        PIC X(27) 
+           03 WS-R-MOLAR-CROWNS        PIC X(27) 
+           VALUE '- Couronnes (molaires)     '.
+           03 WS-R-NON-MOLAR-CROWNS    PIC X(27) 
            VALUE '- Couronnes (hors molaires)'.
-           03 WS-R-SCALING                 PIC X(13) 
-           VALUE '- Détartrage'.
+           03 WS-R-SCALING             PIC X(28) 
+           VALUE '- Détartrage               '.
+           03 WS-R-MONTHLY-COST PIC X(15) 
+           VALUE 'Coût mensuel :'.
            03 WS-R-TOTAL-AMOUNT PIC X(16) 
            VALUE 'Total à payer :'.
            03 WS-R-INFO-PAYMENT PIC X(24) 
@@ -127,24 +153,37 @@
            03 WS-R-INSURANCE-URL PIC X(16) 
            VALUE 'www.boboniort.fr'.
 
-             
        EXEC SQL BEGIN DECLARE SECTION END-EXEC.
-       01  DBNAME   PIC  X(11) VALUE 'boboniortb'.
-       01  USERNAME PIC  X(05) VALUE 'cobol'.
-       01  PASSWD   PIC  X(10) VALUE 'cbl85'.
+       01  DBNAME             PIC  X(11) VALUE 'boboniortdb'.
+       01  USERNAME           PIC  X(05) VALUE 'cobol'.
+       01  PASSWD             PIC  X(10) VALUE 'cbl85'.
+
+       01  SQL-CUS-REIMBURSEMENT.
+           03 SQL-REIM-NUM    PIC X(10).
+           03 SQL-CREATE-DATE PIC X(10).
+           03 SQL-COST        PIC 9(03).
+           03 SQL-DOCTOR      PIC 9(03).
+           03 SQL-PARMEDICAL  PIC 9(03).
+           03 SQL-HOSPITAL    PIC 9(03).
+           03 SQL-S-GLASSES   PIC 9(03).
+           03 SQL-P-GLASSES   PIC 9(03).
+           03 SQL-MOLAR       PIC 9(03).   
+           03 SQL-NON-MOLAR   PIC 9(03).
+           03 SQL-DESCALINGS  PIC 9(03).
        EXEC SQL END DECLARE SECTION END-EXEC.
        EXEC SQL INCLUDE SQLCA END-EXEC. 
 
       * LINKAGE SECTION.
        01 LK-CUSTOMER.
-           03 LK-CUS-UUID        PIC X(36).
+           03 LK-CUS-UUID        PIC X(36) 
+               VALUE 'd58319bb-671c-4e63-829a-9cfbe0d9692f'.
            03 LK-CUS-GENDER      PIC X(10).
            03 LK-CUS-LASTNAME    PIC X(20) VALUE 'Dupont'.
            03 LK-CUS-FIRSTNAME   PIC X(20) VALUE 'Jean'.
-           03 LK-CUS-ADRESS1	 PIC X(50) VALUE '1 rue du colol'.
+           03 LK-CUS-ADRESS1	 PIC X(50) VALUE '12 Rue des Lilas'.
            03 LK-CUS-ADRESS2	 PIC X(50).
-           03 LK-CUS-ZIPCODE	 PIC X(15) VALUE '59000'.
-           03 LK-CUS-TOWN	     PIC X(50) VALUE 'Lille'.
+           03 LK-CUS-ZIPCODE	 PIC X(15) VALUE '75015'.
+           03 LK-CUS-TOWN	     PIC X(50) VALUE 'Paris'.
            03 LK-CUS-COUNTRY	 PIC X(20) VALUE 'France'.
            03 LK-CUS-PHONE	     PIC X(10).
            03 LK-CUS-MAIL	     PIC X(50).
@@ -157,12 +196,12 @@
            03 LK-CUS-DOCTOR	     PIC X(50).
            03 LK-CUS-CODE-SECU.
                05 LK-SECU-1      PIC X(01) VALUE '1'.
-               05 LK-SECU-2      PIC X(02) VALUE '59'.
-               05 LK-SECU-3      PIC X(02) VALUE '04'.
-               05 LK-SECU-4      PIC X(02) VALUE '82'.
-               05 LK-SECU-5      PIC X(03) VALUE '976'.
-               05 LK-SECU-6      PIC X(03) VALUE '354'.
-               05 LK-SECU-7      PIC X(02) VALUE '21'.
+               05 LK-SECU-2      PIC X(02) VALUE '75'.
+               05 LK-SECU-3      PIC X(02) VALUE '03'.
+               05 LK-SECU-4      PIC X(02) VALUE '90'.
+               05 LK-SECU-5      PIC X(03) VALUE '894'.
+               05 LK-SECU-6      PIC X(03) VALUE '002'.
+               05 LK-SECU-7      PIC X(02) VALUE '73'.
            03 LK-CUS-CODE-IBAN   PIC X(34) 
                VALUE 'FR7630006000011234567890189'.
            03 LK-CUS-NBCHILDREN  PIC 9(03).
@@ -185,6 +224,12 @@
 
            PERFORM 1000-START-INITIALIZATION
               THRU END-1000-INITIALIZATION.
+
+           PERFORM 2000-START-SELECT-CONTRACT 
+              THRU END-2000-SELECT-CONTRACT.
+
+           PERFORM 3000-START-HANDLE-REIMBURSEMENT 
+              THRU 3000-END-HANDLE-REIMBURSEMENT.   
        
            PERFORM 1000-START-WRITE 
               THRU END-1000-WRITE.
@@ -198,9 +243,15 @@
       *    programme.                                                  *
       ****************************************************************** 
        1000-START-INITIALIZATION.
+      *    [RD] Génére le numéro de facture par rapport au temps
+      *    TIME = HHMMSSSS (HEURE / Minute / SECONDE)
+           ACCEPT WS-INVOICE-NUM FROM TIME.
+
       *    [RD] Initialise le nom du fichier généré.
            STRING
-               LK-CUS-FIRSTNAME(1:1) LK-CUS-LASTNAME(1:1) '-'
+               FUNCTION UPPER-CASE(LK-CUS-FIRSTNAME(1:1)) 
+               FUNCTION UPPER-CASE(LK-CUS-LASTNAME(1:1)) 
+               '-'
                WS-INVOICE-NUM
                DELIMITED BY SIZE
                INTO WS-INVOICE-FILE
@@ -227,8 +278,77 @@
                SUBTRACT 12 FROM WS-INVOICE-DATE-END-MONTH
            END-IF.
 
+      *    [RD] Déplace le total à payé de LK vers WS qui masque les 0. 
            MOVE LK-TOTAL-AMOUNT TO WS-Z-TOTAL-AMOUNT.
+
+      *    [RD] Déplace l'UUID de LK vers celui de la WS. 
+           MOVE LK-CUS-UUID TO WS-CUS-UUID.
        END-1000-INITIALIZATION.
+           EXIT.    
+
+      ******************************************************************
+      *    [RD] Requête SQL pour récupérer le contrat de l'adhérent en *
+      *    fonction de l'UUID de l'adhérent.                           *
+      ****************************************************************** 
+       2000-START-SELECT-CONTRACT.
+           EXEC SQL
+               SELECT REIMBURSEMENT_NUM,
+                      REIMBURSEMENT_CREATE_DATE,
+                      REIMBURSEMENT_COST,
+                      REIMBURSEMENT_DOCTOR,
+                      REIMBURSEMENT_PARMEDICAL,
+                      REIMBURSEMENT_HOSPITAL,
+                      REIMBURSEMENT_SINGLE_GLASSES,
+                      REIMBURSEMENT_PROGRESSIVE_GLASSES,
+                      REIMBURSEMENT_MOLAR_CROWNS,
+                      REIMBURSEMENT_NON_MOLAR_CROWNS,
+                      REIMBURSEMENT_DESCALINGS
+               INTO :SQL-REIM-NUM, 
+                    :SQL-CREATE-DATE, 
+                    :SQL-COST,
+                    :SQL-DOCTOR, 
+                    :SQL-PARMEDICAL, 
+                    :SQL-HOSPITAL, 
+                    :SQL-S-GLASSES, 
+                    :SQL-P-GLASSES, 
+                    :SQL-MOLAR, 
+                    :SQL-NON-MOLAR, 
+                    :SQL-DESCALINGS
+               FROM CUSTOMER_REIMBURSEMENT
+           WHERE UUID_CUSTOMER = :WS-CUS-UUID
+           LIMIT 1
+           END-EXEC.
+       END-2000-SELECT-CONTRACT.
+           EXIT.
+
+      ******************************************************************
+      *    [RD] 
+      ****************************************************************** 
+       3000-START-HANDLE-REIMBURSEMENT.
+           MOVE SQL-REIM-NUM    TO WS-REIM-NUM    . 
+           MOVE SQL-CREATE-DATE TO WS-CREATE-DATE .
+           MOVE SQL-COST        TO WS-COST        .
+           MOVE SQL-DOCTOR      TO WS-DOCTOR      .
+           MOVE SQL-PARMEDICAL  TO WS-PARMEDICAL  .
+           MOVE SQL-HOSPITAL    TO WS-HOSPITAL    .
+           MOVE SQL-S-GLASSES   TO WS-S-GLASSES   .
+           MOVE SQL-P-GLASSES   TO WS-P-GLASSES   .
+           MOVE SQL-MOLAR       TO WS-MOLAR       .
+           MOVE SQL-NON-MOLAR   TO WS-NON-MOLAR   .
+           MOVE SQL-DESCALINGS  TO WS-DESCALINGS  .
+
+           IF WS-REIM-NUM(1:3) EQUAL 'ALL'
+               MOVE 'Allégé' TO WS-REIM-TYPE
+           ELSE IF WS-REIM-NUM(1:3) EQUAL 'MOD'
+               MOVE 'Modéré' TO WS-REIM-TYPE
+           ELSE IF WS-REIM-NUM(1:3) EQUAL 'EXC'
+               MOVE 'Excellence' TO WS-REIM-TYPE
+           ELSE IF WS-REIM-NUM(1:3) EQUAL 'SPE'
+               MOVE 'Spécifique' TO WS-REIM-TYPE  
+           ELSE
+               MOVE 'Inconnu' TO WS-REIM-TYPE  
+           END-IF.
+       3000-END-HANDLE-REIMBURSEMENT.
            EXIT.    
           
       ******************************************************************
@@ -268,7 +388,7 @@
       *    [RD] Numéro de facture 
            INITIALIZE R-OUTPUT.
            STRING 
-               WS-R-INVOICE-NUM
+               WS-R-INVOICE-NUM SPACE WS-INVOICE-NUM
                DELIMITED BY SIZE
                INTO R-OUTPUT
            END-STRING.
@@ -313,17 +433,36 @@
            END-STRING.
            WRITE R-OUTPUT. 
 
-      *    [RD] Adresse complète de l'adhérent 
+      *    [RD] Adresse
            INITIALIZE R-OUTPUT.
            STRING 
-               WS-R-CUS-ADRESS SPACE FUNCTION TRIM(LK-CUS-ADRESS1) ','
-               SPACE FUNCTION TRIM(LK-CUS-ZIPCODE) SPACE
-               FUNCTION TRIM(LK-CUS-TOWN) ',' SPACE
-               FUNCTION TRIM(LK-CUS-COUNTRY)
+               WS-R-CUS-ADRESS SPACE 
+               FUNCTION TRIM(LK-CUS-ADRESS1)
                DELIMITED BY SIZE
                INTO R-OUTPUT
            END-STRING.
            WRITE R-OUTPUT.
+
+      *    [RD] Code postal Ville 
+           INITIALIZE R-OUTPUT.
+           STRING 
+               WS-R-CUS-TOWN SPACE
+               FUNCTION TRIM(LK-CUS-ZIPCODE) SPACE
+               FUNCTION TRIM(LK-CUS-TOWN)
+               DELIMITED BY SIZE
+               INTO R-OUTPUT
+           END-STRING.
+           WRITE R-OUTPUT.  
+
+      *    [RD] Pays 
+           INITIALIZE R-OUTPUT.
+           STRING 
+               WS-R-CUS-COUNTRY SPACE 
+               FUNCTION TRIM(LK-CUS-COUNTRY)
+               DELIMITED BY SIZE
+               INTO R-OUTPUT
+           END-STRING.
+           WRITE R-OUTPUT.        
 
       *    [RD] Numéro de sécurité sociale 
            INITIALIZE R-OUTPUT.
@@ -362,10 +501,32 @@
            WRITE R-OUTPUT FROM WS-R-SPACES-ALL.
            WRITE R-OUTPUT FROM WS-R-DASH.
 
-      *    [RD] Détail des prestations 
+      *    [RD] Informations contrat 
            WRITE R-OUTPUT FROM WS-R-CUS-DETAILS-TITLE.
 
            WRITE R-OUTPUT FROM WS-R-DASH.
+
+      *    [RD] Numéro de contrat
+           INITIALIZE R-OUTPUT.
+           STRING 
+               WS-R-REIM-NUM SPACE
+               WS-REIM-NUM
+               DELIMITED BY SIZE
+               INTO R-OUTPUT
+           END-STRING.
+           WRITE R-OUTPUT.    
+
+      *    [RD] Type de contrat
+           INITIALIZE R-OUTPUT.
+           STRING 
+               WS-R-REIM-TYPE SPACE
+               WS-REIM-TYPE
+               DELIMITED BY SIZE
+               INTO R-OUTPUT
+           END-STRING.
+           WRITE R-OUTPUT.     
+
+           WRITE R-OUTPUT FROM WS-R-SPACES-ALL.          
 
       *    [RD] Soins courants
            INITIALIZE R-OUTPUT.
@@ -379,7 +540,8 @@
       *    [RD] Honoraires médecins
            INITIALIZE R-OUTPUT.
            STRING 
-               WS-R-MEDICAL-FEES
+               WS-R-MEDICAL-FEES SPACE 
+               WS-DOCTOR SPACE '%'
                DELIMITED BY SIZE
                INTO R-OUTPUT
            END-STRING.
@@ -388,7 +550,8 @@
       *    [RD] Réglements paramédicaux
            INITIALIZE R-OUTPUT.
            STRING 
-               WS-R-PARAMEDICAL-REGULATIONS
+               WS-R-PARAMEDICAL-REGULATIONS SPACE 
+               WS-PARMEDICAL SPACE '%'
                DELIMITED BY SIZE
                INTO R-OUTPUT
            END-STRING.
@@ -399,7 +562,8 @@
       *    [RD] Hospitalisation
            INITIALIZE R-OUTPUT.
            STRING 
-               WS-R-HOSPITALIZATION
+               WS-R-HOSPITALIZATION SPACE 
+               WS-HOSPITAL SPACE '%'
                DELIMITED BY SIZE
                INTO R-OUTPUT
            END-STRING.
@@ -419,7 +583,8 @@
       *    [RD] Verres simples
            INITIALIZE R-OUTPUT.
            STRING 
-               WS-R-SINGLE-LENSES
+               WS-R-SINGLE-LENSES SPACE 
+               WS-S-GLASSES SPACE '%'
                DELIMITED BY SIZE
                INTO R-OUTPUT
            END-STRING.
@@ -428,7 +593,8 @@
       *    [RD] Verres progressifs
            INITIALIZE R-OUTPUT.
            STRING 
-               WS-R-PROGRESSIVE-LENSES
+               WS-R-PROGRESSIVE-LENSES SPACE 
+               WS-P-GLASSES SPACE '%'
                DELIMITED BY SIZE
                INTO R-OUTPUT
            END-STRING.
@@ -448,7 +614,8 @@
       *    [RD] Couronnes (molaires)
            INITIALIZE R-OUTPUT.
            STRING 
-               WS-R-MOLAR-CROWNS
+               WS-R-MOLAR-CROWNS SPACE 
+               WS-MOLAR SPACE '%'
                DELIMITED BY SIZE
                INTO R-OUTPUT
            END-STRING.
@@ -457,7 +624,8 @@
       *    [RD] Couronnes (hors molaires)
            INITIALIZE R-OUTPUT.
            STRING 
-               WS-R-NON-MOLAR-CROWNS
+               WS-R-NON-MOLAR-CROWNS SPACE 
+               WS-NON-MOLAR SPACE '%'
                DELIMITED BY SIZE
                INTO R-OUTPUT
            END-STRING.
@@ -466,11 +634,24 @@
       *    [RD] Détartrage
            INITIALIZE R-OUTPUT.
            STRING 
-               WS-R-SCALING
+               WS-R-SCALING SPACE 
+               WS-DESCALINGS SPACE '%'
                DELIMITED BY SIZE
                INTO R-OUTPUT
            END-STRING.
-           WRITE R-OUTPUT.       
+           WRITE R-OUTPUT.   
+
+           WRITE R-OUTPUT FROM WS-R-SPACES-ALL.
+
+      *    [RD] Coût mensuel
+           INITIALIZE R-OUTPUT.
+           STRING 
+               WS-R-MONTHLY-COST SPACE 
+               FUNCTION TRIM(WS-COST) SPACE 'euros'
+               DELIMITED BY SIZE
+               INTO R-OUTPUT
+           END-STRING.
+           WRITE R-OUTPUT.          
 
            WRITE R-OUTPUT FROM WS-R-SPACES-ALL.
 
