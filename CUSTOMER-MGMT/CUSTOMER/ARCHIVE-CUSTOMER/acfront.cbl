@@ -10,6 +10,7 @@
 
        WORKING-STORAGE SECTION.
 
+       01  WS-CUS-NAME           PIC X(41).  
        01  WS-ACCEPT             PIC X(01).
        01  WS-CUS-UUID           PIC X(36).
        01  WS-SELECT-OPTION      PIC X(05). 
@@ -24,12 +25,10 @@
 
 
        EXEC SQL BEGIN DECLARE SECTION END-EXEC.
-
        01  DBNAME   PIC  X(11) VALUE 'boboniortdb'.
        01  USERNAME PIC  X(05) VALUE 'cobol'.
        01  PASSWD   PIC  X(10) VALUE 'cbl85'.
        EXEC SQL END DECLARE SECTION END-EXEC.
-
        EXEC SQL INCLUDE SQLCA END-EXEC.   
            
        LINKAGE SECTION.
@@ -70,7 +69,6 @@
       ******************************************************************
        PROCEDURE DIVISION USING LK-CUSTOMER.
 
-
        0000-START-MAIN.          
            PERFORM 1000-SCREEN-LOOP-START THRU END-1000-SCREEN-LOOP.
        END-0000-MAIN.
@@ -78,117 +76,107 @@
 
       ****************************************************************** 
        1000-SCREEN-LOOP-START. 
-
-
            MOVE 'FALSE' TO WS-SELECT-OPTION.
+
+           STRING 
+               FUNCTION TRIM(LK-CUS-FIRSTNAME) SPACE 
+               FUNCTION TRIM(LK-CUS-LASTNAME)
+               DELIMITED BY SIZE
+               INTO WS-CUS-NAME
+           END-STRING.
 
            PERFORM UNTIL WS-SELECT-OPTION EQUAL 'TRUE' 
                ACCEPT SCREEN-ARCHIVE-CUSTOMER
 
-              PERFORM 3000-WITCH-CHOICE-START
-                 THRU END-3000-WITCH-CHOICE
-
+               PERFORM 3000-WITCH-CHOICE-START
+                  THRU END-3000-WITCH-CHOICE
            END-PERFORM.          
        END-1000-SCREEN-LOOP. 
            EXIT.   
 
       ******************************************************************      
        3000-WITCH-CHOICE-START.
-
-           IF FUNCTION UPPER-CASE(WS-ACCEPT)
-                   EQUAL 'O' THEN
+           IF FUNCTION UPPER-CASE(WS-ACCEPT) EQUAL 'O' THEN
 
                PERFORM 3210-SQL-START
-                 THRU END-3210-SQL
+                  THRU END-3210-SQL
            
-           ELSE
-           IF FUNCTION UPPER-CASE(LK-RETURN-CHOICE)
-                   EQUAL 'O' THEN
+           ELSE IF FUNCTION UPPER-CASE(LK-RETURN-CHOICE) EQUAL 'O' THEN
                MOVE 'TRUE' TO WS-SELECT-OPTION 
-               CALL 'sifront'
+               CALL 'mcfront' USING LK-CUS-UUID
 
            ELSE  
-
-           MOVE WS-ARCHIVE-MESSAGE TO WS-ERROR-MESSAGE
+               MOVE WS-ARCHIVE-MESSAGE TO WS-ERROR-MESSAGE
        
            END-IF.
        END-3000-WITCH-CHOICE.
            EXIT. 
+
       ******************************************************************
        3210-SQL-START.
-
 	       EXEC SQL
-
                CONNECT :USERNAME IDENTIFIED BY :PASSWD USING :DBNAME
-
            END-EXEC.
 
            MOVE LK-CUS-UUID TO WS-CUS-UUID.
 
-
+           EXEC SQL
+               INSERT INTO CUSTOMER_ARCHIVE (
+                 ARCHIVE_GENDER,
+                 ARCHIVE_LASTNAME,
+                 ARCHIVE_FIRSTNAME,
+                 ARCHIVE_ADRESS1,
+                 ARCHIVE_ADRESS2,
+                 ARCHIVE_ZIPCODE,
+                 ARCHIVE_TOWN,
+                 ARCHIVE_COUNTRY,
+                 ARCHIVE_PHONE,
+                 ARCHIVE_MAIL,
+                 ARCHIVE_BIRTH_DATE,
+                 ARCHIVE_DOCTOR,
+                 ARCHIVE_CODE_SECU,
+                 ARCHIVE_CODE_IBAN,
+                 ARCHIVE_NBCHILDREN,
+                 ARCHIVE_COUPLE,
+                 ARCHIVE_CREATE_DATE,
+                 ARCHIVE_UPDATE_DATE,
+                 ARCHIVE_CLOSE_DATE,
+                 ARCHIVE_ACTIVE
+               )
+               SELECT 
+                 CUSTOMER_GENDER,
+                 CUSTOMER_LASTNAME,
+                 CUSTOMER_FIRSTNAME,
+                 CUSTOMER_ADRESS1,
+                 CUSTOMER_ADRESS2,
+                 CUSTOMER_ZIPCODE,
+                 CUSTOMER_TOWN,
+                 CUSTOMER_COUNTRY,
+                 CUSTOMER_PHONE,
+                 CUSTOMER_MAIL,
+                 CUSTOMER_BIRTH_DATE,
+                 CUSTOMER_DOCTOR,
+                 CUSTOMER_CODE_SECU,
+                 CUSTOMER_CODE_IBAN,
+                 CUSTOMER_NBCHILDREN,
+                 CUSTOMER_COUPLE,
+                 CUSTOMER_CREATE_DATE,
+                 CUSTOMER_UPDATE_DATE,
+                 CUSTOMER_CLOSE_DATE,
+                 CUSTOMER_ACTIVE
+               FROM CUSTOMER
+               WHERE UUID_CUSTOMER = :WS-CUS-UUID
+               END-EXEC.
 
            EXEC SQL
-            INSERT INTO CUSTOMER_ARCHIVE (
-              UUID_CUSTOMER,
-              ARCHIVE_GENDER,
-              ARCHIVE_LASTNAME,
-              ARCHIVE_FIRSTNAME,
-              ARCHIVE_ADRESS1,
-              ARCHIVE_ADRESS2,
-              ARCHIVE_ZIPCODE,
-              ARCHIVE_TOWN,
-              ARCHIVE_COUNTRY,
-              ARCHIVE_PHONE,
-              ARCHIVE_MAIL,
-              ARCHIVE_BIRTH_DATE,
-              ARCHIVE_DOCTOR,
-              ARCHIVE_CODE_SECU,
-              ARCHIVE_CODE_IBAN,
-              ARCHIVE_NBCHILDREN,
-              ARCHIVE_COUPLE,
-              ARCHIVE_CREATE_DATE,
-              ARCHIVE_UPDATE_DATE,
-              ARCHIVE_CLOSE_DATE,
-              ARCHIVE_ACTIVE
-            )
-            SELECT 
-              UUID_CUSTOMER,
-              CUSTOMER_GENDER,
-              CUSTOMER_LASTNAME,
-              CUSTOMER_FIRSTNAME,
-              CUSTOMER_ADRESS1,
-              CUSTOMER_ADRESS2,
-              CUSTOMER_ZIPCODE,
-              CUSTOMER_TOWN,
-              CUSTOMER_COUNTRY,
-              CUSTOMER_PHONE,
-              CUSTOMER_MAIL,
-              CUSTOMER_BIRTH_DATE,
-              CUSTOMER_DOCTOR,
-              CUSTOMER_CODE_SECU,
-              CUSTOMER_CODE_IBAN,
-              CUSTOMER_NBCHILDREN,
-              CUSTOMER_COUPLE,
-              CUSTOMER_CREATE_DATE,
-              CUSTOMER_UPDATE_DATE,
-              CUSTOMER_CLOSE_DATE,
-              CUSTOMER_ACTIVE
-            FROM CUSTOMER
-            WHERE UUID_CUSTOMER = :WS-CUS-UUID
-            
-               END-EXEC.
-
-               EXEC SQL
-                   DELETE FROM CUSTOMER
-                   WHERE UUID_CUSTOMER = :WS-CUS-UUID
-
-               END-EXEC.
+               DELETE FROM CUSTOMER
+               WHERE UUID_CUSTOMER = :WS-CUS-UUID
+           END-EXEC.
 
            MOVE WS-ARCHIVE-SUCCES TO WS-ERROR-MESSAGE.
 
            EXEC SQL COMMIT WORK END-EXEC.
            EXEC SQL DISCONNECT ALL END-EXEC.
-
        END-3210-SQL.
            EXIT.
            

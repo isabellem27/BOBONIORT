@@ -128,7 +128,7 @@
 
            ELSE IF FUNCTION UPPER-CASE(WS-CUST-ARCHIVE)
                    EQUAL 'O' THEN           
-               CALL 'archust' USING WS-CUSTOMER
+               CALL 'acfront' USING WS-CUSTOMER
 
            ELSE IF FUNCTION UPPER-CASE(WS-MENU-FACTURE)
                    EQUAL 'O' THEN           
