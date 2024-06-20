@@ -30,7 +30,7 @@ SELECT COUNT(*) FROM CLASSIC_REIMBURSEMENT;
 
 CREATE TABLE CUSTOMER_REIMBOURSEMENT_ARCHIVE (
     UUID_CUSTOMER_REIMBOURSEMENT_ARCHIVE UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    UUID_CUSTOMER_ARCHIVE                UUID,
+    UUID_CUSTOMER                        UUID,
     ARCHIVE_NUM                          VARCHAR (10),
     ARCHIVE_CREATE_DATE                  date,
     ARCHIVE_COST                         decimal default 0,
