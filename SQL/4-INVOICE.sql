@@ -4,5 +4,6 @@ UUID_CUSTOMER_REIMBOURSEMENT     UUID,
 UUID_CUSTOMER                    UUID,
 INVOICE_NUMBER                   NUMERIC(8),
 INVOICE_INCOME                   DECIMAL(5, 2),
-INVOICE_EXPECT                   DECIMAL(5, 2)
+INVOICE_EXPECT                   DECIMAL(5, 2),
+INVOICE_CREATE_DATE              DATE   
 );

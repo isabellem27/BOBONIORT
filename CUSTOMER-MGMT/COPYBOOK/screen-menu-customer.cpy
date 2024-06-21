@@ -74,7 +74,7 @@
            05 FILLER PIC X(16) VALUE "Nombre d'enfants" 
            LINE 21 COL 45. 
 
-           05 FILLER PIC Z(02) FROM WS-CUS-NBCHILDREN 
+           05 FILLER PIC Z(02)9 FROM WS-CUS-NBCHILDREN 
            LINE 22 COL 45
            BACKGROUND-COLOR IS 0
            FOREGROUND-COLOR IS 3.

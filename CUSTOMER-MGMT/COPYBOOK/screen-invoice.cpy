@@ -31,25 +31,25 @@
            LINE 18 COL 60 
            FOREGROUND-COLOR IS 2.
 
-           05 FILLER PIC Z(05)9.99 FROM DISPLAY-INVOICE-EXPECT 
+           05 FILLER PIC Z(05)9.99 FROM WS-INITIAL-AMOUNT 
            LINE 18 COL 97
            BACKGROUND-COLOR IS 0
            FOREGROUND-COLOR IS 7.
 
-           05 FILLER PIC X(17) VALUE 'Montant effectue' 
+           05 FILLER PIC X(15) VALUE 'Montant restant' 
            LINE 20 COL 60 
            FOREGROUND-COLOR IS 2.
 
-           05 FILLER PIC Z(05)9.99 FROM DISPLAY-INVOICE-INCOME 
+           05 FILLER PIC Z(05)9.99 FROM WS-REMAINING-AMOUNT 
            LINE 20 COL 97
            BACKGROUND-COLOR IS 0
            FOREGROUND-COLOR IS 7.
 
-           05 FILLER PIC X(7) VALUE 'Restant' 
+           05 FILLER PIC X(17) VALUE 'Montant effectue' 
            LINE 22 COL 60 
            FOREGROUND-COLOR IS 2.
 
-           05 FILLER PIC Z(05)9.99 FROM DISPLAY-RESULT 
+           05 FILLER PIC Z(05)9.99 FROM WS-MADE-AMOUNT 
            LINE 22 COL 97
            BACKGROUND-COLOR IS 0
            FOREGROUND-COLOR IS 7.
@@ -58,12 +58,12 @@
            LINE 24 COL 60 
            FOREGROUND-COLOR IS 2.
 
-           05 FILLER PIC 9(5).99 USING WS-PAID-INCOME-INPUT
+           05 FILLER PIC 9(5).99 USING WS-PAYMENT-AMOUNT
            LINE 24 COL 98 AUTO 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.
 
-           05 FILLER PIC X(1) TO WS-PAID-INCOME-BUTTON
+           05 FILLER PIC X(1) USING WS-ACCEPT-PAYMENT
            LINE 24 COL 110  
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.
@@ -76,20 +76,20 @@
            LINE 26 COL 60 
            FOREGROUND-COLOR IS 2.
 
-           05 PIC X(01) USING WS-GENERATE-CHOICE  
+           05 PIC X(01) USING WS-GENERATED-INVOICE  
            LINE 26 COL 77 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 
 
            05 FILLER PIC X(70) FROM WS-ERROR-MESSAGE
-           LINE 28 COL 50 
+           LINE 29 COL 60 
            FOREGROUND-COLOR IS 8.
 
            05 FILLER PIC X(11) VALUE 'Retour menu' 
            LINE 34 COL 172 
            FOREGROUND-COLOR IS 2.
 
-           05 PIC X(01) USING WS-RETURN-CHOICE  
+           05 PIC X(01) USING WS-RETURN-MENU  
            LINE 34 COL 170 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0.
