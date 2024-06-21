@@ -294,6 +294,7 @@ OCESQL*
       *    Le tableau du bas n'est pas géré car chargé en dur
       ******************************************************************
        1010-INITIALIZE-SCREEN-START.
+           INITIALIZE SC-RETURN.
            MOVE WS-ZERO TO SC-STAT-REG01      .
            MOVE WS-ZERO TO SC-STAT-REG02      .
            MOVE WS-ZERO TO SC-STAT-REG03      .
