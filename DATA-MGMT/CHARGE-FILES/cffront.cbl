@@ -10,7 +10,7 @@
       * Date de création : le 18/06/2024                               * 
       ****************************************************************** 
        IDENTIFICATION DIVISION.
-       PROGRAM-ID. cffront.
+       PROGRAM-ID. cffront RECURSIVE.
        AUTHOR. Isabelle.
 
       ******************************************************************
@@ -20,9 +20,9 @@
        DATA DIVISION.
        WORKING-STORAGE SECTION. 
        01  WS-BUTTONS-SCREEN.
-           05 SC-FILE              PIC X(100)                    .
            05 WS-VALIDATE          PIC X(01)                     .   
            05 WS-RETURN            PIC X(01)                     .
+       01  SC-FILE              PIC X(100)                    .    
        01  SC-MESSAGE              PIC X(70)      VALUE SPACES   .                    
        
        01 WS-MESSAGE.
@@ -40,7 +40,7 @@
       ******************************************************************
        PROCEDURE DIVISION.      
        0000-START-MAIN.
-           MOVE 'C:\BOBONIORT\INPUT\individus.csv' TO SC-FILE.
+           MOVE 'C:\BOBONIORT\CHARGE-FILES\individus.csv' TO SC-FILE.
            PERFORM 1000-CONTROL-IMPUT-START 
            THRU END-1000-CONTROL-IMPUT.
        END-0000-MAIN.
@@ -52,6 +52,7 @@
       *    de saisie de l'utilisateur   
       ******************************************************************
        1000-CONTROL-IMPUT-START.
+           INITIALIZE WS-BUTTONS-SCREEN SC-MESSAGE.
            PERFORM UNTIL WS-SELECT-OPTION = 'TRUE'               
               ACCEPT SCREEN-CHARGE-FILE 
               PERFORM 1100-CHECK-CHOICE-START 
