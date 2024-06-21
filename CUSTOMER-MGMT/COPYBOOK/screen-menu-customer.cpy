@@ -142,72 +142,40 @@
            BACKGROUND-COLOR IS 0
            FOREGROUND-COLOR IS 3.  
 
-           05 FILLER PIC X(01) VALUE '-'
-           LINE 28 COL 51 
-           FOREGROUND-COLOR IS 3. 
-
            05 FILLER PIC X(04) FROM WS-CUS-CODE-IBAN(5:4) 
            LINE 28 COL 52 
            BACKGROUND-COLOR IS 0
            FOREGROUND-COLOR IS 3. 
-
-           05 FILLER PIC X(01) VALUE '-'
-           LINE 28 COL 56 
-           FOREGROUND-COLOR IS 3.
 
            05 FILLER PIC X(04) FROM WS-CUS-CODE-IBAN(9:4) 
            LINE 28 COL 57 
            BACKGROUND-COLOR IS 0
            FOREGROUND-COLOR IS 3.
 
-           05 FILLER PIC X(01) VALUE '-'
-           LINE 28 COL 61 
-           FOREGROUND-COLOR IS 3. 
-
            05 FILLER PIC X(04) FROM WS-CUS-CODE-IBAN(13:4) 
-           LINE 28 COL 63 
+           LINE 28 COL 62 
            BACKGROUND-COLOR IS 0
            FOREGROUND-COLOR IS 3. 
-
-           05 FILLER PIC X(01) VALUE '-'
-           LINE 28 COL 66 
-           FOREGROUND-COLOR IS 3.
 
            05 FILLER PIC X(04) FROM WS-CUS-CODE-IBAN(17:4) 
-           LINE 28 COL 67
+           LINE 28 COL 67 
            BACKGROUND-COLOR IS 0
            FOREGROUND-COLOR IS 3. 
-
-           05 FILLER PIC X(01) VALUE '-'
-           LINE 28 COL 71 
-           FOREGROUND-COLOR IS 3.
 
            05 FILLER PIC X(04) FROM WS-CUS-CODE-IBAN(21:4) 
-           LINE 28 COL 73 
+           LINE 28 COL 72 
            BACKGROUND-COLOR IS 0
            FOREGROUND-COLOR IS 3. 
-
-           05 FILLER PIC X(01) VALUE '-'
-           LINE 28 COL 76 
-           FOREGROUND-COLOR IS 3.
 
            05 FILLER PIC X(04) FROM WS-CUS-CODE-IBAN(25:4) 
            LINE 28 COL 77 
            BACKGROUND-COLOR IS 0
            FOREGROUND-COLOR IS 3. 
 
-           05 FILLER PIC X(01) VALUE '-'
-           LINE 28 COL 81 
-           FOREGROUND-COLOR IS 3.
-
            05 FILLER PIC X(04) FROM WS-CUS-CODE-IBAN(29:4) 
            LINE 28 COL 82 
            BACKGROUND-COLOR IS 0
            FOREGROUND-COLOR IS 3. 
-
-           05 FILLER PIC X(01) VALUE '-'
-           LINE 28 COL 86 
-           FOREGROUND-COLOR IS 3.
 
            05 FILLER PIC X(02) FROM WS-CUS-CODE-IBAN(33:2) 
            LINE 28 COL 87
@@ -246,16 +214,16 @@
            FOREGROUND-COLOR IS 3.
 
            05 FILLER PIC X(02) FROM WS-CCS-SECU-4 
-           LINE 14 COL 119 
+           LINE 14 COL 118 
            BACKGROUND-COLOR IS 0
            FOREGROUND-COLOR IS 3.
 
            05 FILLER PIC X(01) VALUE '-'
-           LINE 14 COL 121  
+           LINE 14 COL 120  
            FOREGROUND-COLOR IS 3.
 
            05 FILLER PIC X(03) FROM WS-CCS-SECU-5 
-           LINE 14 COL 123 
+           LINE 14 COL 121 
            BACKGROUND-COLOR IS 0
            FOREGROUND-COLOR IS 3. 
 
@@ -264,7 +232,7 @@
            FOREGROUND-COLOR IS 3.
 
            05 FILLER PIC X(03) FROM WS-CCS-SECU-6 
-           LINE 14 COL 126  
+           LINE 14 COL 125  
            BACKGROUND-COLOR IS 0
            FOREGROUND-COLOR IS 3.
 
@@ -273,7 +241,7 @@
            FOREGROUND-COLOR IS 3.
 
            05 FILLER PIC X(02) FROM WS-CCS-SECU-7 
-           LINE 14 COL 130 
+           LINE 14 COL 129 
            BACKGROUND-COLOR IS 0
            FOREGROUND-COLOR IS 3.
 
@@ -315,7 +283,7 @@
            LINE 22 COL 108. 
 
            05 FILLER PIC X(30) FROM WS-CUS-TOWN 
-           LINE 23 COL 110
+           LINE 23 COL 110 
            BACKGROUND-COLOR IS 0
            FOREGROUND-COLOR IS 3.
 
