@@ -366,91 +366,91 @@
            05 FILLER PIC X(19) VALUE 'Honoraire medecin'  
            LINE 25 COL 27 
            FOREGROUND-COLOR IS 3.
-           05 FILLER PIC X(07) VALUE '  255  '  
+           05 FILLER PIC X(08) VALUE '  255.00'  
            COL 54 
            FOREGROUND-COLOR IS 7.   
-           05 FILLER PIC X(05) VALUE ' 1.49  '  
+           05 FILLER PIC X(05) VALUE ' 1.49'  
            COL 67 
            FOREGROUND-COLOR IS 7.   
-           05 FILLER PIC X(07) VALUE ' 31.8 '  
+           05 FILLER PIC X(08) VALUE '  31.80'  
            COL 78 
            FOREGROUND-COLOR IS 7. 
-           05 FILLER PIC X(05) VALUE ' 10.98 '  
+           05 FILLER PIC X(05) VALUE '10.98'  
            COL 90 
            FOREGROUND-COLOR IS 7.  
-           05 FILLER PIC X(05) VALUE ' 13.73 '  
+           05 FILLER PIC X(05) VALUE '13.73'  
            COL 100 
            FOREGROUND-COLOR IS 7. 
-           05 FILLER PIC X(05) VALUE ' 15.65 '  
+           05 FILLER PIC X(05) VALUE '15.65'  
            COL 110 
            FOREGROUND-COLOR IS 7.              
-           05 FILLER PIC X(05) VALUE ' 17.65 '  
+           05 FILLER PIC X(05) VALUE '17.65'  
            COL 120 
            FOREGROUND-COLOR IS 7. 
-           05 FILLER PIC X(05) VALUE ' 0.00  '  
+           05 FILLER PIC X(05) VALUE ' 0.00'  
            COL 130 
            FOREGROUND-COLOR IS 7.  
-           05 FILLER PIC X(05) VALUE ' 0.00  '
+           05 FILLER PIC X(05) VALUE ' 0.00'
            COL 140 
            FOREGROUND-COLOR IS 7.                                               
            05 FILLER PIC X(23) VALUE 'Paramedical' 
            LINE 26 COL 27 
            FOREGROUND-COLOR IS 3.  
-           05 FILLER PIC X(07) VALUE '  196  '  
+           05 FILLER PIC X(08) VALUE '  196.00'  
            COL 54 
            FOREGROUND-COLOR IS 7.   
-           05 FILLER PIC X(05) VALUE '  1.15 ' 
+           05 FILLER PIC X(05) VALUE ' 1.15' 
            COL 67 
            FOREGROUND-COLOR IS 7.   
-           05 FILLER PIC X(07) VALUE '  24.5 '  
+           05 FILLER PIC X(08) VALUE '  24.50'  
            COL 78 
            FOREGROUND-COLOR IS 7. 
-           05 FILLER PIC X(05) VALUE ' 10.20 '  
+           05 FILLER PIC X(05) VALUE '10.20'  
            COL 90 
            FOREGROUND-COLOR IS 7.  
-           05 FILLER PIC X(05) VALUE ' 12.76 '  
+           05 FILLER PIC X(05) VALUE '12.76'  
            COL 100 
            FOREGROUND-COLOR IS 7. 
-           05 FILLER PIC X(05) VALUE ' 15.31 '  
+           05 FILLER PIC X(05) VALUE '15.31'  
            COL 110 
            FOREGROUND-COLOR IS 7.              
-           05 FILLER PIC X(05) VALUE ' 17.86 '  
+           05 FILLER PIC X(05) VALUE '17.86'  
            COL 120 
            FOREGROUND-COLOR IS 7. 
-           05 FILLER PIC X(05)  VALUE ' 0.00 '  
+           05 FILLER PIC X(05)  VALUE ' 0.00'  
            COL 130 
            FOREGROUND-COLOR IS 7.  
-           05 FILLER PIC X(05) VALUE ' 0.00 '  
+           05 FILLER PIC X(05) VALUE ' 0.00'  
            COL 140 
            FOREGROUND-COLOR IS 7.               
            05 FILLER PIC X(15) VALUE 'Hospitalisation' 
            LINE 27 COL 27 
            FOREGROUND-COLOR IS 3. 
-           05 FILLER PIC X(07) VALUE ' 12000 '  
+           05 FILLER PIC X(08) VALUE '12000.00'  
            COL 54 
            FOREGROUND-COLOR IS 7.   
-           05 FILLER PIC X(05) VALUE ' 70.34 ' 
+           05 FILLER PIC X(05) VALUE '70.34' 
            COL 67 
            FOREGROUND-COLOR IS 7.   
-           05 FILLER PIC X(07) VALUE ' 1500 '  
+           05 FILLER PIC X(08) VALUE '1500.00'  
            COL 78 
            FOREGROUND-COLOR IS 7. 
-           05 FILLER PIC X(05) VALUE ' 7.50  '  
+           05 FILLER PIC X(05) VALUE ' 7.50'  
            COL 90 
            FOREGROUND-COLOR IS 7.  
-           05 FILLER PIC X(05) VALUE ' 8.33 '  
+           05 FILLER PIC X(05) VALUE ' 8.33'  
            COL 100 
            FOREGROUND-COLOR IS 7. 
-           05 FILLER PIC X(05) VALUE ' 9.17 '  
+           05 FILLER PIC X(05) VALUE ' 9.17'  
            COL 110 
            FOREGROUND-COLOR IS 7.              
-           05 FILLER PIC X(05) VALUE ' 10.00 '  
+           05 FILLER PIC X(05) VALUE '10.00'  
            COL 120 
            FOREGROUND-COLOR IS 7. 
-           05 FILLER PIC X(05) VALUE '  0.00 '  
+           05 FILLER PIC X(05) VALUE ' 0.00'  
            COL 130 
            FOREGROUND-COLOR IS 7.  
-           05 FILLER PIC X(05) VALUE '  0.00 '  
+           05 FILLER PIC X(05) VALUE ' 0.00'   
            COL 140 
            FOREGROUND-COLOR IS 7.           
            05 FILLER PIC X(7) VALUE 'Optique'
@@ -459,61 +459,61 @@
            05 FILLER PIC X(14) VALUE 'Verres simples'  
            LINE 29 COL 27 
            FOREGROUND-COLOR IS 3.               
-           05 FILLER PIC X(07) VALUE '  784 '  
+           05 FILLER PIC X(08) VALUE '  784.00'  
            COL 54 
            FOREGROUND-COLOR IS 7.   
-           05 FILLER PIC X(05) VALUE ' 4.60 '  
+           05 FILLER PIC X(05) VALUE ' 4.60'  
            COL 67 
            FOREGROUND-COLOR IS 7.   
-           05 FILLER PIC X(07) VALUE '  98  '  
+           05 FILLER PIC X(08) VALUE '  98.00'  
            COL 78 
            FOREGROUND-COLOR IS 7. 
-           05 FILLER PIC X(05) VALUE ' 6.38 '  
+           05 FILLER PIC X(05) VALUE ' 6.38'  
            COL 90 
            FOREGROUND-COLOR IS 7.  
-           05 FILLER PIC X(05) VALUE ' 7.02 ' 
+           05 FILLER PIC X(05) VALUE ' 7.02' 
            COL 100 
            FOREGROUND-COLOR IS 7. 
-           05 FILLER PIC X(05) VALUE ' 7.65 '  
+           05 FILLER PIC X(05) VALUE ' 7.65'  
            COL 110 
            FOREGROUND-COLOR IS 7.              
-           05 FILLER PIC X(05) VALUE ' 8.29 '  
+           05 FILLER PIC X(05) VALUE ' 8.29'  
            COL 120 
            FOREGROUND-COLOR IS 7. 
-           05 FILLER PIC X(05) VALUE ' 0.00 '  
+           05 FILLER PIC X(05) VALUE ' 0.00'  
            COL 130 
            FOREGROUND-COLOR IS 7.  
-           05 FILLER PIC X(05) VALUE ' 0.00 '  
+           05 FILLER PIC X(05) VALUE ' 0.00'  
            COL 140 
            FOREGROUND-COLOR IS 7.
            05 FILLER PIC X(18) VALUE 'Verres progressifs'  
            LINE 30 COL 27 
            FOREGROUND-COLOR IS 3.  
-           05 FILLER PIC X(07) VALUE ' 1584 '  
+           05 FILLER PIC X(08) VALUE ' 1584.00'  
            COL 54 
            FOREGROUND-COLOR IS 7.   
-           05 FILLER PIC X(05) VALUE ' 9.29 '  
+           05 FILLER PIC X(05) VALUE ' 9.29'  
            COL 67 
            FOREGROUND-COLOR IS 7.   
-           05 FILLER PIC X(07) VALUE '  198 '  
+           05 FILLER PIC X(08) VALUE ' 198.00'  
            COL 78 
            FOREGROUND-COLOR IS 7. 
-           05 FILLER PIC X(05) VALUE '  5.68 '  
+           05 FILLER PIC X(05) VALUE ' 5.68'  
            COL 90 
            FOREGROUND-COLOR IS 7.  
-           05 FILLER PIC X(05) VALUE '  6.00 '  
+           05 FILLER PIC X(05) VALUE ' 6.00'  
            COL 100 
            FOREGROUND-COLOR IS 7. 
-           05 FILLER PIC X(05)  VALUE '  6.31 '  
+           05 FILLER PIC X(05)  VALUE ' 6.31'  
            COL 110 
            FOREGROUND-COLOR IS 7.              
-           05 FILLER PIC X(05) VALUE '  6.36 '  
+           05 FILLER PIC X(05) VALUE ' 6.36'  
            COL 120 
            FOREGROUND-COLOR IS 7. 
-           05 FILLER PIC X(05) VALUE '  0.00 ' 
+           05 FILLER PIC X(05) VALUE ' 0.00' 
            COL 130 
            FOREGROUND-COLOR IS 7.  
-           05 FILLER PIC X(05) VALUE '  0.00 ' 
+           05 FILLER PIC X(05) VALUE ' 0.00' 
            COL 140 
            FOREGROUND-COLOR IS 7.
            05 FILLER PIC X(8) VALUE 'Dentaire'
@@ -522,91 +522,91 @@
            05 FILLER PIC X(20) VALUE 'Couronnes (molaires)' 
            LINE 32 COL 27 
            FOREGROUND-COLOR IS 3.           
-           05 FILLER PIC X(1907) VALUE ' 640  '  
+           05 FILLER PIC X(08) VALUE '  640.00'  
            COL 54 
            FOREGROUND-COLOR IS 7.   
-           05 FILLER PIC X(05) VALUE ' 3.75  '  
+           05 FILLER PIC X(05) VALUE ' 3.75'  
            COL 67 
            FOREGROUND-COLOR IS 7.   
-           05 FILLER PIC X(07) VALUE ' 27.50 ' 
+           05 FILLER PIC X(08) VALUE '  27.50' 
            COL 78 
            FOREGROUND-COLOR IS 7. 
-           05 FILLER PIC X(05) VALUE '  3.13 '  
+           05 FILLER PIC X(05) VALUE ' 3.13'  
            COL 90 
            FOREGROUND-COLOR IS 7.  
-           05 FILLER PIC X(05) VALUE ' 3.91 '  
+           05 FILLER PIC X(05) VALUE ' 3.91'  
            COL 100 
            FOREGROUND-COLOR IS 7. 
-           05 FILLER PIC X(05) VALUE '  4.69 ' 
+           05 FILLER PIC X(05) VALUE ' 4.69' 
            COL 110 
            FOREGROUND-COLOR IS 7.              
-           05 FILLER PIC X(05) VALUE '  5.47 '  
+           05 FILLER PIC X(05) VALUE ' 5.47'  
            COL 120 
            FOREGROUND-COLOR IS 7. 
-           05 FILLER PIC X(05) VALUE '  0.00 '  
+           05 FILLER PIC X(05) VALUE ' 0.00'  
            COL 130 
            FOREGROUND-COLOR IS 7.  
-           05 FILLER PIC X(05) VALUE '  0.00 '
+           05 FILLER PIC X(05) VALUE ' 0.00'
            COL 140 
            FOREGROUND-COLOR IS 7.
            05 FILLER PIC X(25) VALUE 'Couronnes (hors molaires)'  
             LINE 33 COL 27 
            FOREGROUND-COLOR IS 3.  
-           05 FILLER PIC X(07) VALUE '  800  '  
+           05 FILLER PIC X(08) VALUE '  800.00'  
            COL 54 
            FOREGROUND-COLOR IS 7.   
-           05 FILLER PIC X(05) VALUE '  4.69 '  
+           05 FILLER PIC X(05) VALUE ' 4.69'  
            COL 67 
            FOREGROUND-COLOR IS 7.   
-           05 FILLER PIC X(07) VALUE '  100 '
+           05 FILLER PIC X(08) VALUE ' 100.00'
            COL 78 
            FOREGROUND-COLOR IS 7. 
-           05 FILLER PIC X(05) VALUE '  5.00 ' 
+           05 FILLER PIC X(05) VALUE ' 5.00' 
            COL 90 
            FOREGROUND-COLOR IS 7.  
-           05 FILLER PIC X(05) VALUE '  5.63 '  
+           05 FILLER PIC X(05) VALUE ' 5.63'  
            COL 100 
            FOREGROUND-COLOR IS 7. 
-           05 FILLER PIC X(05) VALUE '  6.25 ' 
+           05 FILLER PIC X(05) VALUE ' 6.25' 
            COL 110 
            FOREGROUND-COLOR IS 7.              
-           05 FILLER PIC X(05) VALUE '  6.88 '  
+           05 FILLER PIC X(05) VALUE ' 6.88'  
            COL 120 
            FOREGROUND-COLOR IS 7. 
-           05 FILLER PIC X(05) VALUE '  0.00 '  
+           05 FILLER PIC X(05) VALUE ' 0.00'  
            COL 130 
            FOREGROUND-COLOR IS 7.  
-           05 FILLER PIC X(05) VALUE '  0.00 ' 
+           05 FILLER PIC X(05) VALUE ' 0.00' 
            COL 140 
            FOREGROUND-COLOR IS 7.
            05 FILLER PIC X(10) VALUE 'Detartrage'
            LINE 34 COL 27 
            FOREGROUND-COLOR IS 3.             
-           05 FILLER PIC X(07) VALUE '  800 ' 
+           05 FILLER PIC X(08) VALUE '  800.00' 
            COL 54 
            FOREGROUND-COLOR IS 7.   
-           05 FILLER PIC X(05) VALUE '  4.69 ' 
+           05 FILLER PIC X(05) VALUE ' 4.69' 
            COL 67 
            FOREGROUND-COLOR IS 7.   
-           05 FILLER PIC X(07) VALUE '  35.71 '  
+           05 FILLER PIC X(08) VALUE '  35.71'  
            COL 78 
            FOREGROUND-COLOR IS 7. 
-           05 FILLER PIC X(05) VALUE '  5.00 '  
+           05 FILLER PIC X(05) VALUE ' 5.00'  
            COL 90 
            FOREGROUND-COLOR IS 7.  
-           05 FILLER PIC X(05) VALUE '  5.63 ' 
+           05 FILLER PIC X(05) VALUE ' 5.63' 
            COL 100 
            FOREGROUND-COLOR IS 7. 
-           05 FILLER PIC X(05) VALUE '  6.25 '  
+           05 FILLER PIC X(05) VALUE ' 6.25'  
            COL 110 
            FOREGROUND-COLOR IS 7.              
-           05 FILLER PIC X(05) VALUE '  6.88 '  
+           05 FILLER PIC X(05) VALUE ' 6.88'  
            COL 120 
            FOREGROUND-COLOR IS 7. 
-           05 FILLER PIC X(05) VALUE '  0.00 ' 
+           05 FILLER PIC X(05) VALUE ' 0.00' 
            COL 130 
            FOREGROUND-COLOR IS 7.  
-           05 FILLER PIC X(05) VALUE '  0.00 '  
+           05 FILLER PIC X(05) VALUE ' 0.00'  
            COL 140 
            FOREGROUND-COLOR IS 7.
 

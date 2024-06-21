@@ -19,17 +19,9 @@
            COL 132 
            BACKGROUND-COLOR IS 3
            FOREGROUND-COLOR IS 0.
-  
-           05 FILLER PIC X(7) VALUE  "Valider" 
-           LINE 34 COL 38 
-           FOREGROUND-COLOR IS  3.
-           05 PIC X(1) USING  WS-VALIDATE 
-           COL 47 
-           BACKGROUND-COLOR IS 3
-           FOREGROUND-COLOR IS 0. 
 
            05 PIC X(1) USING  WS-EXIT 
-           COL 170 
+           LINE 34 COL 170 
            BACKGROUND-COLOR IS 3
            FOREGROUND-COLOR IS 0. 
            05 FILLER PIC X(7) VALUE  "Quitter" 

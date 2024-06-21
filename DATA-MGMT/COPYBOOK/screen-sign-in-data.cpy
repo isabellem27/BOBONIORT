@@ -105,7 +105,7 @@
            FOREGROUND-COLOR IS 7.           
 
            05 FILLER PIC X(37) 
-           VALUE 'BOBONIORT   -   CUSTOMERS  MANAGEMENT' 
+           VALUE 'BOBONIORT   -   DATA  MANAGEMENT' 
            LINE 24 COL 36 
            FOREGROUND-COLOR IS 7.
 
