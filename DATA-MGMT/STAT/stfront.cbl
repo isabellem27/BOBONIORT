@@ -9,7 +9,7 @@
       * Date de création : le 19/06/2024                               * 
       ****************************************************************** 
        IDENTIFICATION DIVISION.
-       PROGRAM-ID. stfront.
+       PROGRAM-ID. stfront RECURSIVE.
        AUTHOR. Isabelle.      
       ******************************************************************
        DATA DIVISION.

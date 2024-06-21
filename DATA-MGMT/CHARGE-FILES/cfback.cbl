@@ -11,7 +11,7 @@
       ***************************************************************
       ***************************************************************     
        IDENTIFICATION DIVISION.
-       PROGRAM-ID. cfback.
+       PROGRAM-ID. cfback RECURSIVE.
        AUTHOR . Isabelle.       
       ******************************************************************       
        ENVIRONMENT DIVISION.                  

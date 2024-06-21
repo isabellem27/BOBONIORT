@@ -9,7 +9,7 @@
       * Date de création : le 19/06/2024                               * 
       ****************************************************************** 
        IDENTIFICATION DIVISION.
-       PROGRAM-ID. stfront.
+       PROGRAM-ID. stfront RECURSIVE.
        AUTHOR. Isabelle.      
       ******************************************************************
        DATA DIVISION.
@@ -523,8 +523,6 @@ OCESQL*
            GIVING   WS-TOTAL.
            IF WS-TOTAL > 0 THEN
               COMPUTE WS-POURCENT ROUNDED = (WS-ACT1 / WS-TOTAL ) * 100                                                           
-           ELSE
-              SET WS-POURCENT TO 0
            END-IF.          
        END-1416-CALCUL-POURCENT.
            EXIT.    

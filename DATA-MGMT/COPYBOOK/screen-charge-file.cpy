@@ -12,18 +12,18 @@
            FOREGROUND-COLOR IS 7.
 
            05 FILLER PIC X(7) VALUE  "Valider" 
-           LINE 34 COL 28 
+           LINE 23 COL 70 
            FOREGROUND-COLOR IS  3.
            05 PIC X(1) USING  WS-VALIDATE 
-            COL 36 
+            COL 78 
            BACKGROUND-COLOR IS 3
            FOREGROUND-COLOR IS 0. 
                       
            05 PIC X(1) USING  WS-RETURN 
-           COL 163 
+           LINE 34 COL 163 
            BACKGROUND-COLOR IS 3
            FOREGROUND-COLOR IS 0. 
-           05 FILLER PIC X(14) VALUE  "Retour au menu" 
+           05 FILLER PIC X(14) VALUE  "Retour" 
            COL 165 
            FOREGROUND-COLOR IS  3.
 
