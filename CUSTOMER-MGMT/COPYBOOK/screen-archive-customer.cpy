@@ -38,7 +38,7 @@
            FOREGROUND-COLOR IS 2. 
 
            05 FILLER PIC X(01) TO WS-ACCEPT 
-           LINE 22 COL 100
+           LINE 22 COL 90
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 
 
