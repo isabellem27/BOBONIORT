@@ -11,7 +11,7 @@
       * Date de création : le 18/06/2024                               * 
       ****************************************************************** 
        IDENTIFICATION DIVISION.
-       PROGRAM-ID. menudata.
+       PROGRAM-ID. menudata RECURSIVE.
        AUTHOR. Isabelle.
 
       ******************************************************************
@@ -52,6 +52,7 @@
       *    de saisie de l'utilisateur   
       ******************************************************************
        1000-CONTROL-IMPUT-START.
+           INITIALIZE WS-BUTTONS-MENU-DATA SC-MESSAGE. 
            PERFORM UNTIL WS-SELECT-OPTION = 'TRUE'               
               ACCEPT SCREEN-MENU-DATA 
               PERFORM 1100-CHECK-CHOICE-START 
@@ -68,18 +69,16 @@
            IF FUNCTION UPPER-CASE(WS-EXIT) EQUAL 'O' THEN               
                  PERFORM END-0000-MAIN
 
-           ELSE  IF FUNCTION UPPER-CASE(WS-VALIDATE) EQUAL 'O' THEN            
-                    IF FUNCTION UPPER-CASE(WS-STAT) EQUAL 'O' THEN            
+   
+      *     ELSE  IF FUNCTION UPPER-CASE(WS-VALIDATE) EQUAL 'O' THEN
+           ELSE  IF FUNCTION UPPER-CASE(WS-STAT) EQUAL 'O' THEN            
+                                
                           CALL 'stfront'      
-                    ELSE  IF FUNCTION UPPER-CASE(WS-FILE) EQUAL 'O' THEN        
+                 ELSE  IF FUNCTION UPPER-CASE(WS-FILE) EQUAL 'O' THEN        
                              CALL 'cffront'                   
-                          ELSE  
-                                PERFORM 9200-ERROR-MESSAGE-START 
+                       ELSE  
+                           PERFORM 9200-ERROR-MESSAGE-START 
                                 THRU END-9200-ERROR-MESSAGE
-                    END-IF
-                 ELSE
-                    PERFORM 9200-ERROR-MESSAGE-START 
-                    THRU END-9200-ERROR-MESSAGE 
                  END-IF  
             END-IF.          
        END-1100-CHECK-CHOICE.
