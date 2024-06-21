@@ -64,14 +64,15 @@
            INITIALIZE WS-MENU-RETURN.
            ACCEPT SCREEN-REIMBOURSEMENT-CUSTOMER.
 
-              
+           PERFORM 2100-START-CHECK-CHOICE
+              THRU 2100-END-CHECK-CHOICE.              
        END-0000-MAIN.
            GOBACK.
 
        2100-START-CHECK-CHOICE.
            IF FUNCTION UPPER-CASE(WS-MENU-RETURN)
               EQUAL 'O' THEN
-               CALL 'scfront'
+               CALL 'manacust'
            ELSE  
               MOVE 'Veuillez entrer "O" pour confirmer.' 
               TO WS-ERROR-MESSAGE

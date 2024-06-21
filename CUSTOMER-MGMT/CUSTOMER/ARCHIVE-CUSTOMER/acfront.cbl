@@ -93,6 +93,8 @@
       * option valide soit sélectionnée.
       ****************************************************************** 
        1000-SCREEN-LOOP-START. 
+           INITIALIZE WS-ACCEPT
+                      LK-RETURN-CHOICE .
            MOVE 'FALSE' TO WS-SELECT-OPTION.
 
       * [SK] Initialisation de la variable d'option de sélection.
@@ -204,6 +206,9 @@
            MOVE WS-ARCHIVE-SUCCES TO WS-ERROR-MESSAGE.
       * [SK] Validation des transactions et déconnexion 
       *     de la base de données.
+
+           INITIALIZE WS-ACCEPT
+                      LK-RETURN-CHOICE .
 
            EXEC SQL COMMIT WORK END-EXEC.
            EXEC SQL DISCONNECT ALL END-EXEC.
