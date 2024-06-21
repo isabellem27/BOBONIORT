@@ -124,7 +124,7 @@
            
            ELSE IF FUNCTION UPPER-CASE(LK-RETURN-CHOICE) EQUAL 'O' THEN
                MOVE 'TRUE' TO WS-SELECT-OPTION 
-               CALL 'mcfront' USING LK-CUS-UUID
+               CALL 'manacust' USING LK-CUS-UUID
 
            ELSE  
                MOVE WS-ARCHIVE-MESSAGE TO WS-ERROR-MESSAGE
