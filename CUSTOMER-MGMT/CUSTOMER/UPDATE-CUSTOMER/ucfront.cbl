@@ -152,7 +152,7 @@
 
            IF WS-MENU-RETURN EQUAL 'O' THEN
                CALL 
-                   'mcfront'
+                   'manacust'
                    USING BY REFERENCE
                    LK-CUSTOMER
                END-CALL
