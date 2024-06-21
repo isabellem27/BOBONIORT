@@ -27,7 +27,7 @@
        01  WS-ARCHIVE-MESSAGE      PIC X(35)
            VALUE 'Veuillez entrer "O" pour confirmer.'.
        01  WS-ARCHIVE-SUCCES      PIC X(18)
-           VALUE 'Archivage reussie.' .
+           VALUE 'Archivage reussi.' .
 
 
        EXEC SQL BEGIN DECLARE SECTION END-EXEC.
@@ -124,7 +124,7 @@
            
            ELSE IF FUNCTION UPPER-CASE(LK-RETURN-CHOICE) EQUAL 'O' THEN
                MOVE 'TRUE' TO WS-SELECT-OPTION 
-               CALL 'mcfront' USING LK-CUS-UUID
+               CALL 'manacust' USING LK-CUS-UUID
 
            ELSE  
                MOVE WS-ARCHIVE-MESSAGE TO WS-ERROR-MESSAGE

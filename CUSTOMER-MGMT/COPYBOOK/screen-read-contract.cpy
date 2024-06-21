@@ -197,7 +197,7 @@
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 
 
-           05 FILLER PIC X(14) VALUE 'Retour menu'
+           05 FILLER PIC X(14) VALUE 'Retour'
            LINE 34 COL 172 
            FOREGROUND-COLOR IS 2.
 

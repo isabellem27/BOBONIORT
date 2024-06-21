@@ -43,7 +43,7 @@
            FOREGROUND-COLOR IS 0. 
 
       *    [IM-RD] Bouton de retour au menu. 
-           05 FILLER PIC X(11) VALUE 'Retour menu' 
+           05 FILLER PIC X(11) VALUE 'Deconnexion' 
            LINE 34 COL 172 
            FOREGROUND-COLOR IS 2.
 

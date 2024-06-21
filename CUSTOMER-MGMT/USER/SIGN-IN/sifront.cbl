@@ -14,7 +14,8 @@
        01  SCREEN-INPUT.
            05 SI-USER-ID       PIC X(14).
            05 SI-USER-PWD      PIC X(14).
-           05 SI-CONNECT       PIC X(01).    
+           05 SI-CONNECT       PIC X(01).
+           05 SI-QUIT       PIC X(01).    
            05 SI-ERROR-MESSAGE PIC x(45).                     
 
        01  WS-MSG-ERROR        PIC X(35) 
@@ -53,6 +54,7 @@
                INITIALIZE SI-USER-ID
                           SI-USER-PWD
                           SI-CONNECT
+                          SI-QUIT
 
                ACCEPT screen-sign-in
 
@@ -67,7 +69,12 @@
       *    - Sinon, attribu un message d'erreur.                       * 
       ******************************************************************
        2000-START-CONNECT.
-           MOVE FUNCTION UPPER-CASE(SI-CONNECT) TO SI-CONNECT.  
+           MOVE FUNCTION UPPER-CASE(SI-CONNECT) TO SI-CONNECT. 
+           MOVE FUNCTION UPPER-CASE(SI-QUIT) TO SI-QUIT.
+
+            IF SI-QUIT EQUAL 'O'
+               STOP RUN
+           END-IF.  
 
            IF SI-CONNECT EQUAL 'O'
                PERFORM 2100-START-VALIDATION 
