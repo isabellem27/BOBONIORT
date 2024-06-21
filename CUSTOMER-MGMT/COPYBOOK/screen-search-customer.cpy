@@ -152,7 +152,7 @@
            FOREGROUND-COLOR IS 0. 
 
       *    [RD-MF] Bouton retour au menu. 
-           05 FILLER PIC X(11) VALUE 'Retour menu' 
+           05 FILLER PIC X(11) VALUE 'Retour' 
            LINE 34 COL 172 
            FOREGROUND-COLOR IS 2.
 

@@ -37,6 +37,16 @@
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 
 
+      *    [MF] Bouton pour quitter. 
+           05 FILLER PIC X(7) VALUE 'Quitter' 
+           LINE 34 COL 108 
+           FOREGROUND-COLOR IS 2.
+
+           05 PIC X(01) USING SI-QUIT  
+           LINE 34 COL 106 
+           BACKGROUND-COLOR IS 2
+           FOREGROUND-COLOR IS 0. 
+
       ******************************************************************
       *    [AL-RD] DEFINITION DU LOGO.                                 *
       ******************************************************************
