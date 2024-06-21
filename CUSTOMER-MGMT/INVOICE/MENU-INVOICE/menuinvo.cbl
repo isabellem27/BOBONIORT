@@ -1,4 +1,6 @@
       ****************************************************************** 
+      *
+      ******************************************************************
 
        IDENTIFICATION DIVISION.
        PROGRAM-ID. menuinvo RECURSIVE.
@@ -9,18 +11,15 @@
        DATA DIVISION.
        WORKING-STORAGE SECTION.
        01  WS-CUSTOMER-NAME      PIC X(55).
+       01  WS-INVOICE-UUID       PIC X(36).  
+       01  WS-INITIAL-AMOUNT     PIC 9(05).
+       01  WS-MADE-AMOUNT        PIC 9(05)V99.
+       01  WS-REMAINING-AMOUNT   PIC 9(05)V99.
+       01  WS-PAYMENT-AMOUNT     PIC 9(05)V99.
+       01  WS-ACCEPT-PAYMENT     PIC X(01).
        01  WS-ERROR-MESSAGE      PIC X(70).
-       01  WS-RETURN-CHOICE      PIC X(01).
-       01  WS-GENERATE-CHOICE    PIC X.
-       01  WS-PAID-EXPECT        PIC 9(05).
-       01  WS-PAID-INCOME-INPUT  PIC 9(05)V99.
-       01  WS-PAID-INCOME-BUTTON PIC X.
-       01  WS-TOTAL-INCOME       PIC 9(05)V99.
-       01  WS-TOTAL-REST         PIC 9(05)V99.
-
-       01  DISPLAY-INVOICE-INCOME     PIC 9(05)V99.
-       01  DISPLAY-INVOICE-EXPECT     PIC 9(05)V99.
-       01  DISPLAY-RESULT             PIC 9(05)V99. 
+       01  WS-GENERATED-INVOICE  PIC X(01).
+       01  WS-RETURN-MENU        PIC X(01).
 
        01 WS-CUSTOMER.
            03 WS-CUS-UUID        PIC X(36).
@@ -106,12 +105,32 @@
       ******************************************************************
 
        PROCEDURE DIVISION USING LK-CUSTOMER.
-           INITIALIZE WS-ERROR-MESSAGE     
-                      WS-RETURN-CHOICE     
-                      WS-GENERATE-CHOICE       
-                      WS-PAID-INCOME-INPUT 
-                      WS-PAID-INCOME-BUTTON .
-
+       0000-START-MAIN.
+           INITIALIZE WS-INVOICE-UUID
+                      WS-MADE-AMOUNT
+                      WS-PAYMENT-AMOUNT 
+                      WS-ACCEPT-PAYMENT
+                      WS-ERROR-MESSAGE     
+                      WS-GENERATED-INVOICE       
+                      WS-RETURN-MENU .
+           
+           EXEC SQL
+               CONNECT :USERNAME IDENTIFIED BY :PASSWD USING :DBNAME
+           END-EXEC.
+           
+           PERFORM 1000-START-INITIALIZATION
+              THRU END-1000-INITIALIZATION.
+           
+           PERFORM 2000-START-SCREEN
+              THRU END-2000-SCREEN.
+       END-0000-MAIN.
+           GOBACK.
+           
+      ******************************************************************
+      *    [RD-MF] Initialisation des variables utilisées dans ce      *
+      *    programme.                                                  *
+      ****************************************************************** 
+       1000-START-INITIALIZATION.
            STRING FUNCTION TRIM (LK-CUS-FIRSTNAME)
                   SPACE 
                   FUNCTION TRIM (LK-CUS-LASTNAME)
@@ -125,10 +144,6 @@
                   LK-SECU-7  
            DELIMITED BY SIZE 
            INTO WS-CUSTOMER-NAME.  
-           
-           EXEC SQL
-               CONNECT :USERNAME IDENTIFIED BY :PASSWD USING :DBNAME
-           END-EXEC.
 
            MOVE LK-CUSTOMER TO WS-CUSTOMER.
 
@@ -136,35 +151,57 @@
                SELECT
                    REIMBURSEMENT_COST * 3
                INTO
-                   :WS-PAID-EXPECT
+                   :WS-INITIAL-AMOUNT
                FROM CUSTOMER_REIMBURSEMENT
                WHERE UUID_CUSTOMER = :WS-CUS-UUID
            END-EXEC.
-           
-           MOVE WS-PAID-EXPECT TO WS-TOTAL-REST.
-           MOVE WS-PAID-EXPECT TO DISPLAY-RESULT.
-        1000-MAIN.    
-           MOVE WS-PAID-EXPECT TO DISPLAY-INVOICE-EXPECT.
 
            EXEC SQL
-               SELECT INVOICE_INCOME
-               INTO :WS-TOTAL-INCOME
+               SELECT UUID_INVOICE, INVOICE_INCOME 
+               INTO :WS-INVOICE-UUID, :WS-REMAINING-AMOUNT
                FROM INVOICE
-               WHERE UUID_CUSTOMER_REIMBOURSEMENT = :WS-CUS-UUID
+               WHERE UUID_CUSTOMER = :WS-CUS-UUID
+               ORDER BY INVOICE_CREATE_DATE DESC, 
+                        INVOICE_NUMBER DESC
+               LIMIT 1
            END-EXEC.
 
+           IF WS-INVOICE-UUID EQUAL SPACE THEN
+               MOVE WS-INITIAL-AMOUNT TO WS-REMAINING-AMOUNT
+           END-IF.
+       END-1000-INITIALIZATION.
+           EXIT.
+
+      ******************************************************************
+      *    [RD-MF] Appel la SCREEN SECTION et les différents           *
+      *    paragraphes qui s'occupent d'effectuer divers traitement en *
+      *    fonction de la saisie de l'utilisateur.                     *
+      ******************************************************************  
+       2000-START-SCREEN.
            ACCEPT SCREEN-INVOICE.
 
-           MOVE FUNCTION UPPER-CASE(WS-PAID-INCOME-BUTTON) TO
-           WS-PAID-INCOME-BUTTON.
+           PERFORM 2100-START-RETURN-MENU
+              THRU END-2100-RETURN-MENU.
 
-           MOVE FUNCTION UPPER-CASE(WS-GENERATE-CHOICE) TO
-           WS-GENERATE-CHOICE.
+           PERFORM 2200-START-GENERATED-INVOICE
+              THRU END-2200-GENERATED-INVOICE.
 
-           MOVE FUNCTION UPPER-CASE(WS-RETURN-CHOICE) TO
-           WS-RETURN-CHOICE.
+           PERFORM 2300-START-ACCEPT-PAYMENT
+              THRU END-2300-ACCEPT-PAYMENT.
 
-           IF WS-RETURN-CHOICE EQUAL 'O'
+           PERFORM 2400-START-NO-ENTRY
+              THRU END-2400-NO-ENTRY.  
+       END-2000-SCREEN.
+           EXIT.
+
+      ******************************************************************
+      *    [RD-MF] Gestion du retour menu.                             *
+      ******************************************************************       
+       2100-START-RETURN-MENU.
+           MOVE FUNCTION UPPER-CASE(WS-RETURN-MENU) TO
+           WS-RETURN-MENU.
+
+           IF WS-RETURN-MENU EQUAL 'O'
                EXEC SQL COMMIT WORK END-EXEC
                EXEC SQL DISCONNECT ALL END-EXEC
                
@@ -173,57 +210,100 @@
                    USING BY CONTENT
                    WS-CUS-UUID
                END-CALL 
-           END-IF.
+           
+           ELSE IF WS-RETURN-MENU NOT EQUAL SPACE
+           AND WS-RETURN-MENU NOT EQUAL 'O' THEN
+               MOVE 'Veuillez entrer "O" pour retourner au menu.'
+               TO WS-ERROR-MESSAGE
+               
+               INITIALIZE WS-PAYMENT-AMOUNT
+                          WS-ACCEPT-PAYMENT
+                          WS-GENERATED-INVOICE  
+                          WS-RETURN-MENU
 
-           IF WS-GENERATE-CHOICE = "O" 
-           MOVE WS-TOTAL-REST TO WS-TOTAL-REST
+               GO TO 2000-START-SCREEN
+           END-IF.
+       END-2100-RETURN-MENU.
+           EXIT.
+
+      ******************************************************************
+      *    [RD-MF] Gestion du bouton de génération de facture.         *
+      ******************************************************************       
+       2200-START-GENERATED-INVOICE.
+           MOVE FUNCTION UPPER-CASE(WS-GENERATED-INVOICE) TO
+           WS-GENERATED-INVOICE.
+
+           IF WS-GENERATED-INVOICE EQUAL 'O' THEN
                CALL
                    'geneinvo'
                    USING BY CONTENT
-                   LK-CUSTOMER, WS-TOTAL-REST, WS-TOTAL-INCOME
+                   LK-CUSTOMER, WS-REMAINING-AMOUNT, WS-MADE-AMOUNT
                END-CALL
-               MOVE "Facture genere avec succes" TO WS-ERROR-MESSAGE
-               INITIALIZE WS-GENERATE-CHOICE  
-                          WS-PAID-INCOME-BUTTON 
-               GO TO 1000-MAIN
+       
+               MOVE 'Facture genere avec succes' 
+               TO WS-ERROR-MESSAGE
+       
+               INITIALIZE WS-PAYMENT-AMOUNT
+                          WS-ACCEPT-PAYMENT
+                          WS-GENERATED-INVOICE  
+                          WS-RETURN-MENU
+       
+               GO TO 2000-START-SCREEN
            END-IF.
+       END-2200-GENERATED-INVOICE.
+           EXIT.
 
-           IF WS-PAID-INCOME-BUTTON = "O" 
-           AND WS-PAID-INCOME-INPUT < WS-TOTAL-REST
-           OR WS-PAID-INCOME-INPUT = WS-TOTAL-REST
+      ******************************************************************
+      *    [RD-MF] Gestion lorsque l'utilisateur selectionne le bouton *
+      *    "Accepter".                                                 *
+      ******************************************************************   
+       2300-START-ACCEPT-PAYMENT.
+           MOVE FUNCTION UPPER-CASE(WS-ACCEPT-PAYMENT) TO
+           WS-ACCEPT-PAYMENT.
 
-               ADD WS-PAID-INCOME-INPUT TO WS-TOTAL-INCOME
+           IF  WS-ACCEPT-PAYMENT EQUAL 'O' THEN
+               IF WS-PAYMENT-AMOUNT LESS THAN WS-REMAINING-AMOUNT
+               OR  WS-PAYMENT-AMOUNT EQUAL WS-REMAINING-AMOUNT THEN
 
-               MOVE WS-TOTAL-INCOME TO DISPLAY-INVOICE-INCOME
+                   ADD WS-PAYMENT-AMOUNT TO WS-MADE-AMOUNT
 
-               SUBTRACT WS-TOTAL-REST FROM WS-PAID-INCOME-INPUT 
-               GIVING WS-TOTAL-REST
+                   SUBTRACT WS-REMAINING-AMOUNT FROM WS-PAYMENT-AMOUNT 
+                   GIVING WS-REMAINING-AMOUNT
 
-               MOVE WS-TOTAL-REST TO DISPLAY-RESULT
+                   INITIALIZE WS-PAYMENT-AMOUNT WS-ACCEPT-PAYMENT
 
-               EXEC SQL
-                  UPDATE INVOICE
-                  SET INVOICE_INCOME = INVOICE_INCOME + :WS-TOTAL-INCOME
-                  WHERE UUID_CUSTOMER_REIMBOURSEMENT = :WS-CUS-UUID
-               END-EXEC
+                   GO TO 2000-START-SCREEN
 
-               GO TO 1000-MAIN
+           ELSE IF WS-ACCEPT-PAYMENT NOT EQUAL 'O' 
+               AND WS-ACCEPT-PAYMENT NOT EQUAL SPACE THEN
 
-           ELSE
-               IF WS-PAID-INCOME-BUTTON NOT = "O" 
-               AND WS-PAID-INCOME-BUTTON NOT = SPACE
+               MOVE 'Veuillez entrer "O" pour accepter.'
+               TO WS-ERROR-MESSAGE
+               GO TO 2000-START-SCREEN
 
-                   MOVE "Veuillez entrer 'O' dans Accepter" 
-                   TO WS-ERROR-MESSAGE
-                   GO TO 1000-MAIN
-               END-IF
-
-               IF WS-PAID-INCOME-INPUT > WS-TOTAL-REST
+           ELSE IF WS-PAYMENT-AMOUNT GREATER
+              THAN WS-REMAINING-AMOUNT THEN
                MOVE "Le montant est trop eleve par rapport au reste a pa
       -    "yer" 
-                   TO WS-ERROR-MESSAGE
-                   GO TO 1000-MAIN
-               END-IF
-           END-IF.
+               TO WS-ERROR-MESSAGE
 
-           GO TO 1000-MAIN.
+               INITIALIZE WS-PAYMENT-AMOUNT
+                              WS-ACCEPT-PAYMENT
+                              WS-GENERATED-INVOICE  
+                              WS-RETURN-MENU
+
+               GO TO 2000-START-SCREEN
+           END-IF.
+       END-2300-ACCEPT-PAYMENT.
+           EXIT.
+
+      ******************************************************************
+      *    [RD-MF] Gestion si l'utilisateur n'a rien saisi dans aucun  *
+      *    input.                                                      *
+      ******************************************************************  
+       2400-START-NO-ENTRY.
+           MOVE 'Veuillez entrer "O" pour effectuer votre choix.'
+           TO WS-ERROR-MESSAGE.
+           GO TO 2000-START-SCREEN.
+       END-2400-NO-ENTRY.
+           EXIT.
