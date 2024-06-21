@@ -27,7 +27,7 @@
        01  WS-ARCHIVE-MESSAGE      PIC X(35)
            VALUE 'Veuillez entrer "O" pour confirmer.'.
        01  WS-ARCHIVE-SUCCES      PIC X(18)
-           VALUE 'Archivage reussie.' .
+           VALUE 'Archivage reussi.' .
 
 
        EXEC SQL BEGIN DECLARE SECTION END-EXEC.
