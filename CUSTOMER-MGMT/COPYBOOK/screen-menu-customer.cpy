@@ -312,53 +312,54 @@
 
       *    [RD-AL] Bouton modifier.
            05 FILLER PIC X(08) VALUE "Modifier" 
-           LINE 34 COL 45 
+           LINE 34 COL 55
            FOREGROUND-COLOR IS 2. 
 
            05 FILLER PIC X(01) USING WS-CUSTOMER-MODIF 
-           LINE 34 COL 55
+           LINE 34 COL 65
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 
 
       *    [RD-AL] Bouton archiver.
            05 FILLER PIC X(08) VALUE "Archiver" 
-           LINE 34 COL 60 
+           LINE 34 COL 70 
            FOREGROUND-COLOR IS 2. 
 
            05 FILLER PIC X(01) USING WS-CUST-ARCHIVE 
-           LINE 34 COL 70
+           LINE 34 COL 80
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 
 
       *    [RD-AL] Bouton contrat.
            05 FILLER PIC X(08) VALUE "Contrat" 
-           LINE 34 COL 75 
+           LINE 34 COL 85 
            FOREGROUND-COLOR IS 2. 
 
            05 FILLER PIC X(01) USING WS-CONTRACT-LIST 
-           LINE 34 COL 85
+           LINE 34 COL 95
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 
 
       *    [RD-AL] Bouton Remboursement.
            05 FILLER PIC X(13) VALUE "Remboursement" 
-           LINE 34 COL 90 
+           LINE 34 COL 100 
            FOREGROUND-COLOR IS 2. 
 
            05 FILLER PIC X(01) USING WS-MENU-REMBOURSEMENT 
-           LINE 34 COL 105
+           LINE 34 COL 115
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 
 
       *    [RD-AL] Bouton Facture.
            05 FILLER PIC X(07) VALUE "Facture" 
-           LINE 34 COL 110 
+           LINE 34 COL 120
            FOREGROUND-COLOR IS 2. 
 
            05 FILLER PIC X(01) USING WS-MENU-FACTURE 
-           LINE 34 COL 119
+           LINE 34 COL 130
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 
+
 
       *    [RD-AL] Bouton retour au menu.
            05 FILLER PIC X(01) USING WS-MENU-RETURN 
