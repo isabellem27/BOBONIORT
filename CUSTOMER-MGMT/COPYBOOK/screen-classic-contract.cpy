@@ -302,7 +302,7 @@
            LINE 34 COL 170 
            BACKGROUND-COLOR IS 2
            FOREGROUND-COLOR IS 0. 
-           05 FILLER PIC X(11) VALUE  'Retour menu' 
+           05 FILLER PIC X(11) VALUE  'Retour' 
            COL 172 
            FOREGROUND-COLOR IS 2.
 

@@ -85,7 +85,7 @@
            LINE 30 COL 60 
            FOREGROUND-COLOR IS 8.
 
-           05 FILLER PIC X(11) VALUE 'Retour menu' 
+           05 FILLER PIC X(11) VALUE 'Retour' 
            LINE 34 COL 172 
            FOREGROUND-COLOR IS 2.
 
