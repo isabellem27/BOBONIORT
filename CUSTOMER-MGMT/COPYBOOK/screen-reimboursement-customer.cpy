@@ -4,8 +4,8 @@
       ******************************************************************
       *    [SK] TITRE.                                                 *
       ******************************************************************
-           05 FILLER PIC X(22) VALUE 'ARCHIVER UN ADHERENT' 
-           LINE 6 COL 90 
+           05 FILLER PIC X(22) VALUE 'REMBOURSEMENT DE L ADHERENT' 
+           LINE 6 COL 88 
            FOREGROUND-COLOR IS 2. 
 
       ******************************************************************
