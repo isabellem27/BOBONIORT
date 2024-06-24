@@ -1,7 +1,14 @@
-      ****************************************************************** 
+      ******************************************************************
+      *    [RD] Ce programme récupère dans la DB le contrat qui est    *
+      *    affecté à l'adhérent et affiche les informations du contrat *
+      *    avec une SCREEN SECTION.                                    *
+      *    Gère les erreurs dans le cas où l'adhérent n'a pas de       *
+      *    contrat d'affecté ou au contraire si l'adhérent a plus d'un *
+      *    contrat d'affecté.                                          *
+      ******************************************************************
        IDENTIFICATION DIVISION.
        PROGRAM-ID. readcont RECURSIVE.
-       AUTHOR. Martial.
+       AUTHOR. Martial&Remi.
 
       ******************************************************************
 
@@ -175,7 +182,7 @@ OCESQL     END-CALL.
 
       ******************************************************************    
       *    [RD] Déplace le Customer de la linkage vers celui de la WS  *
-      *    et créer un STRIN Nom Prénom NumSécu pour SCREEN SECTION.   *
+      *    et créer un STRING Nom Prénom NumSécu pour SCREEN SECTION.  *
       ******************************************************************
        1000-PREPARE-SCREEN-START.
            MOVE LK-CUSTOMER TO WS-CUSTOMER.
@@ -403,11 +410,15 @@ OCESQL    .
            EXIT.
 
       ******************************************************************
-      *    [RD] Appel la SCREEN SECTION.                               *
+      *    [RD] Appel la SCREEN SECTION et gestion des erreurs si      *
+      *    l'adhérent n'a pas de contrat d'affecté ou si l'adhérent a  *
+      *    plus d'un contrat d'affecté.                                *
+      *    En cas d'erreur appel le sous programme 'menu contrat' avec *
+      *    le message d'erreur adéquat.                                *
       ****************************************************************** 
        5000-START-SCREEN.
            IF WS-COUNT-CUS-REIM GREATER THAN 1 THEN
-               MOVE 'Plusieurs contrats affectes pour cette adherent.' 
+               MOVE 'Plusieurs contrats affectes pour cet adherent.' 
                TO LK-ERROR-MESSAGE-MENU
 
                CALL 
@@ -416,7 +427,7 @@ OCESQL    .
                    LK-CUSTOMER
                END-CALL
            ELSE IF WS-COUNT-CUS-REIM LESS THAN 1 THEN
-               MOVE 'Aucun contrat affecte pour cette adherent.' 
+               MOVE 'Aucun contrat affecte pour cet adherent.' 
                TO LK-ERROR-MESSAGE-MENU
 
                CALL 

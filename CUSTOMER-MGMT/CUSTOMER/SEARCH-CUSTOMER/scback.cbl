@@ -87,7 +87,6 @@
                SELECT uuid_customer
                FROM customer
                WHERE customer_code_secu = :WS-SC-CODE-SECU
-               AND customer_active != 'A'
            END-EXEC.
 
       *    Recherche en fonction du lastname, firstname et birth_date
@@ -100,7 +99,6 @@
                AND UPPER(customer_firstname) 
                  = UPPER(TRIM(:WS-SC-FIRSTNAME))
                AND customer_birth_date = :WS-SC-BIRTHDATE
-               AND customer_active != 'A'
            END-EXEC.
 
       *    Recherche en fonction du code_secu, lastname, firstname 
@@ -115,7 +113,6 @@
                AND UPPER(customer_firstname) 
                  = UPPER(TRIM(:WS-SC-FIRSTNAME))
                AND customer_birth_date = :WS-SC-BIRTHDATE
-               AND customer_active != 'A'
            END-EXEC.
        END-2000-SQL-REQUEST.
            EXIT.
