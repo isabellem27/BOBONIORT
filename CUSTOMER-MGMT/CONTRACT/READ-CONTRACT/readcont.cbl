@@ -282,7 +282,7 @@
       ****************************************************************** 
        5000-START-SCREEN.
            IF WS-COUNT-CUS-REIM GREATER THAN 1 THEN
-               MOVE 'Plusieurs contrats affectes pour cette adherent.' 
+               MOVE 'Plusieurs contrats affectes pour cet adherent.' 
                TO LK-ERROR-MESSAGE-MENU
 
                CALL 
@@ -291,7 +291,7 @@
                    LK-CUSTOMER
                END-CALL
            ELSE IF WS-COUNT-CUS-REIM LESS THAN 1 THEN
-               MOVE 'Aucun contrat affecte pour cette adherent.' 
+               MOVE 'Aucun contrat affecte pour cet adherent.' 
                TO LK-ERROR-MESSAGE-MENU
 
                CALL 
