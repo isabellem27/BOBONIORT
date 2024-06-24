@@ -18,7 +18,7 @@
        INPUT-OUTPUT SECTION. 
        FILE-CONTROL. 
            SELECT F-INPUT 
-           ASSIGN TO 'Individus.csv' 
+           ASSIGN TO './CHARGE-FILES/Individus.csv' 
            ORGANIZATION IS LINE SEQUENTIAL 
            ACCESS MODE IS SEQUENTIAL
            FILE STATUS IS F-INPUT-STATUS.
@@ -338,15 +338,14 @@
        END-SQL-SCRIPT-EXECUTE.
            EXIT.
 
-
        9000-TEST-STATUT-START.
            IF (NOT F-INPUT-STATUS-OK) 
               AND (NOT F-INPUT-STATUS-EOF) THEN 
               MOVE ALL  '/' TO WS-LIG-RAP
-              DISPLAY WS-LIG-RAP 
+      *        DISPLAY WS-LIG-RAP 
               DISPLAY 'CODE RETOUR D''ERREUR' SPACE F-INPUT-STATUS 
               MOVE ALL  '/' TO WS-LIG-RAP
-              DISPLAY WS-LIG-RAP
+      *        DISPLAY WS-LIG-RAP
               STOP RUN 
            END-IF. 
        END-9000-TEST-STATUT.     
