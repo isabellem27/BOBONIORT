@@ -1,11 +1,8 @@
       ******************************************************************
-      *    [RD] Le programme 'search logic' recherche dans la table    *
-      *    'customer' un ou plusieurs adhérent en fonction des saisies *
+      *    [RD] Ce programme recherche dans la table 'customer' un     *
+      *    adhérent en fonction de l'UUID reçu par le programme        *
+      *    appelant et le stock dans le CUSTOMER de la LINKAGE SECTION.*
       *    de l'utilisateur dans les différents champs de recherche.   *
-      *    Les saisies de l'utilisateur correspondent à :              *
-      *    - soit au code_secu.                                        *
-      *    - soit au nom, prénom et date de naissance.                 *
-      *    - soit au code_secu, nom, prénom et date de naissance.      *
       ******************************************************************
        IDENTIFICATION DIVISION.
        PROGRAM-ID. mcback.
@@ -183,7 +180,7 @@ OCESQL     END-CALL.
            EXIT.
 
       ******************************************************************
-      *    [RD] Effectue le FECTH pour le CURSOR de code_secu.         *
+      *    [RD] Effectue le FECTH pour le CURSOR CRSUUID.              *
       ******************************************************************
        3000-START-FETCH-CRSUUID.
 OCESQL*    EXEC SQL  
@@ -367,8 +364,8 @@ OCESQL    .
            EXIT.
 
       ******************************************************************
-      *    [RD] Stock le ou les résultats de la requête SQL dans la    * 
-      *    TABLE customer.                                             *
+      *    [RD] Stock le résultat de la requête SQL dans le CUSTOME de *
+      *    la LINKAGE SECTION.                                         *
       ******************************************************************
        3100-START-HANDLE.
            INITIALIZE LK-CUSTOMER.
