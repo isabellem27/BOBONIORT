@@ -55,14 +55,13 @@ par \q sortez de plsql, puis exécutez l'exécutable runvil.
 Votre base est prête.
 <br>
 <br>
-Pour entrer dans l'application principale, ouvrez une fenêtre de terminal dans le répertoire CUSTOMER-MGMT. 
 Appropriez vous le script d'exécution scriptMAIN.sh par la ligne de commande suivante: sed -i -e 's/\r$//' scriptMAIN.sh
-Puis lancez le script pour voyager dans l'application.
+Puis lancez le script ./CUSTOMER-MGMT/scriptMAIN.sh pour voyager dans l'application principale.
 <br>
-<br>
-Pour entrer dans l'application annexe, ouvrir une fenêtre de terminal dans le répertoire DATA-MGMT. 
+<br> 
 Appropriez vous le script d'exécution script-compile.sh par la ligne de commande suivante: sed -i -e 's/\r$//' script-compile.sh
-Puis lancez le script pour visualiser les statistiques et charger le fichier csv (attention cette dernière fonctionnalité n'est à faire qu'une fois, sinon il y aura des doublons dans la base).
+Lancez le script ./DATA-MGMT/scriptMAIN.sh pour accéder à l'application annexe.
+Vous pourrez visualiser les statistiques et charger le fichier csv (attention cette dernière fonctionnalité n'est à faire qu'une fois, sinon il y aura des doublons dans la base).
 <br>
 <br>
 Si vous avez besoin de remettre en état votre base, il suffira de retourner dans psql depuis une fenêtre de terminal positionnée sur le répertoire SQL.
