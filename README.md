@@ -5,7 +5,7 @@
 <br>
 <br>
 Voici l'application développée au cours de notre mois de stage en organisation agile.
-[^-]:Le sujet: Nous avons reçu un courrier de la société Boboniort pour développer un écosystème applicatif afin d'améliorer l'efficacité de ses opérations internes.
+Le sujet: Nous avons reçu un courrier de la société Boboniort pour développer un écosystème applicatif afin d'améliorer l'efficacité de ses opérations internes.
 <br>
 <br>
 <img src="./boboniort.png" />
