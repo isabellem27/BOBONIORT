@@ -10,21 +10,21 @@ Voici l'application développée au cours de notre mois de stage en organisation
 <br>
 <img src="./boboniort.png" />
 La demande était la suivante:
-[^-]:Développer en COBOL
-[^-]:Fournir une interface conviviale permettant la saisie et la consultation faciles des informations.
-[^-]:Les écrans devront avoir des fonctionnalités de recherche et de filtrage pour accéder rapidement aux données pertinentes.
+Développer en COBOL
+Fournir une interface conviviale permettant la saisie et la consultation faciles des informations.
+Les écrans devront avoir des fonctionnalités de recherche et de filtrage pour accéder rapidement aux données pertinentes.
 Automatiser les processus manuels.
 <br>
 <br>
 Les fonctionnalités requises:
-[^-]:Gestion des adhérents : enregistrement, modification et archivage des informations personnelles,
+Gestion des adhérents : enregistrement, modification et archivage des informations personnelles,
 médicales et administratives des adhérents.
-[^-]:Gestion des cotisations : calcul, facturation et suivi des paiements des cotisations des adhérents.
-[^-]:Gestion des remboursements : enregistrement, traitement et suivi des demandes de
+Gestion des cotisations : calcul, facturation et suivi des paiements des cotisations des adhérents.
+Gestion des remboursements : enregistrement, traitement et suivi des demandes de
 remboursement des adhérents.
-[^-]:Gestion des prestations : attribution et suivi des prestations en fonction des garanties souscrites par
+Gestion des prestations : attribution et suivi des prestations en fonction des garanties souscrites par
 les adhérents.
-[^-]:Génération de rapports : production de rapports personnalisés pour la direction, les services
+Génération de rapports : production de rapports personnalisés pour la direction, les services
 administratifs et les adhérents.
 <br>
 <br>
@@ -37,10 +37,10 @@ N'ayant que 3 semaines à 8 personnes pour aboutir à une proposition viable, no
 <br>
 <br>
 L'application permet donc de 
-[^-]:gérer les adhérents: Recherche d'un adhérent , création d'un adhérent, archivage d'un adhérent.
-[^-]:gérer les prestations: 3 contrat types sont chargé dans la base, ils sont proposés par défaut, mais l'utilisateur peut personnaliser le contrat. Le coût mensuel du contrat est calculé immédiatement.
-[^-]:gérer les cotisations: le coût du contrat est calculé au moment de l'affectation. L'utilisateur peut saisir un montant de versement et déclencher une facturation.
-[^-]:gérer les rapports: une seconde application propose divers statistiques afin de fournir une premier niveau de rapport.
+gérer les adhérents: Recherche d'un adhérent , création d'un adhérent, archivage d'un adhérent.
+gérer les prestations: 3 contrat types sont chargé dans la base, ils sont proposés par défaut, mais l'utilisateur peut personnaliser le contrat. Le coût mensuel du contrat est calculé immédiatement.
+gérer les cotisations: le coût du contrat est calculé au moment de l'affectation. L'utilisateur peut saisir un montant de versement et déclencher une facturation.
+gérer les rapports: une seconde application propose divers statistiques afin de fournir une premier niveau de rapport.
 Cette même application charge un fichier csv fourni par le client afin d'avoir un jeu de données plus important pour la partie client. Le fichier a été chargé dans une table de travail, les données ont été reformatées puis charger dans la table des adhérents.  
 
 les phases suivantes permettront la modification du contrat, la relance, la gestion des remboursements, d'autres rapports/statistiques à définir avec le client.
